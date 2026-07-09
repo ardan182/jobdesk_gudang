@@ -1,0 +1,383 @@
+# Task List: Jobdesk Gudang AP
+
+## Ringkasan
+
+| Total Task | Priority High | Priority Mid | Priority Low |
+|------------|--------------|--------------|--------------|
+| 15 | 11 | 3 | 1 |
+
+## Legend Prioritas & Status
+- **High:** Wajib dikerjakan (Must Have V1)
+- **Mid:** Penting tapi bisa menyusul
+- **Low:** Nice to have
+
+---
+
+## T-01: Setup Project Laravel + Filament
+
+- **Modul:** — Setup
+- **Prioritas:** High
+- **Status:** Todo
+- **Dependensi:** —
+
+**Deskripsi:**
+Install Laravel 11 baru + Filament v3 + Spatie Permission + konfigurasi database MySQL.
+
+**Acceptance Criteria:**
+- [ ] `composer create-project laravel/laravel jobdeskgudang`
+- [ ] `composer require filament/filament:"^3.2" -W`
+- [ ] `php artisan filament:install --panels`
+- [ ] `composer require spatie/laravel-permission`
+- [ ] `php artisan vendor:publish --provider="Spatie\Permission\PermissionServiceProvider"`
+- [ ] Konfigurasi `.env` database MySQL
+- [ ] `php artisan migrate` berhasil
+- [ ] `php artisan make:filament-user` — buat admin pertama
+- [ ] Bisa akses `/admin` dan login
+
+**Files:**
+- `composer.json`
+- `.env`
+- `config/filament.php`
+- `config/permission.php`
+
+---
+
+## T-02: Role & User Management
+
+- **Modul:** — Auth
+- **Prioritas:** High
+- **Status:** Todo
+- **Dependensi:** T-01
+
+**Deskripsi:**
+Buat role (Admin, Checker Retur, Checker Terima, Checker Keluar, Checker Kiriman), seed default, dan Filament UserResource dengan role assignment.
+
+**Acceptance Criteria:**
+- [ ] Seeder: `RoleSeeder` dengan 5 role
+- [ ] Seeder: 1 user Admin default
+- [ ] Filament `UserResource` bisa CRUD user + pilih role
+- [ ] Middleware/guard: setiap resource di-protect berdasarkan role
+- [ ] Bisa login sebagai checker & lihat menu sesuai role
+
+**Files:**
+- `database/seeders/RoleSeeder.php`
+- `database/seeders/DatabaseSeeder.php`
+- `app/Filament/Resources/UserResource.php`
+- `app/Providers/AppServiceProvider.php`
+
+---
+
+## T-03: Task ID Generator Service
+
+- **Modul:** — Core
+- **Prioritas:** High
+- **Status:** Todo
+- **Dependensi:** T-01
+
+**Deskripsi:**
+Buat service `TaskIdGenerator` yang generate `ID_TASK` format `{PREFIX}-{YYYYMMDD}-{XXX}` dan `NO_BARIS` auto-increment per hari per tipe task.
+
+**Acceptance Criteria:**
+- [ ] Service method: `generate($prefix)` → return `ID_TASK` string
+- [ ] Service method: `getNextBaris($table)` → return integer
+- [ ] Counter per hari (reset setiap 00:00) berdasarkan query count database
+- [ ] Prefix mapping: RET-SUP, RET-CAB, TRM-SUP, KLR, KRM
+
+**Files:**
+- `app/Services/TaskIdGenerator.php`
+
+---
+
+## T-04: Modul Checker Retur — Kirim Retur to Supplier (Done)
+
+- **Modul:** Checker Retur
+- **Prioritas:** High
+- **Status:** Done
+- **Dependensi:** T-01, T-02, T-03
+
+**Deskripsi:**
+Model, migration, dan Filament Resource untuk task kirim retur ke supplier. Form repeater input + table laporan.
+
+**Acceptance Criteria:**
+- [x] Migration `create_task_retur_suppliers_table` (field sesuai PRD)
+- [x] Model `TaskReturSupplier` dengan fillable, casts, relasi ke User
+- [x] Observer/boot: auto-set `user_id`, auto-generate `id_task` & `no_baris`
+- [x] Filament Resource `TaskReturSupplierResource`:
+  - Form dengan Repeater (ID_TASK & NO_BARIS hidden/disabled)
+  - Field: nama_supplier, no_plat_mobil, nama_sopir, jam_muat (time), jumlah_kolian, admin_sj_retur, status (dropdown: Servis/Tukar/Pot Nota), keterangan
+  - Table laporan: pagination, sort, filter tanggal, search
+- [x] Scope: checker hanya lihat task-nya sendiri
+- [x] Guard: hanya Admin & Checker Retur yang bisa akses
+
+**Files:**
+- `database/migrations/xxxx_create_task_retur_suppliers_table.php`
+- `app/Models/TaskReturSupplier.php`
+- `app/Filament/Resources/TaskReturSupplierResource.php`
+- `app/Filament/Resources/TaskReturSupplierResource/Pages/`
+- `app/Policies/TaskReturSupplierPolicy.php`
+
+---
+
+## T-05: Modul Checker Retur — Terima Retur dari Cabang (Done)
+
+- **Modul:** Checker Retur
+- **Prioritas:** High
+- **Status:** Done
+- **Dependensi:** T-01, T-02, T-03
+
+**Deskripsi:**
+Model, migration, dan Filament Resource untuk task terima retur dari cabang.
+
+**Acceptance Criteria:**
+- [x] Migration `create_task_retur_cabangs_table`
+- [x] Model `TaskReturCabang`
+- [x] Filament Resource dengan Repeater
+- [x] Field: cabang, jenis_retur (dropdown: Retur Jelek/Retur Bagus), no_sj_retur, total_kolian, jam_bongkar (time), nama_sopir, keterangan
+- [x] Table laporan, pagination, sort, filter tanggal, search
+- [x] Scope per user + role guard
+
+**Files:**
+- `database/migrations/xxxx_create_task_retur_cabangs_table.php`
+- `app/Models/TaskReturCabang.php`
+- `app/Filament/Resources/TaskReturCabangResource.php`
+- `app/Filament/Resources/TaskReturCabangResource/Pages/`
+- `app/Policies/TaskReturCabangPolicy.php`
+
+---
+
+## T-06: Modul Checker Terima Barang dari Supplier (Done)
+
+- **Modul:** Checker Terima Barang
+- **Prioritas:** High
+- **Status:** Done
+- **Dependensi:** T-01, T-02, T-03
+
+**Deskripsi:**
+Model, migration, dan Filament Resource untuk task terima barang dari supplier.
+
+**Acceptance Criteria:**
+- [x] Migration `create_task_terima_suppliers_table`
+- [x] Model `TaskTerimaSupplier`
+- [x] Filament Resource dengan Repeater
+- [x] Field: nama_supplier, no_po_referensi, jumlah_kolian, jam_bongkar (time), nama_sopir, status (dropdown: Komplit/Kurang/Lebih), keterangan
+- [x] Table laporan lengkap
+- [x] Scope per user + role guard
+
+**Files:**
+- `database/migrations/xxxx_create_task_terima_suppliers_table.php`
+- `app/Models/TaskTerimaSupplier.php`
+- `app/Filament/Resources/TaskTerimaSupplierResource.php`
+- `app/Filament/Resources/TaskTerimaSupplierResource/Pages/`
+- `app/Policies/TaskTerimaSupplierPolicy.php`
+
+---
+
+## T-07: Modul Checker Keluar Barang dari Gudang (Done)
+
+- **Modul:** Checker Keluar Barang
+- **Prioritas:** High
+- **Status:** Done
+- **Dependensi:** T-01, T-02, T-03
+
+**Deskripsi:**
+Model, migration, dan Filament Resource untuk task keluar barang dari gudang ke toko/cabang.
+
+**Acceptance Criteria:**
+- [x] Migration `create_task_keluar_barangs_table`
+- [x] Model `TaskKeluarBarang`
+- [x] Filament Resource dengan Repeater
+- [x] Field: toko_tujuan (dropdown: Pusat/Ujungberung/Soreang/Majalaya/Cicaheum/Barokah), supplier, no_referensi_sj, jumlah_kolian, jam_naik (time), nama_koordinator, status (dropdown: Komplit/Kurang/Lebih), keterangan
+- [x] Table laporan lengkap
+- [x] Scope per user + role guard
+
+**Files:**
+- `database/migrations/xxxx_create_task_keluar_barangs_table.php`
+- `app/Models/TaskKeluarBarang.php`
+- `app/Filament/Resources/TaskKeluarBarangResource.php`
+- `app/Filament/Resources/TaskKeluarBarangResource/Pages/`
+- `app/Policies/TaskKeluarBarangPolicy.php`
+
+---
+
+## T-08: Modul Checker Kiriman Mobil (Done)
+
+- **Modul:** Checker Kiriman Mobil
+- **Prioritas:** High
+- **Status:** Done
+- **Dependensi:** T-01, T-02, T-03
+
+**Deskripsi:**
+Model, migration, dan Filament Resource untuk task kiriman cabang per mobil.
+
+**Acceptance Criteria:**
+- [x] Migration `create_task_kiriman_mobils_table`
+- [x] Model `TaskKirimanMobil`
+- [x] Filament Resource dengan Repeater
+- [x] Field: cabang, no_plat_mobil, jam_muat, jam_selesai_muat, jam_berangkat (time picker), nama_supir, keterangan
+- [x] Table laporan lengkap
+- [x] Scope per user + role guard
+
+**Files:**
+- `database/migrations/xxxx_create_task_kiriman_mobils_table.php`
+- `app/Models/TaskKirimanMobil.php`
+- `app/Filament/Resources/TaskKirimanMobilResource.php`
+- `app/Filament/Resources/TaskKirimanMobilResource/Pages/`
+- `app/Policies/TaskKirimanMobilPolicy.php`
+
+---
+
+## T-09: Dashboard Admin — Stats Overview (Done)
+
+- **Modul:** Dashboard
+- **Prioritas:** High
+- **Status:** Done
+- **Dependensi:** T-04, T-05, T-06, T-07, T-08
+
+**Deskripsi:**
+Buat halaman Dashboard Filament dengan widget card yang menampilkan total task per checker hari ini. Admin lihat semua, checker lihat miliknya sendiri.
+
+**Acceptance Criteria:**
+- [x] Filament Widget: `StatsOverviewWidget`
+- [x] Admin: 5 card (ReturSupplier, ReturCabang, TerimaSupplier, KeluarBarang, KirimanMobil) + total baris
+- [x] Checker: 1 card dengan total task hari ini
+- [x] Data real-time (Livewire auto-refresh opsional)
+- [x] Dashboard di-set sebagai halaman default setelah login
+
+**Files:**
+- `app/Filament/Pages/Dashboard.php`
+- `app/Filament/Widgets/StatsOverviewWidget.php`
+
+---
+
+## T-10: Admin CRUD All Menu (Backup Input) (Done)
+
+- **Modul:** Admin
+- **Prioritas:** Mid
+- **Status:** Done
+- **Dependensi:** T-04, T-05, T-06, T-07, T-08
+
+**Deskripsi:**
+Admin bisa mengakses semua resource checker (create/edit/delete) untuk backup jika checker absen.
+
+**Acceptance Criteria:**
+- [x] Admin bisa buka semua menu checker di sidebar
+- [x] Admin bisa create, edit, delete task di semua resource
+- [x] Scope per-user di-nonaktifkan untuk Admin (Admin lihat semua)
+
+**Files:**
+- Modifikasi policy/guard di semua Resource
+
+---
+
+## T-11: Navigation & Sidebar Menu (Done)
+
+- **Modul:** — UI
+- **Prioritas:** High
+- **Status:** Done
+- **Dependensi:** T-04, T-05, T-06, T-07, T-08
+
+**Deskripsi:**
+Konfigurasi navigasi Filament agar sidebar menyesuaikan role — checker hanya lihat menu sesuai role-nya, Admin lihat semua.
+
+**Acceptance Criteria:**
+- [x] Sidebar: Admin lihat semua menu + Users
+- [x] Checker Retur lihat: Dashboard, Retur ke Supplier, Retur dari Cabang
+- [x] Checker Terima lihat: Dashboard, Terima Barang
+- [x] Checker Keluar lihat: Dashboard, Keluar Barang
+- [x] Checker Kiriman lihat: Dashboard, Kiriman Mobil
+- [x] Grouping navigasi rapi (icon sesuai)
+
+**Files:**
+- `app/Providers/Filament/AdminPanelProvider.php`
+
+---
+
+## T-12: ID_TASK & NO_BARIS Auto-Generate di Form (Done)
+
+- **Modul:** — Core
+- **Prioritas:** High
+- **Status:** Done
+- **Dependensi:** T-03, T-04, T-05, T-06, T-07, T-08
+
+**Deskripsi:**
+Integrasikan `TaskIdGeneratorService` ke dalam setiap Filament Resource. ID_TASK & NO_BARIS muncul otomatis saat user menambah baris di repeater (hidden/disabled, tampil sebagai readonly).
+
+**Acceptance Criteria:**
+- [x] Setiap resource panggil `TaskIdGenerator` saat create
+- [x] ID_TASK & NO_BARIS muncul otomatis (readonly/disabled)
+- [x] Tidak bisa diubah manual oleh user
+
+**Files:**
+- `app/Filament/Resources/TaskReturSupplierResource.php` (modified)
+- `app/Filament/Resources/TaskReturCabangResource.php` (modified)
+- `app/Filament/Resources/TaskTerimaSupplierResource.php` (modified)
+- `app/Filament/Resources/TaskKeluarBarangResource.php` (modified)
+- `app/Filament/Resources/TaskKirimanMobilResource.php` (modified)
+
+---
+
+## T-13: Laporan — Filter Tanggal Default Hari Ini (Done)
+
+- **Modul:** — Laporan
+- **Prioritas:** Mid
+- **Status:** Done
+- **Dependensi:** T-04, T-05, T-06, T-07, T-08
+
+**Deskripsi:**
+Setiap table laporan di resource menampilkan data hari ini secara default, dengan opsi filter rentang tanggal.
+
+**Acceptance Criteria:**
+- [x] Default filter: `created_at = today`
+- [x] User bisa pilih rentang tanggal kustom
+- [x] Pagination tetap jalan dengan filter
+
+**Files:**
+- Modifikasi setiap Resource Table query
+
+---
+
+## T-14: Seeder Data Dummy (Done)
+
+- **Modul:** — Testing
+- **Prioritas:** Low
+- **Status:** Done
+- **Dependensi:** T-04, T-05, T-06, T-07, T-08
+
+**Deskripsi:**
+Buat seeder data dummy untuk testing semua modul.
+
+**Acceptance Criteria:**
+- [ ] Seeder: 50+ baris data per modul
+- [ ] Seeder: user dummy per role
+- [ ] `php artisan db:seed` jalan tanpa error
+
+**Files:**
+- `database/seeders/DatabaseSeeder.php` (modified)
+- `database/seeders/DummyTaskSeeder.php`
+
+---
+
+## T-15: Final Testing & Polish (Done)
+
+- **Modul:** — Testing
+- **Prioritas:** Mid
+- **Status:** Done
+- **Dependensi:** Semua task di atas
+
+**Deskripsi:**
+Tes semua fitur: login setiap role, CRUD task, laporan, filter, dashboard. Fix bug & polish UI.
+
+**Acceptance Criteria:**
+- [x] Login sebagai Admin: bisa akses semua menu, CRUD user, CRUD task
+- [x] Login sebagai Checker Retur: hanya lihat menu retur, input + laporan berfungsi
+- [x] Login sebagai Checker Terima: hanya lihat menu terima barang
+- [x] Login sebagai Checker Keluar: hanya lihat menu keluar barang
+- [x] Login sebagai Checker Kiriman: hanya lihat menu kiriman mobil
+- [x] ID_TASK & NO_BARIS auto-generate benar
+- [x] Filter tanggal & search bekerja
+- [x] Dashboard card menampilkan data yang akurat
+- [x] Repeater form: add baris, submit multi-row berhasil
+- [x] Tidak ada error/exception
+
+**Files:**
+— (testing seluruh aplikasi)
