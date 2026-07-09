@@ -26,7 +26,7 @@ class TaskTerimaSupplierResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Terima Barang Supplier';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Terima Barang';
+    protected static string|\UnitEnum|null $navigationGroup = 'Penerimaan';
 
     public static function form(Schema $schema): Schema
     {

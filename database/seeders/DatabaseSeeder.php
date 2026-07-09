@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -16,9 +17,13 @@ class DatabaseSeeder extends Seeder
             RoleSeeder::class,
         ]);
 
-        $admin = User::where('email', 'admin@jobdesk.test')->first();
-        if ($admin) {
-            $admin->assignRole('Admin');
-        }
+        $admin = User::firstOrCreate(
+            ['email' => 'admin@jobdesk.test'],
+            [
+                'name' => 'Admin',
+                'password' => Hash::make('password'),
+            ]
+        );
+        $admin->assignRole('Admin');
     }
 }

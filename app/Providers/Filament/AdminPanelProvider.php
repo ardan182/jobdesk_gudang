@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use Filament\FontProviders\LocalFontProvider;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -9,7 +10,7 @@ use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
-use Filament\Support\Colors\Color;
+use Filament\Support\Enums\Width;
 use Filament\Widgets\AccountWidget;
 use Filament\Widgets\FilamentInfoWidget;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
@@ -17,6 +18,7 @@ use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Support\HtmlString;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 class AdminPanelProvider extends PanelProvider
@@ -29,8 +31,33 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->colors([
-                'primary' => Color::Amber,
+                'primary' => '#EA580C',
             ])
+            ->sidebarCollapsibleOnDesktop()
+            ->sidebarWidth('14rem')
+            ->font('Arial', provider: LocalFontProvider::class)
+            ->maxContentWidth(Width::Full)
+            ->renderHook('panels::head.end', fn (): HtmlString => new HtmlString('
+                <style>
+                    html { font-size: 14px; }
+
+                    .fi-main-sidebar {
+                        border-right: 1px solid rgba(128, 128, 128, 0.15);
+                    }
+
+                    .fi-ta-table {
+                        border-collapse: collapse;
+                    }
+
+                    .fi-ta-header-cell {
+                        border: 1px solid rgba(128, 128, 128, 0.18);
+                    }
+
+                    .fi-ta-cell {
+                        border: 1px solid rgba(128, 128, 128, 0.10);
+                    }
+                </style>
+            '))
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->pages([

@@ -74,14 +74,11 @@ php artisan key:generate
 # 7. Jalankan migrasi
 php artisan migrate
 
-# 8. Seed role & data awal
+# 8. Seed role, user admin, & data awal
 php artisan db:seed
+# User admin@jobdesk.test / password otomatis dibuat dengan role Admin
 
-# 9. Buat user admin (jika belum ada dari seeder)
-php artisan make:filament-user
-# Isi: name=Admin, email=admin@jobdesk.test, password=password
-
-# 10. Jalankan development server
+# 9. Jalankan development server
 php artisan serve
 ```
 

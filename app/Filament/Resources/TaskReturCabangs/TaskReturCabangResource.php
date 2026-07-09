@@ -26,7 +26,7 @@ class TaskReturCabangResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Retur dari Cabang';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Checker Retur';
+    protected static string|\UnitEnum|null $navigationGroup = 'Retur';
 
     public static function form(Schema $schema): Schema
     {

@@ -23,13 +23,13 @@ class CreateTaskKeluarBarang extends CreateRecord
         if (isset($data['tasks']) && is_array($data['tasks'])) {
             DB::transaction(function () use ($data) {
                 $type = 'keluar_barang';
+                $idTask = TaskIdGenerator::generate($type);
                 $startBaris = TaskIdGenerator::getNextBaris($type);
-                $lastIdNumber = TaskIdGenerator::getLastIdNumber($type);
 
                 foreach ($data['tasks'] as $index => $taskData) {
                     $taskData['user_id'] = auth()->id();
                     $taskData['no_baris'] = $startBaris + $index;
-                    $taskData['id_task'] = TaskIdGenerator::formatId($type, $lastIdNumber + $index + 1);
+                    $taskData['id_task'] = $idTask;
                     $this->getModel()::create($taskData);
                 }
             });

@@ -26,7 +26,7 @@ class TaskKirimanMobilResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Kiriman Mobil';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Kiriman Cabang';
+    protected static string|\UnitEnum|null $navigationGroup = 'Pengiriman';
 
     public static function form(Schema $schema): Schema
     {

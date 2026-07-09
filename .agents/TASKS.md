@@ -4,7 +4,7 @@
 
 | Total Task | Priority High | Priority Mid | Priority Low |
 |------------|--------------|--------------|--------------|
-| 15 | 11 | 3 | 1 |
+| 18 | 11 | 3 | 4 |
 
 ## Legend Prioritas & Status
 - **High:** Wajib dikerjakan (Must Have V1)
@@ -21,18 +21,18 @@
 - **Dependensi:** —
 
 **Deskripsi:**
-Install Laravel 11 baru + Filament v3 + Spatie Permission + konfigurasi database MySQL.
+Install Laravel 13 baru + Filament v5 + Spatie Permission + konfigurasi database MySQL.
 
 **Acceptance Criteria:**
-- [ ] `composer create-project laravel/laravel jobdeskgudang`
-- [ ] `composer require filament/filament:"^3.2" -W`
-- [ ] `php artisan filament:install --panels`
-- [ ] `composer require spatie/laravel-permission`
-- [ ] `php artisan vendor:publish --provider="Spatie\Permission\PermissionServiceProvider"`
-- [ ] Konfigurasi `.env` database MySQL
-- [ ] `php artisan migrate` berhasil
-- [ ] `php artisan make:filament-user` — buat admin pertama
-- [ ] Bisa akses `/admin` dan login
+- [x] `composer create-project laravel/laravel jobdeskgudang`
+- [x] `composer require filament/filament:"^3.2" -W`
+- [x] `php artisan filament:install --panels`
+- [x] `composer require spatie/laravel-permission`
+- [x] `php artisan vendor:publish --provider="Spatie\Permission\PermissionServiceProvider"`
+- [x] Konfigurasi `.env` database MySQL
+- [x] `php artisan migrate` berhasil
+- [x] Seeder auto-create admin user (`admin@jobdesk.test` / `password`) + assign role Admin
+- [x] Bisa akses `/admin` dan login
 
 **Files:**
 - `composer.json`
@@ -53,11 +53,11 @@ Install Laravel 11 baru + Filament v3 + Spatie Permission + konfigurasi database
 Buat role (Admin, Checker Retur, Checker Terima, Checker Keluar, Checker Kiriman), seed default, dan Filament UserResource dengan role assignment.
 
 **Acceptance Criteria:**
-- [ ] Seeder: `RoleSeeder` dengan 5 role
-- [ ] Seeder: 1 user Admin default
-- [ ] Filament `UserResource` bisa CRUD user + pilih role
-- [ ] Middleware/guard: setiap resource di-protect berdasarkan role
-- [ ] Bisa login sebagai checker & lihat menu sesuai role
+- [x] Seeder: `RoleSeeder` dengan 5 role (`Role::firstOrCreate` — idempotent)
+- [x] Seeder: auto-create user Admin + assign role (`User::firstOrCreate`)
+- [x] Filament `UserResource` bisa CRUD user + pilih role
+- [x] Middleware/guard: setiap resource di-protect berdasarkan role
+- [x] Bisa login sebagai checker & lihat menu sesuai role
 
 **Files:**
 - `database/seeders/RoleSeeder.php`
@@ -277,22 +277,23 @@ Admin bisa mengakses semua resource checker (create/edit/delete) untuk backup ji
 - **Dependensi:** T-04, T-05, T-06, T-07, T-08
 
 **Deskripsi:**
-Konfigurasi navigasi Filament agar sidebar menyesuaikan role — checker hanya lihat menu sesuai role-nya, Admin lihat semua.
+Konfigurasi navigasi Filament agar sidebar menyesuaikan role — checker hanya lihat menu sesuai role-nya, Admin lihat semua. Grup navigasi diubah ke alur proses gudang (Retur, Penerimaan, Pengiriman, Pengaturan).
 
 **Acceptance Criteria:**
 - [x] Sidebar: Admin lihat semua menu + Users
-- [x] Checker Retur lihat: Dashboard, Retur ke Supplier, Retur dari Cabang
-- [x] Checker Terima lihat: Dashboard, Terima Barang
-- [x] Checker Keluar lihat: Dashboard, Keluar Barang
-- [x] Checker Kiriman lihat: Dashboard, Kiriman Mobil
-- [x] Grouping navigasi rapi (icon sesuai)
+- [x] Checker Retur lihat: Dashboard, Retur ke Supplier, Retur dari Cabang (grup **Retur**)
+- [x] Checker Terima lihat: Dashboard, Terima Barang Supplier (grup **Penerimaan**)
+- [x] Checker Keluar lihat: Dashboard, Keluar Barang (grup **Pengiriman**)
+- [x] Checker Kiriman lihat: Dashboard, Kiriman Mobil (grup **Pengiriman**)
+- [x] Grup navigasi: Retur, Penerimaan, Pengiriman, Pengaturan
+- [x] Sidebar collapsible (tampilkan icon saja saat collapse)
 
 **Files:**
 - `app/Providers/Filament/AdminPanelProvider.php`
 
 ---
 
-## T-12: ID_TASK & NO_BARIS Auto-Generate di Form (Done)
+## T-12: ID_TASK & NO_BARIS Auto-Generate + Session-Based (Done)
 
 - **Modul:** — Core
 - **Prioritas:** High
@@ -300,12 +301,13 @@ Konfigurasi navigasi Filament agar sidebar menyesuaikan role — checker hanya l
 - **Dependensi:** T-03, T-04, T-05, T-06, T-07, T-08
 
 **Deskripsi:**
-Integrasikan `TaskIdGeneratorService` ke dalam setiap Filament Resource. ID_TASK & NO_BARIS muncul otomatis saat user menambah baris di repeater (hidden/disabled, tampil sebagai readonly).
+Integrasikan `TaskIdGeneratorService` ke dalam setiap Filament Resource. `id_task` bersifat session-based: 1 session (1 submit form) = 1 `id_task` untuk semua baris. `no_baris` increment per baris dalam session. UNIQUE constraint di `id_task` dihapus, diganti INDEX biasa.
 
 **Acceptance Criteria:**
-- [x] Setiap resource panggil `TaskIdGenerator` saat create
-- [x] ID_TASK & NO_BARIS muncul otomatis (readonly/disabled)
-- [x] Tidak bisa diubah manual oleh user
+- [x] Setiap resource panggil `TaskIdGenerator::generate()` sekali per batch → 1 `id_task` untuk semua baris
+- [x] `no_baris` auto-increment per baris dalam session
+- [x] Migration: drop UNIQUE, add INDEX di 5 tabel
+- [x] `creating` boot event fallback untuk single-record create
 
 **Files:**
 - `app/Filament/Resources/TaskReturSupplierResource.php` (modified)
@@ -381,3 +383,30 @@ Tes semua fitur: login setiap role, CRUD task, laporan, filter, dashboard. Fix b
 
 **Files:**
 — (testing seluruh aplikasi)
+
+---
+
+## T-16: UI Theme & Layout — Branding & Kustomisasi (Done)
+
+- **Modul:** — UI
+- **Prioritas:** Mid
+- **Status:** Done
+- **Dependensi:** T-11
+
+**Deskripsi:**
+Kustomisasi tampilan Filament: tema warna Orange Safety, font Arial, ukuran teks 14px, sidebar collapsible, konten full width, garis pemisah sidebar, grid tabel seperti Excel.
+
+**Acceptance Criteria:**
+- [x] Warna primary: Orange Safety (`#EA580C`)
+- [x] Font: Arial (system font, tanpa download Google Fonts)
+- [x] Ukuran teks: `html { font-size: 14px }` — lebih kecil dari default 16px
+- [x] Sidebar collapsible dengan tombol toggle (icon-only saat collapse)
+- [x] Lebar sidebar: `14rem` (lebih ramping dari default `20rem`)
+- [x] Konten: `max-width: full` (tidak terpusat, penuhi layar)
+- [x] Garis pemisah sidebar: `rgba(128,128,128,0.15)` — transparan, cocok light/dark mode
+- [x] Grid tabel: `border-collapse` + border di header cell `rgba(128,128,128,0.18)` dan data cell `rgba(128,128,128,0.10)` — efek Excel
+- [x] Navigasi grup: Retur, Penerimaan, Pengiriman, Pengaturan (alur proses gudang)
+
+**Files:**
+- `app/Providers/Filament/AdminPanelProvider.php`
+- `app/Filament/Resources/*/*Resource.php` (navigationGroup)

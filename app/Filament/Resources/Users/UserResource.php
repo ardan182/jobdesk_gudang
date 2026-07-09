@@ -20,6 +20,14 @@ class UserResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
+    protected static ?string $navigationLabel = 'Users';
+
+    protected static ?string $modelLabel = 'User';
+
+    protected static ?string $pluralModelLabel = 'Users';
+
+    protected static string|\UnitEnum|null $navigationGroup = 'Pengaturan';
+
     public static function canViewAny(): bool
     {
         return auth()->user()?->hasRole('Admin') ?? false;
