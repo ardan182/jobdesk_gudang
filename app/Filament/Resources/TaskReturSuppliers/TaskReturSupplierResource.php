@@ -32,19 +32,6 @@ class TaskReturSupplierResource extends Resource
 
     public static function form(Schema $schema): Schema
     {
-        $livewire = $schema->getLivewire();
-        
-        if ($livewire instanceof CreateTaskReturSupplier) {
-            return $schema->components([
-                \Filament\Forms\Components\Repeater::make('tasks')
-                    ->schema(TaskReturSupplierForm::getFormFields())
-                    ->label('Daftar Task')
-                    ->default([[]])
-                    ->reorderable(false)
-                    ->addActionLabel('Tambah Baris')
-            ]);
-        }
-
         return TaskReturSupplierForm::configure($schema);
     }
 

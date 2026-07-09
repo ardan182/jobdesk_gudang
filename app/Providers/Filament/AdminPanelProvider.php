@@ -56,6 +56,21 @@ class AdminPanelProvider extends PanelProvider
                     .fi-ta-cell {
                         border: 1px solid rgba(128, 128, 128, 0.10);
                     }
+
+                    .fi-fo-table-repeater tbody tr {
+                        animation: fi-row-enter 0.25s ease-out;
+                    }
+
+                    @keyframes fi-row-enter {
+                        from {
+                            opacity: 0;
+                            transform: translateY(-6px);
+                        }
+                        to {
+                            opacity: 1;
+                            transform: translateY(0);
+                        }
+                    }
                 </style>
             '))
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')

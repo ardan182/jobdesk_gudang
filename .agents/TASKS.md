@@ -4,7 +4,7 @@
 
 | Total Task | Priority High | Priority Mid | Priority Low |
 |------------|--------------|--------------|--------------|
-| 18 | 11 | 3 | 4 |
+| 19 | 11 | 3 | 5 |
 
 ## Legend Prioritas & Status
 - **High:** Wajib dikerjakan (Must Have V1)
@@ -410,3 +410,38 @@ Kustomisasi tampilan Filament: tema warna Orange Safety, font Arial, ukuran teks
 **Files:**
 - `app/Providers/Filament/AdminPanelProvider.php`
 - `app/Filament/Resources/*/*Resource.php` (navigationGroup)
+
+---
+
+## T-17: Form Modal + Dashboard Widget Aktivitas Terakhir (Done)
+
+- **Modul:** — UI
+- **Prioritas:** Mid
+- **Status:** Done
+- **Dependensi:** T-16
+
+**Deskripsi:**
+Ubah form input task dari halaman terpisah menjadi modal full screen di List page. Tambah widget dashboard "Aktivitas Terakhir" yang menampilkan log record terbaru dari semua modul dengan pagination.
+
+**Acceptance Criteria:**
+- [x] Form create task pindah ke modal full screen (bukan halaman terpisah)
+- [x] Modal berisi Repeater table (sama seperti sebelumnya)
+- [x] Tombol "Tambah Baris" di pojok kanan bawah
+- [x] Animasi fade-slide saat tambah baris
+- [x] Resource form() disederhanakan (hapus conditional Create page)
+- [x] Widget "Aktivitas Terakhir" di dashboard (paling bawah)
+- [x] UNION query dari 5 tabel task, ambil 20 record terbaru
+- [x] Admin lihat semua user, checker lihat sendiri
+- [x] Kolom: User, Aktivitas, Waktu
+- [x] Pagination: 10 / 25 / 50 baris (default 10)
+- [x] Navigasi halaman lengkap (« « 1..5 » »)
+- [x] Garis vertikal di tabel (border-collapse)
+- [x] Timezone: Asia/Jakarta (WIB)
+- [x] Header rata kiri semua
+
+**Files:**
+- `app/Filament/Resources/*/Pages/List*Task*.php` (5 List pages — modal action)
+- `app/Filament/Resources/*/Task*Resource.php` (5 Resource — form disederhanakan)
+- `app/Filament/Widgets/RecentActivityWidget.php`
+- `resources/views/filament/widgets/recent-activity.blade.php`
+- `config/app.php` (timezone → Asia/Jakarta)
