@@ -21,9 +21,10 @@ class UserForm
                     ->required()
                     ->unique(ignoreRecord: true),
                 TextInput::make('password')
+                    ->label('Password')
                     ->password()
                     ->required(fn ($livewire) => $livewire instanceof \Filament\Resources\Pages\CreateRecord)
-                    ->hiddenOn('edit'),
+                    ->dehydrated(fn ($state) => filled($state)),
                 Select::make('roles')
                     ->label('Role')
                     ->relationship('roles', 'name')
