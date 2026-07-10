@@ -30,6 +30,19 @@ class TaskKeluarBarangResource extends Resource
 
     public static function form(Schema $schema): Schema
     {
+        $livewire = $schema->getLivewire();
+
+        if ($livewire instanceof CreateTaskKeluarBarang) {
+            return $schema->components([
+                \Filament\Forms\Components\Repeater::make('tasks')
+                    ->schema(TaskKeluarBarangForm::getFormFields())
+                    ->label('Daftar Task')
+                    ->default([[]])
+                    ->reorderable(false)
+                    ->addActionLabel('Tambah Baris'),
+            ]);
+        }
+
         return TaskKeluarBarangForm::configure($schema);
     }
 

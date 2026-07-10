@@ -30,6 +30,19 @@ class TaskKirimanMobilResource extends Resource
 
     public static function form(Schema $schema): Schema
     {
+        $livewire = $schema->getLivewire();
+
+        if ($livewire instanceof CreateTaskKirimanMobil) {
+            return $schema->components([
+                \Filament\Forms\Components\Repeater::make('tasks')
+                    ->schema(TaskKirimanMobilForm::getFormFields())
+                    ->label('Daftar Task')
+                    ->default([[]])
+                    ->reorderable(false)
+                    ->addActionLabel('Tambah Baris'),
+            ]);
+        }
+
         return TaskKirimanMobilForm::configure($schema);
     }
 

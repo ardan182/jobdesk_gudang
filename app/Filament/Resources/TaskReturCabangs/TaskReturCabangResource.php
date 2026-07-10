@@ -30,6 +30,19 @@ class TaskReturCabangResource extends Resource
 
     public static function form(Schema $schema): Schema
     {
+        $livewire = $schema->getLivewire();
+
+        if ($livewire instanceof CreateTaskReturCabang) {
+            return $schema->components([
+                \Filament\Forms\Components\Repeater::make('tasks')
+                    ->schema(TaskReturCabangForm::getFormFields())
+                    ->label('Daftar Task')
+                    ->default([[]])
+                    ->reorderable(false)
+                    ->addActionLabel('Tambah Baris'),
+            ]);
+        }
+
         return TaskReturCabangForm::configure($schema);
     }
 

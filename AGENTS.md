@@ -56,7 +56,7 @@ getEloquentQuery()  → where('user_id', auth()->id()) for non-Admin
 ### 5 task tables (one per module)
 `task_retur_suppliers | task_retur_cabangs | task_terima_suppliers | task_keluar_barangs | task_kiriman_mobils`
 
-All share `id_task` (unique), `no_baris` (daily counter), `user_id` (FK).
+All share `id_task` (indexed, not unique per migration), `no_baris` (daily counter), `user_id` (FK).
 
 ### TaskIdGenerator (`app/Services/TaskIdGenerator.php`)
 Auto-generates `id_task` format `{PREFIX}-{YYYYMMDD}-{XXX}` with per-day counters. Prefixes: `RET-SUP`, `RET-CAB`, `TRM-SUP`, `KLR`, `KRM`.

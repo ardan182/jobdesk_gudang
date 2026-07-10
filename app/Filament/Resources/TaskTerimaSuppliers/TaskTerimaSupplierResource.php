@@ -30,6 +30,19 @@ class TaskTerimaSupplierResource extends Resource
 
     public static function form(Schema $schema): Schema
     {
+        $livewire = $schema->getLivewire();
+
+        if ($livewire instanceof CreateTaskTerimaSupplier) {
+            return $schema->components([
+                \Filament\Forms\Components\Repeater::make('tasks')
+                    ->schema(TaskTerimaSupplierForm::getFormFields())
+                    ->label('Daftar Task')
+                    ->default([[]])
+                    ->reorderable(false)
+                    ->addActionLabel('Tambah Baris'),
+            ]);
+        }
+
         return TaskTerimaSupplierForm::configure($schema);
     }
 
