@@ -6,15 +6,16 @@
 
 | Layer | Technology | Version |
 |-------|------------|---------|
-| Backend | Laravel | 11.x |
-| Language | PHP | 8.2+ |
-| Admin Panel | Filament | v3.x |
+| Backend | Laravel | 13.x |
+| Language | PHP | 8.3+ |
+| Admin Panel | Filament | v5.x |
+| Theme | Filament Nord Theme (fork `ardan182/filament-nord-theme`) | 3.x-dev |
 | Frontend Rendering | Livewire (bundled with Filament) | 3.x |
-| Styling | Tailwind CSS (bundled with Filament) | 3.x |
+| Styling | Tailwind CSS (bundled with Filament) | 4.x |
 | Database | MySQL / MariaDB | 8.0+ / 10.6+ |
 | ORM | Eloquent (Laravel built-in) | — |
-| Auth | Laravel Breeze/Filament Auth | — |
-| Roles & Permissions | Spatie Laravel Permission / Filament Shield | — |
+| Auth | Filament Auth (session-based) | — |
+| Roles & Permissions | Spatie Laravel Permission | — |
 | Hosting | Local (develop), VPS/Shared (production) | — |
 
 ### Arsitektur Sistem

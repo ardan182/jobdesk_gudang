@@ -38,6 +38,8 @@ class TaskKirimanMobilForm
 
     public static function configure(Schema $schema): Schema
     {
-        return $schema->components(self::getFormFields());
+        return $schema
+            ->columns(4)
+            ->components(self::getFormFields());
     }
 }

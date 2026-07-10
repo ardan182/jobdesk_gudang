@@ -3,28 +3,34 @@
 @endphp
 
 <x-filament::widget>
-    <x-filament::section heading="⚡ Aktivitas Terakhir">
+    <div class="mb-3">
+        <h2 class="text-sm font-semibold text-gray-950 dark:text-white">
+            ⚡ Aktivitas Terakhir
+        </h2>
+    </div>
+
+    <div class="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10">
         <div class="overflow-x-auto">
             <table class="w-full text-sm" style="border-collapse: collapse;">
                 <thead>
                     <tr class="bg-gray-50 dark:bg-white/5">
-                        <th class="px-3 py-3.5 text-start text-sm font-semibold text-gray-950 dark:text-white" style="border: 1px solid rgba(128,128,128,0.15);">User</th>
-                        <th class="px-3 py-3.5 text-start text-sm font-semibold text-gray-950 dark:text-white" style="border: 1px solid rgba(128,128,128,0.15);">Aktivitas</th>
-                        <th class="px-3 py-3.5 text-start text-sm font-semibold text-gray-950 dark:text-white" style="border: 1px solid rgba(128,128,128,0.15);">Waktu</th>
+                        <th class="px-3 py-3 text-center text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">User</th>
+                        <th class="px-3 py-3 text-center text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">Aktivitas</th>
+                        <th class="px-3 py-3 text-center text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">Waktu</th>
                     </tr>
                 </thead>
                 <tbody>
                     @forelse ($activities as $act)
-                        <tr class="fi-ta-row">
-                            <td class="px-3 py-2 text-sm text-gray-700 dark:text-gray-200" style="border: 1px solid rgba(128,128,128,0.08);">{{ $act['user'] }}</td>
-                            <td class="px-3 py-2 text-sm text-gray-700 dark:text-gray-200" style="border: 1px solid rgba(128,128,128,0.08);">{{ $act['activity'] }}</td>
-                            <td class="px-3 py-2 text-start text-sm text-gray-500 dark:text-gray-400 whitespace-nowrap" style="border: 1px solid rgba(128,128,128,0.08);">
+                        <tr class="border-t border-gray-100 dark:border-white/5">
+                            <td class="px-3 py-2.5 text-sm text-gray-700 dark:text-gray-200">{{ $act['user'] }}</td>
+                            <td class="px-3 py-2.5 text-sm text-gray-700 dark:text-gray-200">{{ $act['activity'] }}</td>
+                            <td class="px-3 py-2.5 text-center text-sm text-gray-500 dark:text-gray-400 whitespace-nowrap">
                                 {{ \Carbon\Carbon::parse($act['time'])->setTimezone('Asia/Jakarta')->format('d/m/Y H:i') }}
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="3" class="px-3 py-8 text-center text-sm text-gray-500 dark:text-gray-400" style="border: 1px solid rgba(128,128,128,0.08);">
+                            <td colspan="3" class="px-3 py-8 text-center text-sm text-gray-500 dark:text-gray-400">
                                 Belum ada aktivitas
                             </td>
                         </tr>
@@ -34,7 +40,7 @@
         </div>
 
         @if ($lastPage > 1 || $total > 10)
-            <div class="flex items-center justify-between gap-x-3 border-t border-gray-200 px-4 py-3 dark:border-white/10">
+            <div class="flex items-center justify-between gap-x-3 border-t border-gray-100 px-4 py-2.5 dark:border-white/10">
                 <div class="flex items-center gap-x-2 text-sm text-gray-600 dark:text-gray-400">
                     <span>Baris per halaman:</span>
                     <select
@@ -120,5 +126,5 @@
                 </div>
             </div>
         @endif
-    </x-filament::section>
+    </div>
 </x-filament::widget>

@@ -1,12 +1,19 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
     "name": "laravel/laravel",
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/ardan182/filament-nord-theme"
+        }
+    ],
     "type": "project",
     "description": "The skeleton application for the Laravel framework.",
     "keywords": ["laravel", "framework"],
     "license": "MIT",
     "require": {
         "php": "^8.3",
+        "andreia/filament-nord-theme": "3.x-dev",
         "filament/filament": "*",
         "laravel/framework": "^13.8",
         "laravel/tinker": "^3.0",

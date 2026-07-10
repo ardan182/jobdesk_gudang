@@ -270,10 +270,11 @@ Tidak ada — ini aplikasi internal perusahaan untuk efisiensi operasional gudan
 - Auto-backup database — backup manual via hosting panel
 
 ### Dependensi
-- **Laravel 11** — backend framework
-- **Filament v3** — admin panel & UI generator
+- **Laravel 13** — backend framework
+- **Filament v5** — admin panel & UI generator
+- **Filament Nord Theme** (fork `ardan182/filament-nord-theme`) — arctic north color scheme
 - **MySQL / MariaDB** — database
-- **Laravel Shield** — role & permission management
+- **Spatie Laravel Permission** — role & permission management
 - **Composer / NPM** — dependency manager
 
 ### Asumsi

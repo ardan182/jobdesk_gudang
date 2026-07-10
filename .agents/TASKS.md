@@ -4,7 +4,7 @@
 
 | Total Task | Priority High | Priority Mid | Priority Low |
 |------------|--------------|--------------|--------------|
-| 19 | 11 | 3 | 5 |
+| 20 | 11 | 3 | 6 |
 
 ## Legend Prioritas & Status
 - **High:** Wajib dikerjakan (Must Have V1)
@@ -448,3 +448,29 @@ Ubah form input task dari halaman terpisah menjadi modal full screen di List pag
 - `app/Filament/Widgets/RecentActivityWidget.php`
 - `resources/views/filament/widgets/recent-activity.blade.php`
 - `config/app.php` (timezone → Asia/Jakarta)
+
+---
+
+## T-18: Nord Theme — Arctic Color Scheme (Done)
+
+- **Modul:** — UI/Tema
+- **Prioritas:** Low
+- **Status:** Done
+- **Dependensi:** —
+
+**Deskripsi:**
+Install Filament Nord Theme dari fork `ardan182/filament-nord-theme` untuk tampilan arctic north color scheme (light & dark mode).
+
+**Acceptance Criteria:**
+- [x] Tambah repository fork di `composer.json`
+- [x] Install `andreia/filament-nord-theme:dev-3.x`
+- [x] Register `FilamentNordThemePlugin` di `AdminPanelProvider`
+- [x] Buat `resources/css/filament/admin/theme.css`
+- [x] `php artisan filament:assets` — publish Nord CSS
+- [x] `npm install && npm run build` — kompilasi aset
+
+**Files:**
+- `composer.json`
+- `app/Providers/Filament/AdminPanelProvider.php`
+- `resources/css/filament/admin/theme.css`
+- `package-lock.json`
