@@ -14,6 +14,7 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Support\Htmlable;
 
 class TaskReturSupplierResource extends Resource
@@ -68,6 +69,11 @@ class TaskReturSupplierResource extends Resource
     {
         $user = auth()->user();
         return $user?->hasRole('Admin') || $user?->hasRole('Checker Retur');
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        return auth()->user()?->hasRole('Admin') ?? false;
     }
 
     public static function shouldRegisterNavigation(): bool

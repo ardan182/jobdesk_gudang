@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\TaskKirimanMobils\Schemas;
 
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TimePicker;
@@ -12,8 +13,16 @@ class TaskKirimanMobilForm
     public static function getFormFields(): array
     {
         return [
-            TextInput::make('cabang')
+            Select::make('cabang')
                 ->label('Cabang')
+                ->options([
+                    'pusat' => 'Pusat',
+                    'ujungberung' => 'Ujungberung',
+                    'soreang' => 'Soreang',
+                    'majalaya' => 'Majalaya',
+                    'cicaheum' => 'Cicaheum',
+                    'barokah' => 'Barokah',
+                ])
                 ->required(),
             TextInput::make('no_plat_mobil')
                 ->label('No Plat Mobil')

@@ -49,7 +49,8 @@ composer dev           # concurrently: artisan serve + queue:listen + pail + vit
 Role-based access pattern (every resource follows this):
 ```php
 canViewAny()        → auth()->user()?->hasRole('Admin') || auth()->user()?->hasRole('Checker X')
-shouldRegisterNavigation() → same check
+canDelete()         → only Admin  // checker cannot delete
+shouldRegisterNavigation() → same as canViewAny
 getEloquentQuery()  → where('user_id', auth()->id()) for non-Admin
 ```
 

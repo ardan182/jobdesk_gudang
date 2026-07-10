@@ -13,6 +13,7 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 
 class TaskKirimanMobilResource extends Resource
 {
@@ -66,6 +67,11 @@ class TaskKirimanMobilResource extends Resource
     {
         $user = auth()->user();
         return $user?->hasRole('Admin') || $user?->hasRole('Checker Kiriman');
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        return auth()->user()?->hasRole('Admin') ?? false;
     }
 
     public static function shouldRegisterNavigation(): bool

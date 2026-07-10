@@ -96,7 +96,8 @@ class TaskReturCabangsTable
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                    DeleteBulkAction::make()
+                        ->visible(fn () => auth()->user()?->hasRole('Admin') ?? false),
                 ]),
             ]);
     }

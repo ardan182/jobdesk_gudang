@@ -13,8 +13,16 @@ class TaskReturCabangForm
     public static function getFormFields(): array
     {
         return [
-            TextInput::make('cabang')
+            Select::make('cabang')
                 ->label('Cabang')
+                ->options([
+                    'pusat' => 'Pusat',
+                    'ujungberung' => 'Ujungberung',
+                    'soreang' => 'Soreang',
+                    'majalaya' => 'Majalaya',
+                    'cicaheum' => 'Cicaheum',
+                    'barokah' => 'Barokah',
+                ])
                 ->required(),
             Select::make('jenis_retur')
                 ->label('Jenis Retur')
