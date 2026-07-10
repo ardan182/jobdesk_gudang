@@ -150,13 +150,14 @@
 - **Input:** ID_TASK (auto), NO BARIS (auto), Nama Supplier/Ekspedisi, No Plat Mobil, Nama Sopir, Jam Muat (time picker), Jumlah Kolian, Admin SJ Retur, Status (dropdown: Servis/Tukar/Pot Nota), Keterangan
 - **Proses:** Form repeater, simpan ke DB
 - **Output:** Task tersimpan, dashboard card update
-- **Aturan:** ID_TASK format `RET-SUP-YYYYMMDD-XXX`, NO BARIS auto increment per tanggal
+- **Aturan:** 1 ID_TASK per batch submit (semua baris dalam 1 input ID-nya sama). Format `RET-SUP-YYYYMMDD-XXX`. NO BARIS auto-increment per baris per tanggal. `id_task` INDEX (bukan UNIQUE) karena bisa duplikat antar baris.
 
 **FR-06: Input Task Terima Retur dari Cabang**
 - **Prioritas:** 🔴 Must Have
 - **Input:** ID_TASK (auto), NO BARIS (auto), Cabang, Jenis Retur (dropdown: Retur Jelek/Retur Bagus), No SJ Retur Indri/ERP, Total Kolian, Jam Bongkar (time picker), Nama Sopir, Keterangan
 - **Proses:** Form repeater, simpan ke DB
 - **Output:** Task tersimpan, dashboard card update
+- **Aturan:** 1 ID_TASK per batch submit. Format `RET-CAB-YYYYMMDD-XXX`. `id_task` INDEX.
 
 ### Modul 3: Checker Terima Barang dari Supplier
 
@@ -165,6 +166,7 @@
 - **Input:** ID_TASK (auto), NO BARIS (auto), Nama Supplier/Ekspedisi, No PO Referensi, Jumlah Kolian, Jam Bongkar (time picker), Nama Sopir, Status (dropdown: Komplit/Kurang/Lebih), Keterangan
 - **Proses:** Form repeater, simpan ke DB
 - **Output:** Task tersimpan
+- **Aturan:** 1 ID_TASK per batch submit. Format `TRM-SUP-YYYYMMDD-XXX`. `id_task` INDEX.
 
 ### Modul 4: Checker Keluar Barang dari Gudang
 
@@ -173,6 +175,7 @@
 - **Input:** ID_TASK (auto), NO BARIS (auto), Toko Tujuan (dropdown: Pusat/Ujungberung/Soreang/Majalaya/Cicaheum/Barokah), Supplier, No Referensi SJ, Jumlah Kolian, Jam Naik (time picker), Nama Koordinator, Status (dropdown: Komplit/Kurang/Lebih), Keterangan
 - **Proses:** Form repeater, simpan ke DB
 - **Output:** Task tersimpan
+- **Aturan:** 1 ID_TASK per batch submit. Format `KLR-YYYYMMDD-XXX`. `id_task` INDEX.
 
 ### Modul 5: Checker Kiriman Cabang Per Mobil
 
@@ -181,6 +184,7 @@
 - **Input:** ID_TASK (auto), NO BARIS (auto), Cabang, No Plat Mobil, Jam Muat, Jam Selesai Muat, Jam Berangkat (time picker), Nama Supir, Keterangan
 - **Proses:** Form repeater, simpan ke DB
 - **Output:** Task tersimpan
+- **Aturan:** 1 ID_TASK per batch submit. Format `KRM-YYYYMMDD-XXX`. `id_task` INDEX.
 
 ### Modul 6: Admin Panel (All Menu)
 
@@ -276,7 +280,8 @@ Tidak ada — ini aplikasi internal perusahaan untuk efisiensi operasional gudan
 - User checker punya akses internet / WiFi gudang
 - User checker bisa menggunakan browser (Chrome/HP)
 - Satu gudang, satu tim checker tetap
-- ID_TASK & NO BARIS di-reset setiap hari
+- ID_TASK per batch submit (semua baris dalam 1 input ID-nya sama), NO BARIS auto-increment per baris
+- `id_task` pakai INDEX (bukan UNIQUE constraint) karena dalam 1 batch bisa duplikat antar baris
 
 ### Constraints
 - **Teknis:** Budget hosting minimal (shared hosting sudah cukup)

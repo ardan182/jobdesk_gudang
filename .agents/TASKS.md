@@ -67,21 +67,24 @@ Buat role (Admin, Checker Retur, Checker Terima, Checker Keluar, Checker Kiriman
 
 ---
 
-## T-03: Task ID Generator Service
+## T-03: Task ID Generator Service (Done)
 
 - **Modul:** — Core
 - **Prioritas:** High
-- **Status:** Todo
+- **Status:** Done
 - **Dependensi:** T-01
 
 **Deskripsi:**
 Buat service `TaskIdGenerator` yang generate `ID_TASK` format `{PREFIX}-{YYYYMMDD}-{XXX}` dan `NO_BARIS` auto-increment per hari per tipe task.
 
 **Acceptance Criteria:**
-- [ ] Service method: `generate($prefix)` → return `ID_TASK` string
-- [ ] Service method: `getNextBaris($table)` → return integer
-- [ ] Counter per hari (reset setiap 00:00) berdasarkan query count database
-- [ ] Prefix mapping: RET-SUP, RET-CAB, TRM-SUP, KLR, KRM
+- [x] Service method: `generate($type)` → return `ID_TASK` string
+- [x] Service method: `getNextBaris($type)` → return integer (per hari)
+- [x] Service method: `getLastIdNumber($type)` → return last counter (untuk batch next)
+- [x] Service method: `formatId($type, $number)` → return formatted `ID_TASK` string
+- [x] Counter per hari (reset setiap 00:00) — pakai `whereBetween` UTC karena timezone Asia/Jakarta
+- [x] Prefix mapping: RET-SUP, RET-CAB, TRM-SUP, KLR, KRM
+- [x] `id_task` INDEX (bukan UNIQUE) — 1 ID_TASK per batch submit, semua baris dalam 1 input ID-nya sama
 
 **Files:**
 - `app/Services/TaskIdGenerator.php`

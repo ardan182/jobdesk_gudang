@@ -61,8 +61,14 @@ All share `id_task` (indexed, not unique per migration), `no_baris` (daily count
 ### TaskIdGenerator (`app/Services/TaskIdGenerator.php`)
 Auto-generates `id_task` format `{PREFIX}-{YYYYMMDD}-{XXX}` with per-day counters. Prefixes: `RET-SUP`, `RET-CAB`, `TRM-SUP`, `KLR`, `KRM`.
 
+**Key behavior:** 1 `id_task` per batch submit (all rows in 1 submit share same `id_task`), `no_baris` auto-increment per row. `id_task` is INDEX not UNIQUE.
+
+**Timezone quirk:** App uses `Asia/Jakarta`, DB stores `created_at` in UTC. All counter queries use `whereBetween(created_at, [startOfDay utc, endOfDay utc])` instead of `whereDate(created_at, today())` to match local date correctly.
+
 ### Batch insert (Repeater form)
-Each module's `Create{Model}Page.php` overrides `create()` to handle multi-row input from a Filament Repeater. IDs and baris numbers are pre-calculated before the transaction to avoid counter collisions. Also have a `creating` boot event on each model as fallback for single-record creates.
+Each module's `Create{Model}Page.php` and `List{Model}sPage.php` overrides `create()` / `action()` to handle multi-row input from a Filament Repeater. **1 `id_task` per batch submit** — all rows in 1 form submission share the same `id_task`. `no_baris` auto-increments per row inside the batch. Also have a `creating` boot event on each model as fallback for single-record creates.
+
+Each Repeater form includes both a dedicated Create page and an inline "Tambah" modal on the List page.
 
 ### Property type quirk
 Filament v5 Resource parent class uses property types `string|\BackedEnum|null` for `$navigationIcon` and `string|\UnitEnum|null` for `$navigationGroup`. Subclass types must match **exactly** — use `string|\BackedEnum|null` and `string|\UnitEnum|null`, not `?string`.
