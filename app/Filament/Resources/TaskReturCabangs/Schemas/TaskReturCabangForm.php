@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\TaskReturCabangs\Schemas;
 
+use App\Models\MasterSopir;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
@@ -40,9 +41,14 @@ class TaskReturCabangForm
                 ->numeric(),
             TimePicker::make('jam_bongkar')
                 ->label('Jam Bongkar')
+                ->seconds(false)
+                ->step(60)
+                ->extraAttributes(['lang' => 'id-ID'])
                 ->required(),
-            TextInput::make('nama_sopir')
+            Select::make('nama_sopir')
                 ->label('Nama Sopir')
+                ->options(MasterSopir::pluck('nama_sopir', 'nama_sopir'))
+                ->searchable()
                 ->required(),
             Textarea::make('keterangan')
                 ->label('Keterangan')

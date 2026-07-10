@@ -24,6 +24,9 @@ class TaskReturSupplierForm
                 ->required(),
             TimePicker::make('jam_muat')
                 ->label('Jam Muat')
+                ->seconds(false)
+                ->step(60)
+                ->extraAttributes(['lang' => 'id-ID'])
                 ->required(),
             TextInput::make('jumlah_kolian')
                 ->label('Jumlah Kolian')

@@ -25,6 +25,9 @@ class TaskTerimaSupplierForm
                 ->numeric(),
             TimePicker::make('jam_bongkar')
                 ->label('Jam Bongkar')
+                ->seconds(false)
+                ->step(60)
+                ->extraAttributes(['lang' => 'id-ID'])
                 ->required(),
             TextInput::make('nama_sopir')
                 ->label('Nama Sopir')

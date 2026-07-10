@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\TaskKirimanMobils\Schemas;
 
+use App\Models\MasterSopir;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
@@ -29,15 +30,26 @@ class TaskKirimanMobilForm
                 ->required(),
             TimePicker::make('jam_muat')
                 ->label('Jam Muat')
+                ->seconds(false)
+                ->step(60)
+                ->extraAttributes(['lang' => 'id-ID'])
                 ->required(),
             TimePicker::make('jam_selesai_muat')
                 ->label('Jam Selesai Muat')
+                ->seconds(false)
+                ->step(60)
+                ->extraAttributes(['lang' => 'id-ID'])
                 ->required(),
             TimePicker::make('jam_berangkat')
                 ->label('Jam Berangkat')
+                ->seconds(false)
+                ->step(60)
+                ->extraAttributes(['lang' => 'id-ID'])
                 ->required(),
-            TextInput::make('nama_supir')
+            Select::make('nama_supir')
                 ->label('Nama Supir')
+                ->options(MasterSopir::pluck('nama_sopir', 'nama_sopir'))
+                ->searchable()
                 ->required(),
             Textarea::make('keterangan')
                 ->label('Keterangan')

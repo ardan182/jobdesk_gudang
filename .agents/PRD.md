@@ -154,7 +154,7 @@
 
 **FR-06: Input Task Terima Retur dari Cabang**
 - **Prioritas:** 🔴 Must Have
-- **Input:** ID_TASK (auto), NO BARIS (auto), Cabang, Jenis Retur (dropdown: Retur Jelek/Retur Bagus), No SJ Retur Indri/ERP, Total Kolian, Jam Bongkar (time picker), Nama Sopir, Keterangan
+- **Input:** ID_TASK (auto), NO BARIS (auto), Cabang, Jenis Retur (dropdown: Retur Jelek/Retur Bagus), No SJ Retur Indri/ERP, Total Kolian, Jam Bongkar (time picker), Nama Sopir (Select dari Master Sopir), Keterangan
 - **Proses:** Form repeater, simpan ke DB
 - **Output:** Task tersimpan, dashboard card update
 - **Aturan:** 1 ID_TASK per batch submit. Format `RET-CAB-YYYYMMDD-XXX`. `id_task` INDEX.
@@ -181,7 +181,7 @@
 
 **FR-09: Input Task Kiriman Per Mobil ke Cabang**
 - **Prioritas:** 🔴 Must Have
-- **Input:** ID_TASK (auto), NO BARIS (auto), Cabang, No Plat Mobil, Jam Muat, Jam Selesai Muat, Jam Berangkat (time picker), Nama Supir, Keterangan
+- **Input:** ID_TASK (auto), NO BARIS (auto), Cabang, No Plat Mobil, Jam Muat, Jam Selesai Muat, Jam Berangkat (time picker), Nama Supir (Select dari Master Sopir), Keterangan
 - **Proses:** Form repeater, simpan ke DB
 - **Output:** Task tersimpan
 - **Aturan:** 1 ID_TASK per batch submit. Format `KRM-YYYYMMDD-XXX`. `id_task` INDEX.
@@ -208,6 +208,15 @@
 - **Input:** Multiple rows data
 - **Proses:** Menggunakan Filament Repeater component untuk input multi-row
 - **Output:** Semua baris tersimpan dalam satu submit
+
+### Modul 8: Master Sopir
+
+**FR-13: CRUD Master Sopir**
+- **Prioritas:** 🔴 Must Have
+- **Input:** Nama Sopir
+- **Proses:** Admin mengelola daftar sopir (CRUD) via modal di halaman List
+- **Output:** Data sopir tersimpan di master_sopirs, muncul sebagai Select dropdown di form Kiriman Mobil & Retur dari Cabang
+- **Aturan:** Hanya Admin yang bisa akses. Navigasi grup "Master" setelah Dashboard. Input via modal (bukan halaman terpisah).
 
 ---
 

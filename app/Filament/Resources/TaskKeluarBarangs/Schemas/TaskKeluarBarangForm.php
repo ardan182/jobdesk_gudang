@@ -36,6 +36,9 @@ class TaskKeluarBarangForm
                 ->numeric(),
             TimePicker::make('jam_naik')
                 ->label('Jam Naik')
+                ->seconds(false)
+                ->step(60)
+                ->extraAttributes(['lang' => 'id-ID'])
                 ->required(),
             TextInput::make('nama_koordinator')
                 ->label('Nama Koordinator')

@@ -4,7 +4,7 @@
 
 | Total Task | Priority High | Priority Mid | Priority Low |
 |------------|--------------|--------------|--------------|
-| 20 | 11 | 3 | 6 |
+| 19 | 12 | 4 | 3 |
 
 ## Legend Prioritas & Status
 - **High:** Wajib dikerjakan (Must Have V1)
@@ -135,7 +135,7 @@ Model, migration, dan Filament Resource untuk task terima retur dari cabang.
 - [x] Migration `create_task_retur_cabangs_table`
 - [x] Model `TaskReturCabang`
 - [x] Filament Resource dengan Repeater
-- [x] Field: cabang, jenis_retur (dropdown: Retur Jelek/Retur Bagus), no_sj_retur, total_kolian, jam_bongkar (time), nama_sopir, keterangan
+- [x] Field: cabang, jenis_retur (dropdown: Retur Jelek/Retur Bagus), no_sj_retur, total_kolian, jam_bongkar (time), nama_sopir (Select dari Master Sopir), keterangan
 - [x] Table laporan, pagination, sort, filter tanggal, search
 - [x] Scope per user + role guard
 
@@ -216,7 +216,7 @@ Model, migration, dan Filament Resource untuk task kiriman cabang per mobil.
 - [x] Migration `create_task_kiriman_mobils_table`
 - [x] Model `TaskKirimanMobil`
 - [x] Filament Resource dengan Repeater
-- [x] Field: cabang, no_plat_mobil, jam_muat, jam_selesai_muat, jam_berangkat (time picker), nama_supir, keterangan
+- [x] Field: cabang, no_plat_mobil, jam_muat, jam_selesai_muat, jam_berangkat (time picker), nama_supir (Select dari Master Sopir), keterangan
 - [x] Table laporan lengkap
 - [x] Scope per user + role guard
 
@@ -474,3 +474,36 @@ Install Filament Nord Theme dari fork `ardan182/filament-nord-theme` untuk tampi
 - `app/Providers/Filament/AdminPanelProvider.php`
 - `resources/css/filament/admin/theme.css`
 - `package-lock.json`
+
+---
+
+## T-19: Master Sopir CRUD + Dropdown (Done)
+
+- **Modul:** Master Sopir
+- **Prioritas:** High
+- **Status:** Done
+- **Dependensi:** T-01, T-02
+
+**Deskripsi:**
+Buat menu Master Sopir untuk Admin mengelola daftar sopir. Data digunakan sebagai Select dropdown di form Kiriman Mobil dan Retur dari Cabang. Tidak perlu halaman Create/Edit terpisah — pakai modal.
+
+**Acceptance Criteria:**
+- [x] Migration `create_master_sopirs_table` (id, nama_sopir, timestamps)
+- [x] Model `MasterSopir`
+- [x] Filament Resource `MasterSopirResource` (Admin only)
+- [x] Navigasi grup "Master" setelah Dashboard
+- [x] Create via modal di List page
+- [x] Edit via modal di table action
+- [x] Data awal "Agus" via seeder
+- [x] KirimanMobilForm: `nama_supir` jadi Select dari MasterSopir
+- [x] ReturCabangForm: `nama_sopir` jadi Select dari MasterSopir
+- ReturSupplierForm: tetap TextInput (sopir gonta-ganti)
+- TerimaSupplierForm: tetap TextInput (sopir gonta-ganti)
+- KeluarBarangForm: tidak punya field sopir
+
+**Files:**
+- `database/migrations/xxxx_create_master_sopirs_table.php`
+- `app/Models/MasterSopir.php`
+- `app/Filament/Resources/MasterSopirs/` (resource, pages, schemas, tables)
+- `app/Filament/Resources/TaskKirimanMobils/Schemas/TaskKirimanMobilForm.php` (modified)
+- `app/Filament/Resources/TaskReturCabangs/Schemas/TaskReturCabangForm.php` (modified)

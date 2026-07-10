@@ -74,6 +74,20 @@ class AdminPanelProvider extends PanelProvider
                             transform: translateY(0);
                         }
                     }
+
+                    input[type="time"] {
+                        min-width: 8rem;
+                    }
+
+                    input[type="time"]::-webkit-calendar-picker-indicator {
+                        opacity: 0.5;
+                        cursor: pointer;
+                        transition: opacity 0.2s;
+                    }
+
+                    input[type="time"]::-webkit-calendar-picker-indicator:hover {
+                        opacity: 0.8;
+                    }
                 </style>
             '))
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
