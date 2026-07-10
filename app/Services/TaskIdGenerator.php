@@ -20,8 +20,11 @@ class TaskIdGenerator
         $date = now()->format('Ymd');
         $table = self::getTableName($type);
 
+        $startOfDay = now()->startOfDay()->utc();
+        $endOfDay = now()->endOfDay()->utc();
+
         $lastTask = DB::table($table)
-            ->whereDate('created_at', today())
+            ->whereBetween('created_at', [$startOfDay, $endOfDay])
             ->orderBy('id', 'desc')
             ->first();
 
@@ -39,8 +42,11 @@ class TaskIdGenerator
     {
         $table = self::getTableName($type);
 
+        $startOfDay = now()->startOfDay()->utc();
+        $endOfDay = now()->endOfDay()->utc();
+
         $lastTask = DB::table($table)
-            ->whereDate('created_at', today())
+            ->whereBetween('created_at', [$startOfDay, $endOfDay])
             ->orderBy('no_baris', 'desc')
             ->first();
 
@@ -53,8 +59,11 @@ class TaskIdGenerator
         $date = now()->format('Ymd');
         $table = self::getTableName($type);
 
+        $startOfDay = now()->startOfDay()->utc();
+        $endOfDay = now()->endOfDay()->utc();
+
         $lastTask = DB::table($table)
-            ->whereDate('created_at', today())
+            ->whereBetween('created_at', [$startOfDay, $endOfDay])
             ->orderBy('id', 'desc')
             ->first();
 
