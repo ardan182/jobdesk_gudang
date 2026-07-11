@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\TaskKirimanMobils\Schemas;
 
+use App\Models\MasterMobil;
 use App\Models\MasterSopir;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -25,8 +26,10 @@ class TaskKirimanMobilForm
                     'barokah' => 'Barokah',
                 ])
                 ->required(),
-            TextInput::make('no_plat_mobil')
+            Select::make('no_plat_mobil')
                 ->label('No Plat Mobil')
+                ->options(MasterMobil::pluck('no_plat_mobil', 'no_plat_mobil'))
+                ->searchable()
                 ->required(),
             TimePicker::make('jam_muat')
                 ->label('Jam Muat')

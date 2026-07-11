@@ -4,7 +4,7 @@
 
 | Total Task | Priority High | Priority Mid | Priority Low |
 |------------|--------------|--------------|--------------|
-| 19 | 12 | 4 | 3 |
+| 21 | 12 | 4 | 5 |
 
 ## Legend Prioritas & Status
 - **High:** Wajib dikerjakan (Must Have V1)
@@ -507,3 +507,29 @@ Buat menu Master Sopir untuk Admin mengelola daftar sopir. Data digunakan sebaga
 - `app/Filament/Resources/MasterSopirs/` (resource, pages, schemas, tables)
 - `app/Filament/Resources/TaskKirimanMobils/Schemas/TaskKirimanMobilForm.php` (modified)
 - `app/Filament/Resources/TaskReturCabangs/Schemas/TaskReturCabangForm.php` (modified)
+
+---
+
+## T-20: Master Mobil CRUD + Dropdown (Done)
+
+- **Modul:** Master Mobil
+- **Prioritas:** High
+- **Status:** Done
+- **Dependensi:** T-01, T-02
+
+**Deskripsi:**
+Buat menu Master Mobil untuk Admin mengelola data mobil (nama & plat). Data digunakan sebagai Select dropdown di form Kiriman Mobil.
+
+**Acceptance Criteria:**
+- [x] Migration `create_master_mobils_table` (id, nama_mobil, no_plat_mobil, timestamps)
+- [x] Model `MasterMobil`
+- [x] Filament Resource `MasterMobilResource` (Admin only, grup "Master")
+- [x] Create via modal di List page
+- [x] Edit via modal di table action
+- [x] KirimanMobilForm: `no_plat_mobil` jadi Select dari MasterMobil (searchable)
+
+**Files:**
+- `database/migrations/xxxx_create_master_mobils_table.php`
+- `app/Models/MasterMobil.php`
+- `app/Filament/Resources/MasterMobils/` (resource, pages, schemas, tables)
+- `app/Filament/Resources/TaskKirimanMobils/Schemas/TaskKirimanMobilForm.php` (modified)

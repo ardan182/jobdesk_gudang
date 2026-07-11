@@ -15,22 +15,25 @@ class StatsOverviewWidget extends BaseWidget
     protected function getStats(): array
     {
         $user = auth()->user();
+        $startOfDay = now()->startOfDay()->utc();
+        $endOfDay = now()->endOfDay()->utc();
+        $todayScope = fn ($q) => $q->whereBetween('created_at', [$startOfDay, $endOfDay]);
 
         if ($user?->hasRole('Admin')) {
             return [
-                Stat::make('Retur ke Supplier', TaskReturSupplier::whereDate('created_at', today())->count())
+                Stat::make('Retur ke Supplier', TaskReturSupplier::whereBetween('created_at', [$startOfDay, $endOfDay])->count())
                     ->icon('heroicon-o-arrow-left-on-rectangle')
                     ->color('warning'),
-                Stat::make('Retur dari Cabang', TaskReturCabang::whereDate('created_at', today())->count())
+                Stat::make('Retur dari Cabang', TaskReturCabang::whereBetween('created_at', [$startOfDay, $endOfDay])->count())
                     ->icon('heroicon-o-arrow-right-on-rectangle')
                     ->color('info'),
-                Stat::make('Terima Barang', TaskTerimaSupplier::whereDate('created_at', today())->count())
+                Stat::make('Terima Barang', TaskTerimaSupplier::whereBetween('created_at', [$startOfDay, $endOfDay])->count())
                     ->icon('heroicon-o-arrow-down-tray')
                     ->color('success'),
-                Stat::make('Keluar Barang', TaskKeluarBarang::whereDate('created_at', today())->count())
+                Stat::make('Keluar Barang', TaskKeluarBarang::whereBetween('created_at', [$startOfDay, $endOfDay])->count())
                     ->icon('heroicon-o-arrow-up-tray')
                     ->color('danger'),
-                Stat::make('Kiriman Mobil', TaskKirimanMobil::whereDate('created_at', today())->count())
+                Stat::make('Kiriman Mobil', TaskKirimanMobil::whereBetween('created_at', [$startOfDay, $endOfDay])->count())
                     ->icon('heroicon-o-truck')
                     ->color('primary'),
             ];
@@ -40,17 +43,17 @@ class StatsOverviewWidget extends BaseWidget
         $label = 'Task Hari Ini';
 
         if ($user?->hasRole('Checker Retur')) {
-            $count = TaskReturSupplier::where('user_id', $user->id)->whereDate('created_at', today())->count()
-                + TaskReturCabang::where('user_id', $user->id)->whereDate('created_at', today())->count();
+            $count = TaskReturSupplier::where('user_id', $user->id)->whereBetween('created_at', [$startOfDay, $endOfDay])->count()
+                + TaskReturCabang::where('user_id', $user->id)->whereBetween('created_at', [$startOfDay, $endOfDay])->count();
             $label = 'Retur Hari Ini';
         } elseif ($user?->hasRole('Checker Terima')) {
-            $count = TaskTerimaSupplier::where('user_id', $user->id)->whereDate('created_at', today())->count();
+            $count = TaskTerimaSupplier::where('user_id', $user->id)->whereBetween('created_at', [$startOfDay, $endOfDay])->count();
             $label = 'Terima Barang Hari Ini';
         } elseif ($user?->hasRole('Checker Keluar')) {
-            $count = TaskKeluarBarang::where('user_id', $user->id)->whereDate('created_at', today())->count();
+            $count = TaskKeluarBarang::where('user_id', $user->id)->whereBetween('created_at', [$startOfDay, $endOfDay])->count();
             $label = 'Keluar Barang Hari Ini';
         } elseif ($user?->hasRole('Checker Kiriman')) {
-            $count = TaskKirimanMobil::where('user_id', $user->id)->whereDate('created_at', today())->count();
+            $count = TaskKirimanMobil::where('user_id', $user->id)->whereBetween('created_at', [$startOfDay, $endOfDay])->count();
             $label = 'Kiriman Hari Ini';
         }
 

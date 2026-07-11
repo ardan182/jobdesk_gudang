@@ -284,6 +284,8 @@ Tidak ada — ini aplikasi internal perusahaan untuk efisiensi operasional gudan
 - **Filament Nord Theme** (fork `ardan182/filament-nord-theme`) — arctic north color scheme
 - **MySQL / MariaDB** — database
 - **Spatie Laravel Permission** — role & permission management
+- **Master Sopir** — data sopir terpusat, dropdown di form task
+- **Master Mobil** — data mobil (nama & plat) terpusat, dropdown di form Kiriman Mobil
 - **Composer / NPM** — dependency manager
 
 ### Asumsi

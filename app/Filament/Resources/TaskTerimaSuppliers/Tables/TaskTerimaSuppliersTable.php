@@ -71,15 +71,9 @@ class TaskTerimaSuppliersTable
                 Filter::make('created_at')
                     ->form([
                         DatePicker::make('created_from')
-                            ->label('Dari Tanggal')
-                            ->default(now()->format('Y-m-d')),
+                            ->label('Dari Tanggal'),
                         DatePicker::make('created_until')
-                            ->label('Sampai Tanggal')
-                            ->default(now()->format('Y-m-d')),
-                    ])
-                    ->default([
-                        'created_from' => now()->format('Y-m-d'),
-                        'created_until' => now()->format('Y-m-d'),
+                            ->label('Sampai Tanggal'),
                     ])
                     ->query(function (Builder $query, array $data): Builder {
                         return $query
