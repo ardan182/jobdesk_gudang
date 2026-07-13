@@ -4,7 +4,7 @@
 
 | Total Task | Priority High | Priority Mid | Priority Low |
 |------------|--------------|--------------|--------------|
-| 21 | 12 | 4 | 5 |
+| 23 | 12 | 5 | 6 |
 
 ## Legend Prioritas & Status
 - **High:** Wajib dikerjakan (Must Have V1)
@@ -533,3 +533,58 @@ Buat menu Master Mobil untuk Admin mengelola data mobil (nama & plat). Data digu
 - `app/Models/MasterMobil.php`
 - `app/Filament/Resources/MasterMobils/` (resource, pages, schemas, tables)
 - `app/Filament/Resources/TaskKirimanMobils/Schemas/TaskKirimanMobilForm.php` (modified)
+
+---
+
+## T-21: Master Toko CRUD + Dropdown Cabang/Toko (Done)
+
+- **Modul:** Master Toko
+- **Prioritas:** High
+- **Status:** Done
+- **Dependensi:** T-01, T-02
+
+**Deskripsi:**
+Buat menu Master Toko untuk Admin mengelola data toko/cabang (nama & alamat). Data digunakan sebagai Select dropdown di form Kiriman Mobil, Keluar Barang, dan Retur Cabang.
+
+**Acceptance Criteria:**
+- [x] Migration `create_master_tokos_table` (id, nama_toko, alamat, timestamps)
+- [x] Seeder 6 toko awal: Pusat, Ujungberung, Soreang, Majalaya, Cicaheum, Barokah
+- [x] Alter ENUM `toko_tujuan` ke VARCHAR di `task_keluar_barangs`
+- [x] Model `MasterToko`
+- [x] Filament Resource `MasterTokoResource` (Admin only, grup "Master")
+- [x] KirimanMobilForm: `cabang` → Select dari MasterToko
+- [x] KeluarBarangForm: `toko_tujuan` → Select dari MasterToko
+- [x] ReturCabangForm: `cabang` → Select dari MasterToko
+- [x] ReturSupplier & TerimaSupplier: tidak diubah (tidak ada field cabang)
+
+**Files:**
+- `database/migrations/xxxx_create_master_tokos_table.php`
+- `database/migrations/xxxx_alter_toko_tujuan_to_varchar.php`
+- `app/Models/MasterToko.php`
+- `app/Filament/Resources/MasterTokos/` (resource, pages, schemas, tables)
+- `app/Filament/Resources/TaskKirimanMobils/Schemas/TaskKirimanMobilForm.php` (modified)
+- `app/Filament/Resources/TaskKeluarBarangs/Schemas/TaskKeluarBarangForm.php` (modified)
+- `app/Filament/Resources/TaskReturCabangs/Schemas/TaskReturCabangForm.php` (modified)
+
+---
+
+## T-22: Dashboard Stats Total + Pagination Default 25 (Done)
+
+- **Modul:** — UI/UX
+- **Prioritas:** Mid
+- **Status:** Done
+- **Dependensi:** T-09
+
+**Deskripsi:**
+Dashboard stats card menampilkan total seluruh data (bukan hanya hari ini). Pagination default semua tabel diubah dari 10 ke 25 baris per halaman.
+
+**Acceptance Criteria:**
+- [x] StatsOverviewWidget: hapus filter `whereBetween` → tampilkan total count
+- [x] Label checker: ganti "Hari Ini" → "Total"
+- [x] AppServiceProvider: `Table::configureUsing` → `defaultPaginationPageOption(25)`
+- [x] MasterMobilsTable: fallback direct `defaultPaginationPageOption(25)`
+
+**Files:**
+- `app/Filament/Widgets/StatsOverviewWidget.php`
+- `app/Providers/AppServiceProvider.php`
+- `app/Filament/Resources/MasterMobils/Tables/MasterMobilsTable.php`

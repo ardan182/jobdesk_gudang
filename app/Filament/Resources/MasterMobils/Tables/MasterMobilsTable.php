@@ -13,6 +13,7 @@ class MasterMobilsTable
     public static function configure(Table $table): Table
     {
         return $table
+            ->defaultPaginationPageOption(25)
             ->columns([
                 TextColumn::make('nama_mobil')
                     ->label('Nama Mobil')
