@@ -47,6 +47,7 @@ class TaskKirimanMobil extends Model
                 'module' => 'Kiriman Mobil',
                 'id_task' => $model->id_task,
                 'description' => "Cabang: {$model->cabang} - Plat: {$model->no_plat_mobil}",
+                'reference' => $model->nama_supir,
                 'action' => 'create',
             ]);
         });

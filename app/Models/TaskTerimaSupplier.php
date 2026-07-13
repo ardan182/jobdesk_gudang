@@ -45,6 +45,7 @@ class TaskTerimaSupplier extends Model
                 'module' => 'Terima Supplier',
                 'id_task' => $model->id_task,
                 'description' => "Supplier: {$model->nama_supplier_ekspedisi} → {$model->status}",
+                'reference' => $model->no_po_referensi,
                 'action' => 'create',
             ]);
         });

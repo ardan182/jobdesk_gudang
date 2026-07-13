@@ -40,9 +40,14 @@ class StatsOverviewWidget extends BaseWidget
         $label = 'Total Task';
 
         if ($user?->hasRole('Checker Retur')) {
-            $count = TaskReturSupplier::where('user_id', $user->id)->count()
-                + TaskReturCabang::where('user_id', $user->id)->count();
-            $label = 'Total Retur';
+            return [
+                Stat::make('Retur ke Supplier', TaskReturSupplier::where('user_id', $user->id)->count())
+                    ->icon('heroicon-o-arrow-left-on-rectangle')
+                    ->color('warning'),
+                Stat::make('Retur dari Cabang', TaskReturCabang::where('user_id', $user->id)->count())
+                    ->icon('heroicon-o-arrow-right-on-rectangle')
+                    ->color('info'),
+            ];
         } elseif ($user?->hasRole('Checker Terima')) {
             $count = TaskTerimaSupplier::where('user_id', $user->id)->count();
             $label = 'Total Terima Barang';

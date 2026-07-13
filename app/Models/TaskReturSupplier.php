@@ -46,6 +46,7 @@ class TaskReturSupplier extends Model
                 'module' => 'Retur Supplier',
                 'id_task' => $model->id_task,
                 'description' => "Supplier: {$model->nama_supplier_ekspedisi} → {$model->status}",
+                'reference' => $model->no_plat_mobil,
                 'action' => 'create',
             ]);
         });

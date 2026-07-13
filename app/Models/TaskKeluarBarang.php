@@ -46,6 +46,7 @@ class TaskKeluarBarang extends Model
                 'module' => 'Keluar Barang',
                 'id_task' => $model->id_task,
                 'description' => "Toko: {$model->toko_tujuan} → {$model->status}",
+                'reference' => $model->no_referensi_sj,
                 'action' => 'create',
             ]);
         });

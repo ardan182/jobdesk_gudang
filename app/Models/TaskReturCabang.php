@@ -45,6 +45,7 @@ class TaskReturCabang extends Model
                 'module' => 'Retur Cabang',
                 'id_task' => $model->id_task,
                 'description' => "Cabang: {$model->cabang} → {$model->jenis_retur}",
+                'reference' => $model->no_sj_retur,
                 'action' => 'create',
             ]);
         });

@@ -14,6 +14,7 @@ class ActivityLog extends Model
         'module',
         'id_task',
         'description',
+        'reference',
         'action',
     ];
 
