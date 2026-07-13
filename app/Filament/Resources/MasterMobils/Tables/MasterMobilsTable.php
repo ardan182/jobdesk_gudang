@@ -14,6 +14,7 @@ class MasterMobilsTable
     {
         return $table
             ->defaultPaginationPageOption(25)
+            ->defaultSort('created_at', 'desc')
             ->columns([
                 TextColumn::make('nama_mobil')
                     ->label('Nama Mobil')
