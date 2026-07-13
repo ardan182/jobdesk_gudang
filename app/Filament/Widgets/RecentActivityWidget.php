@@ -2,96 +2,68 @@
 
 namespace App\Filament\Widgets;
 
-use App\Models\User;
-use Filament\Widgets\Widget;
-use Illuminate\Support\Facades\DB;
+use App\Models\ActivityLog;
+use Filament\Forms\Components\Select;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Table;
+use Filament\Widgets\TableWidget as BaseWidget;
 
-class RecentActivityWidget extends Widget
+class RecentActivityWidget extends BaseWidget
 {
-    protected string $view = 'filament.widgets.recent-activity';
+    protected static ?string $heading = '⚡ Aktivitas Terakhir';
 
     protected int | string | array $columnSpan = 'full';
 
     protected static ?int $sort = 100;
 
-    public int $perPage = 10;
-
-    public int $currentPage = 1;
-
-    public function gotoPage(int $page): void
+    public function table(Table $table): Table
     {
-        $this->currentPage = max(1, $page);
-    }
-
-    public function updatedPerPage(): void
-    {
-        $this->currentPage = 1;
+        return $table
+            ->query(ActivityLog::query()->with('user'))
+            ->columns([
+                TextColumn::make('user.name')
+                    ->label('User')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('description')
+                    ->label('Aktivitas')
+                    ->searchable()
+                    ->limit(60),
+                TextColumn::make('module')
+                    ->label('Modul')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'Retur Supplier' => 'warning',
+                        'Retur Cabang' => 'info',
+                        'Terima Supplier' => 'success',
+                        'Keluar Barang' => 'danger',
+                        'Kiriman Mobil' => 'primary',
+                        default => 'gray',
+                    }),
+                TextColumn::make('created_at')
+                    ->label('Waktu')
+                    ->dateTime('d/m/Y H:i')
+                    ->sortable(),
+            ])
+            ->defaultSort('created_at', 'desc')
+            ->filters([
+                SelectFilter::make('module')
+                    ->options([
+                        'Retur Supplier' => 'Retur Supplier',
+                        'Retur Cabang' => 'Retur Cabang',
+                        'Terima Supplier' => 'Terima Supplier',
+                        'Keluar Barang' => 'Keluar Barang',
+                        'Kiriman Mobil' => 'Kiriman Mobil',
+                    ]),
+            ])
+            ->paginated([10, 25, 50]);
     }
 
     public static function canView(): bool
     {
         $user = auth()->user();
-
-        if (! $user) {
-            return false;
-        }
-
+        if (! $user) return false;
         return $user->hasAnyRole(['Admin', 'Checker Retur', 'Checker Terima', 'Checker Keluar', 'Checker Kiriman']);
-    }
-
-    protected function getViewData(): array
-    {
-        $user = auth()->user();
-        $isAdmin = $user?->hasRole('Admin') ?? false;
-        $userId = $user?->id;
-
-        $modules = [
-            'task_retur_suppliers' => 'Retur Supplier',
-            'task_retur_cabangs' => 'Retur Cabang',
-            'task_terima_suppliers' => 'Terima Supplier',
-            'task_keluar_barangs' => 'Keluar Barang',
-            'task_kiriman_mobils' => 'Kiriman Mobil',
-        ];
-
-        $first = true;
-        $query = null;
-
-        foreach ($modules as $table => $label) {
-            $q = DB::table($table)
-                ->selectRaw("'{$label}' as module, id_task, user_id, created_at");
-
-            if (! $isAdmin) {
-                $q->where('user_id', $userId);
-            }
-
-            $query = $first ? $q : $query->unionAll($q);
-            $first = false;
-        }
-
-        $total = $query->count();
-        $rows = $query->orderByDesc('created_at')
-            ->skip(($this->currentPage - 1) * $this->perPage)
-            ->take($this->perPage)
-            ->get();
-
-        $userIds = $rows->pluck('user_id')->unique()->filter()->values()->toArray();
-        $users = User::whereIn('id', $userIds)->pluck('name', 'id');
-
-        $activities = [];
-        foreach ($rows as $row) {
-            $activities[] = [
-                'user' => $users[$row->user_id] ?? '-',
-                'activity' => $row->module . ' — ' . $row->id_task,
-                'time' => $row->created_at,
-            ];
-        }
-
-        return [
-            'activities' => $activities,
-            'total' => $total,
-            'perPage' => $this->perPage,
-            'currentPage' => $this->currentPage,
-            'lastPage' => max(1, (int) ceil($total / $this->perPage)),
-        ];
     }
 }

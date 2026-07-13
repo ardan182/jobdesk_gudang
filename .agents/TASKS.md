@@ -4,7 +4,7 @@
 
 | Total Task | Priority High | Priority Mid | Priority Low |
 |------------|--------------|--------------|--------------|
-| 23 | 12 | 5 | 6 |
+| 25 | 12 | 6 | 7 |
 
 ## Legend Prioritas & Status
 - **High:** Wajib dikerjakan (Must Have V1)
@@ -588,3 +588,53 @@ Dashboard stats card menampilkan total seluruh data (bukan hanya hari ini). Pagi
 - `app/Filament/Widgets/StatsOverviewWidget.php`
 - `app/Providers/AppServiceProvider.php`
 - `app/Filament/Resources/MasterMobils/Tables/MasterMobilsTable.php`
+
+---
+
+## T-23: Activity Log — Data Widgets untuk Dashboard (Done)
+
+- **Modul:** Dashboard
+- **Prioritas:** Mid
+- **Status:** Done
+- **Dependensi:** T-09, T-15
+
+**Deskripsi:**
+Buat tabel `activity_logs` untuk mencatat setiap input task. Widget dashboard "Aktivitas Terakhir" diubah dari custom blade ke Filament TableWidget bawaan.
+
+**Acceptance Criteria:**
+- [x] Migration `create_activity_logs_table` (id, user_id, module, id_task, description, action, timestamps)
+- [x] Model `ActivityLog` dengan relasi ke User
+- [x] 5 task models: tambah `created` event → auto-log ke activity_logs
+- [x] Seeder `ActivityLogSeeder` — migrasi data task lama ke activity_logs
+- [x] `RecentActivityWidget` → extends `TableWidget` (Filament built-in)
+- [x] Kolom: User, Aktivitas (description), Modul (badge), Waktu
+- [x] Filter by Modul (SelectFilter)
+- [x] Pagination 10/25/50, default sort created_at desc
+- [x] View blade lama dihapus
+
+**Files:**
+- `database/migrations/xxxx_create_activity_logs_table.php`
+- `app/Models/ActivityLog.php`
+- `app/Models/Task*Supplier.php` (5 models — modified)
+- `app/Filament/Widgets/RecentActivityWidget.php` (rewrite)
+- `database/seeders/ActivityLogSeeder.php`
+
+---
+
+## T-24: Bersihkan Dashboard — Hapus Widget Bawaan (Done)
+
+- **Modul:** Dashboard
+- **Prioritas:** Low
+- **Status:** Done
+- **Dependensi:** T-23
+
+**Deskripsi:**
+Hapus AccountWidget (Avatar + Welcome) dan FilamentInfoWidget (v5.6.8 + Documentation link) dari dashboard agar tampilan lebih bersih.
+
+**Acceptance Criteria:**
+- [x] Hapus `AccountWidget::class` dari panel widgets
+- [x] Hapus `FilamentInfoWidget::class` dari panel widgets
+- [x] Hapus import yang tidak dipakai
+
+**Files:**
+- `app/Providers/Filament/AdminPanelProvider.php`

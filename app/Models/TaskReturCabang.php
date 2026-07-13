@@ -38,6 +38,16 @@ class TaskReturCabang extends Model
                 $model->user_id = auth()->id();
             }
         });
+
+        static::created(function ($model) {
+            ActivityLog::create([
+                'user_id' => $model->user_id,
+                'module' => 'Retur Cabang',
+                'id_task' => $model->id_task,
+                'description' => "Cabang: {$model->cabang} → {$model->jenis_retur}",
+                'action' => 'create',
+            ]);
+        });
     }
 
     public function user(): BelongsTo

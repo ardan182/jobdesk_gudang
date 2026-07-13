@@ -39,6 +39,16 @@ class TaskKeluarBarang extends Model
                 $model->user_id = auth()->id();
             }
         });
+
+        static::created(function ($model) {
+            ActivityLog::create([
+                'user_id' => $model->user_id,
+                'module' => 'Keluar Barang',
+                'id_task' => $model->id_task,
+                'description' => "Toko: {$model->toko_tujuan} → {$model->status}",
+                'action' => 'create',
+            ]);
+        });
     }
 
     public function user(): BelongsTo

@@ -40,6 +40,16 @@ class TaskKirimanMobil extends Model
                 $model->user_id = auth()->id();
             }
         });
+
+        static::created(function ($model) {
+            ActivityLog::create([
+                'user_id' => $model->user_id,
+                'module' => 'Kiriman Mobil',
+                'id_task' => $model->id_task,
+                'description' => "Cabang: {$model->cabang} - Plat: {$model->no_plat_mobil}",
+                'action' => 'create',
+            ]);
+        });
     }
 
     public function user(): BelongsTo

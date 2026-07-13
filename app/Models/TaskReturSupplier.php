@@ -39,6 +39,16 @@ class TaskReturSupplier extends Model
                 $model->user_id = auth()->id();
             }
         });
+
+        static::created(function ($model) {
+            ActivityLog::create([
+                'user_id' => $model->user_id,
+                'module' => 'Retur Supplier',
+                'id_task' => $model->id_task,
+                'description' => "Supplier: {$model->nama_supplier_ekspedisi} → {$model->status}",
+                'action' => 'create',
+            ]);
+        });
     }
 
     public function user(): BelongsTo
