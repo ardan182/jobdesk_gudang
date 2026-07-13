@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\TaskKeluarBarangs;
 
 use App\Filament\Resources\TaskKeluarBarangs\Pages\CreateTaskKeluarBarang;
-use App\Filament\Resources\TaskKeluarBarangs\Pages\EditTaskKeluarBarang;
 use App\Filament\Resources\TaskKeluarBarangs\Pages\ListTaskKeluarBarangs;
 use App\Filament\Resources\TaskKeluarBarangs\Schemas\TaskKeluarBarangForm;
 use App\Filament\Resources\TaskKeluarBarangs\Tables\TaskKeluarBarangsTable;
@@ -85,7 +84,6 @@ class TaskKeluarBarangResource extends Resource
         return [
             'index' => ListTaskKeluarBarangs::route('/'),
             'create' => CreateTaskKeluarBarang::route('/create'),
-            'edit' => EditTaskKeluarBarang::route('/{record}/edit'),
         ];
     }
 }

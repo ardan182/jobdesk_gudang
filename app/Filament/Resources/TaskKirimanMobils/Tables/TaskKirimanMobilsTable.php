@@ -2,9 +2,13 @@
 
 namespace App\Filament\Resources\TaskKirimanMobils\Tables;
 
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Schemas\Components\Section;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Tables\Filters\Filter;
@@ -21,10 +25,6 @@ class TaskKirimanMobilsTable
                 TextColumn::make('id_task')
                     ->label('ID Task')
                     ->searchable()
-                    ->sortable(),
-                TextColumn::make('no_baris')
-                    ->label('No')
-                    ->numeric()
                     ->sortable(),
                 TextColumn::make('cabang')
                     ->label('Cabang')
@@ -77,7 +77,26 @@ class TaskKirimanMobilsTable
                             );
                     })
             ])
+            ->recordAction('view')
             ->recordActions([
+                ViewAction::make()
+                    ->modalHeading('Detail Kiriman Mobil')
+                    ->modalSubmitAction(false)
+                    ->modalCancelAction(fn (Action $action) => $action->label('Tutup'))
+                    ->schema([
+                        Section::make('Informasi Task')
+                            ->columns(2)
+                            ->schema([
+                                TextEntry::make('id_task')->label('ID Task'),
+                                TextEntry::make('cabang')->label('Cabang'),
+                                TextEntry::make('no_plat_mobil')->label('No Plat'),
+                                TextEntry::make('jam_muat')->label('Jam Muat'),
+                                TextEntry::make('jam_selesai_muat')->label('Jam Selesai'),
+                                TextEntry::make('jam_berangkat')->label('Jam Berangkat'),
+                                TextEntry::make('nama_supir')->label('Supir'),
+                                TextEntry::make('keterangan')->label('Keterangan')->columnSpanFull(),
+                            ]),
+                    ]),
                 EditAction::make(),
             ])
             ->toolbarActions([

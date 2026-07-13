@@ -21,15 +21,15 @@ class CreateTaskReturCabang extends CreateRecord
         $data = $this->form->getState();
 
         if (isset($data['tasks']) && is_array($data['tasks'])) {
-            DB::transaction(function () use ($data) {
-                $type = 'retur_cabang';
-                $startBaris = TaskIdGenerator::getNextBaris($type);
-                $lastIdNumber = TaskIdGenerator::getLastIdNumber($type);
+            $ids = [];
+            foreach ($data['tasks'] as $i => $task) {
+                $ids[$i] = TaskIdGenerator::generate('retur_cabang');
+            }
 
-                foreach ($data['tasks'] as $index => $taskData) {
+            DB::transaction(function () use ($data, $ids) {
+                foreach ($data['tasks'] as $i => $taskData) {
                     $taskData['user_id'] = auth()->id();
-                    $taskData['no_baris'] = $startBaris + $index;
-                    $taskData['id_task'] = TaskIdGenerator::formatId($type, $lastIdNumber + $index + 1);
+                    $taskData['id_task'] = $ids[$i];
                     $this->getModel()::create($taskData);
                 }
             });

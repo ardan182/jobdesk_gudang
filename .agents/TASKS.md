@@ -4,7 +4,7 @@
 
 | Total Task | Priority High | Priority Mid | Priority Low |
 |------------|--------------|--------------|--------------|
-| 27 | 12 | 7 | 8 |
+| 28 | 13 | 7 | 8 |
 
 ## Legend Prioritas & Status
 - **High:** Wajib dikerjakan (Must Have V1)
@@ -687,3 +687,30 @@ Ubah dashboard Checker Retur dari 1 card gabungan menjadi 2 card terpisah (Retur
 
 **Files:**
 - `app/Filament/Widgets/StatsOverviewWidget.php`
+
+---
+
+## T-27: Master Employee Gudang (Done)
+
+- **Modul:** Master Employee Gudang
+- **Prioritas:** High
+- **Status:** Done
+- **Dependensi:** T-01, T-02
+
+**Deskripsi:**
+Buat menu Master Employee Gudang untuk Admin mengelola data karyawan gudang (nama, no wa, divisi). Data untuk keperluan operasional tim lapangan.
+
+**Acceptance Criteria:**
+- [x] Migration `create_warehouse_employees_table` (id, nama_karyawan, no_whatsapp, divisi_gudang, timestamps)
+- [x] Model `WarehouseEmployee`
+- [x] Filament Resource `WarehouseEmployeeResource` (Admin only, grup "Master")
+- [x] Form: nama_karyawan (required), no_whatsapp (tel, nullable), divisi_gudang (Select)
+- [x] Table: nama_karyawan (searchable), no_whatsapp (icon WA + hyperlink wa.me), divisi_gudang (badge), created_at
+- [x] Filter: SelectFilter divisi_gudang
+- [x] Divisi: Retur, Pecah Belah, Sariindah, Elektrik, CS Gudang, Kirim Cabang, Umum
+- [x] Create via modal, Edit via modal
+
+**Files:**
+- `database/migrations/xxxx_create_warehouse_employees_table.php`
+- `app/Models/WarehouseEmployee.php`
+- `app/Filament/Resources/WarehouseEmployees/` (resource, pages, schemas, tables)

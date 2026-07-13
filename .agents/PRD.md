@@ -295,14 +295,14 @@ Tidak ada — ini aplikasi internal perusahaan untuk efisiensi operasional gudan
 - **Master Sopir** — data sopir terpusat, dropdown di form task
 - **Master Mobil** — data mobil (nama & plat) terpusat, dropdown di form Kiriman Mobil
 - **Master Toko** — data toko/cabang terpusat, dropdown di form Kiriman Mobil, Keluar Barang, Retur Cabang
+- **Master Employee Gudang** — data karyawan gudang (nama, wa, divisi) untuk keperluan operasional
 - **Composer / NPM** — dependency manager
 
 ### Asumsi
 - User checker punya akses internet / WiFi gudang
 - User checker bisa menggunakan browser (Chrome/HP)
 - Satu gudang, satu tim checker tetap
-- ID_TASK per batch submit (semua baris dalam 1 input ID-nya sama), NO BARIS auto-increment per baris
-- `id_task` pakai INDEX (bukan UNIQUE constraint) karena dalam 1 batch bisa duplikat antar baris
+- ID_TASK format `PREFIX-NNNNN` (global counter 5 digit, 1 baris = 1 ID), kolom `no_baris` dihapus
 
 ### Constraints
 - **Teknis:** Budget hosting minimal (shared hosting sudah cukup)

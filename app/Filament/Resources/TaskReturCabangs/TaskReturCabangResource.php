@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\TaskReturCabangs;
 
 use App\Filament\Resources\TaskReturCabangs\Pages\CreateTaskReturCabang;
-use App\Filament\Resources\TaskReturCabangs\Pages\EditTaskReturCabang;
 use App\Filament\Resources\TaskReturCabangs\Pages\ListTaskReturCabangs;
 use App\Filament\Resources\TaskReturCabangs\Schemas\TaskReturCabangForm;
 use App\Filament\Resources\TaskReturCabangs\Tables\TaskReturCabangsTable;
@@ -85,7 +84,6 @@ class TaskReturCabangResource extends Resource
         return [
             'index' => ListTaskReturCabangs::route('/'),
             'create' => CreateTaskReturCabang::route('/create'),
-            'edit' => EditTaskReturCabang::route('/{record}/edit'),
         ];
     }
 }

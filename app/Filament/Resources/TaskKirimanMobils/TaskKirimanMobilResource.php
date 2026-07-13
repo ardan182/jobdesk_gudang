@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\TaskKirimanMobils;
 
 use App\Filament\Resources\TaskKirimanMobils\Pages\CreateTaskKirimanMobil;
-use App\Filament\Resources\TaskKirimanMobils\Pages\EditTaskKirimanMobil;
 use App\Filament\Resources\TaskKirimanMobils\Pages\ListTaskKirimanMobils;
 use App\Filament\Resources\TaskKirimanMobils\Schemas\TaskKirimanMobilForm;
 use App\Filament\Resources\TaskKirimanMobils\Tables\TaskKirimanMobilsTable;
@@ -85,7 +84,6 @@ class TaskKirimanMobilResource extends Resource
         return [
             'index' => ListTaskKirimanMobils::route('/'),
             'create' => CreateTaskKirimanMobil::route('/create'),
-            'edit' => EditTaskKirimanMobil::route('/{record}/edit'),
         ];
     }
 }

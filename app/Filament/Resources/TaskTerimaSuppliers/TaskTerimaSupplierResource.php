@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\TaskTerimaSuppliers;
 
 use App\Filament\Resources\TaskTerimaSuppliers\Pages\CreateTaskTerimaSupplier;
-use App\Filament\Resources\TaskTerimaSuppliers\Pages\EditTaskTerimaSupplier;
 use App\Filament\Resources\TaskTerimaSuppliers\Pages\ListTaskTerimaSuppliers;
 use App\Filament\Resources\TaskTerimaSuppliers\Schemas\TaskTerimaSupplierForm;
 use App\Filament\Resources\TaskTerimaSuppliers\Tables\TaskTerimaSuppliersTable;
@@ -85,7 +84,6 @@ class TaskTerimaSupplierResource extends Resource
         return [
             'index' => ListTaskTerimaSuppliers::route('/'),
             'create' => CreateTaskTerimaSupplier::route('/create'),
-            'edit' => EditTaskTerimaSupplier::route('/{record}/edit'),
         ];
     }
 }

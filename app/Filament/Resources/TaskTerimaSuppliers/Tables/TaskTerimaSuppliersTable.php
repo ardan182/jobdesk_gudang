@@ -2,9 +2,13 @@
 
 namespace App\Filament\Resources\TaskTerimaSuppliers\Tables;
 
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Schemas\Components\Section;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Tables\Filters\Filter;
@@ -21,10 +25,6 @@ class TaskTerimaSuppliersTable
                 TextColumn::make('id_task')
                     ->label('ID Task')
                     ->searchable()
-                    ->sortable(),
-                TextColumn::make('no_baris')
-                    ->label('No')
-                    ->numeric()
                     ->sortable(),
                 TextColumn::make('nama_supplier_ekspedisi')
                     ->label('Supplier / Ekspedisi')
@@ -88,7 +88,26 @@ class TaskTerimaSuppliersTable
                             );
                     })
             ])
+            ->recordAction('view')
             ->recordActions([
+                ViewAction::make()
+                    ->modalHeading('Detail Terima Supplier')
+                    ->modalSubmitAction(false)
+                    ->modalCancelAction(fn (Action $action) => $action->label('Tutup'))
+                    ->schema([
+                        Section::make('Informasi Task')
+                            ->columns(2)
+                            ->schema([
+                                TextEntry::make('id_task')->label('ID Task'),
+                                TextEntry::make('nama_supplier_ekspedisi')->label('Supplier / Ekspedisi'),
+                                TextEntry::make('no_po_referensi')->label('No PO Referensi'),
+                                TextEntry::make('jumlah_kolian')->label('Kolian'),
+                                TextEntry::make('jam_bongkar')->label('Jam Bongkar'),
+                                TextEntry::make('nama_sopir')->label('Sopir'),
+                                TextEntry::make('status')->label('Status')->badge(),
+                                TextEntry::make('keterangan')->label('Keterangan')->columnSpanFull(),
+                            ]),
+                    ]),
                 EditAction::make(),
             ])
             ->toolbarActions([

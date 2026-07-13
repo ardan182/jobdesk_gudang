@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\TaskReturSuppliers;
 
 use App\Filament\Resources\TaskReturSuppliers\Pages\CreateTaskReturSupplier;
-use App\Filament\Resources\TaskReturSuppliers\Pages\EditTaskReturSupplier;
 use App\Filament\Resources\TaskReturSuppliers\Pages\ListTaskReturSuppliers;
 use App\Filament\Resources\TaskReturSuppliers\Schemas\TaskReturSupplierForm;
 use App\Filament\Resources\TaskReturSuppliers\Tables\TaskReturSuppliersTable;
@@ -87,7 +86,6 @@ class TaskReturSupplierResource extends Resource
         return [
             'index' => ListTaskReturSuppliers::route('/'),
             'create' => CreateTaskReturSupplier::route('/create'),
-            'edit' => EditTaskReturSupplier::route('/{record}/edit'),
         ];
     }
 }

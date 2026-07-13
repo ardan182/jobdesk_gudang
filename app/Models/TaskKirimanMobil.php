@@ -10,7 +10,6 @@ class TaskKirimanMobil extends Model
 {
     protected $fillable = [
         'id_task',
-        'no_baris',
         'cabang',
         'no_plat_mobil',
         'jam_muat',
@@ -32,9 +31,6 @@ class TaskKirimanMobil extends Model
         static::creating(function ($model) {
             if (empty($model->id_task)) {
                 $model->id_task = TaskIdGenerator::generate('kiriman_mobil');
-            }
-            if (empty($model->no_baris)) {
-                $model->no_baris = TaskIdGenerator::getNextBaris('kiriman_mobil');
             }
             if (empty($model->user_id)) {
                 $model->user_id = auth()->id();

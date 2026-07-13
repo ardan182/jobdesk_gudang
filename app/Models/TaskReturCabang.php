@@ -10,7 +10,6 @@ class TaskReturCabang extends Model
 {
     protected $fillable = [
         'id_task',
-        'no_baris',
         'cabang',
         'jenis_retur',
         'no_sj_retur',
@@ -30,9 +29,6 @@ class TaskReturCabang extends Model
         static::creating(function ($model) {
             if (empty($model->id_task)) {
                 $model->id_task = TaskIdGenerator::generate('retur_cabang');
-            }
-            if (empty($model->no_baris)) {
-                $model->no_baris = TaskIdGenerator::getNextBaris('retur_cabang');
             }
             if (empty($model->user_id)) {
                 $model->user_id = auth()->id();

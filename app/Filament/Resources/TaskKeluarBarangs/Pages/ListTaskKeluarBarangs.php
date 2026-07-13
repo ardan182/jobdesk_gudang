@@ -44,15 +44,15 @@ class ListTaskKeluarBarangs extends ListRecords
                         ->addActionLabel('Tambah Baris'),
                 ])
                 ->action(function (array $data) {
-                    DB::transaction(function () use ($data) {
-                        $type = 'keluar_barang';
-                        $idTask = TaskIdGenerator::generate($type);
-                        $startBaris = TaskIdGenerator::getNextBaris($type);
+                    $ids = [];
+                    foreach ($data['tasks'] as $i => $task) {
+                        $ids[$i] = TaskIdGenerator::generate('keluar_barang');
+                    }
 
-                        foreach ($data['tasks'] as $index => $taskData) {
+                    DB::transaction(function () use ($data, $ids) {
+                        foreach ($data['tasks'] as $i => $taskData) {
                             $taskData['user_id'] = auth()->id();
-                            $taskData['no_baris'] = $startBaris + $index;
-                            $taskData['id_task'] = $idTask;
+                            $taskData['id_task'] = $ids[$i];
                             $this->getModel()::create($taskData);
                         }
                     });

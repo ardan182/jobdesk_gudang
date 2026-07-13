@@ -10,7 +10,6 @@ class TaskKeluarBarang extends Model
 {
     protected $fillable = [
         'id_task',
-        'no_baris',
         'toko_tujuan',
         'supplier',
         'no_referensi_sj',
@@ -31,9 +30,6 @@ class TaskKeluarBarang extends Model
         static::creating(function ($model) {
             if (empty($model->id_task)) {
                 $model->id_task = TaskIdGenerator::generate('keluar_barang');
-            }
-            if (empty($model->no_baris)) {
-                $model->no_baris = TaskIdGenerator::getNextBaris('keluar_barang');
             }
             if (empty($model->user_id)) {
                 $model->user_id = auth()->id();
