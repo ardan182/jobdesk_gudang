@@ -286,6 +286,7 @@ Tidak ada — ini aplikasi internal perusahaan untuk efisiensi operasional gudan
 - **Spatie Laravel Permission** — role & permission management
 - **Master Sopir** — data sopir terpusat, dropdown di form task
 - **Master Mobil** — data mobil (nama & plat) terpusat, dropdown di form Kiriman Mobil
+- **Master Toko** — data toko/cabang terpusat, dropdown di form Kiriman Mobil, Keluar Barang, Retur Cabang
 - **Composer / NPM** — dependency manager
 
 ### Asumsi

@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\TaskReturCabangs\Schemas;
 
 use App\Models\MasterSopir;
+use App\Models\MasterToko;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
@@ -16,14 +17,8 @@ class TaskReturCabangForm
         return [
             Select::make('cabang')
                 ->label('Cabang')
-                ->options([
-                    'pusat' => 'Pusat',
-                    'ujungberung' => 'Ujungberung',
-                    'soreang' => 'Soreang',
-                    'majalaya' => 'Majalaya',
-                    'cicaheum' => 'Cicaheum',
-                    'barokah' => 'Barokah',
-                ])
+                ->options(MasterToko::pluck('nama_toko', 'nama_toko'))
+                ->searchable()
                 ->required(),
             Select::make('jenis_retur')
                 ->label('Jenis Retur')

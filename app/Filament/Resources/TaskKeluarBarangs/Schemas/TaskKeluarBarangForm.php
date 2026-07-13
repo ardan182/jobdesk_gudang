@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\TaskKeluarBarangs\Schemas;
 
+use App\Models\MasterToko;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
@@ -15,14 +16,8 @@ class TaskKeluarBarangForm
         return [
             Select::make('toko_tujuan')
                 ->label('Toko Tujuan')
-                ->options([
-                    'pusat' => 'Pusat',
-                    'ujungberung' => 'Ujungberung',
-                    'soreang' => 'Soreang',
-                    'majalaya' => 'Majalaya',
-                    'cicaheum' => 'Cicaheum',
-                    'barokah' => 'Barokah',
-                ])
+                ->options(MasterToko::pluck('nama_toko', 'nama_toko'))
+                ->searchable()
                 ->required(),
             TextInput::make('supplier')
                 ->label('Supplier')
