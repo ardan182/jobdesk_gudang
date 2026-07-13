@@ -213,7 +213,7 @@
 - **Prioritas:** 🟡 Should Have
 - **Input:** Auto-log dari model `created` event
 - **Proses:** Setiap input task otomatis tercatat di `activity_logs`
-- **Output:** Widget dashboard berupa Filament `TableWidget` — user, aktivitas, modul, waktu
+- **Output:** Widget dashboard berupa Filament `TableWidget` — user, aktivitas, refferensi (no_plat/no_sj/no_po/no_ref/nama_supir), modul (badge warna), waktu
 - **Aturan:** Filter per modul, pagination 10/25/50, sort by waktu terbaru
 
 ### Modul 8: Master Sopir

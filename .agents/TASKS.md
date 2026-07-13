@@ -4,7 +4,7 @@
 
 | Total Task | Priority High | Priority Mid | Priority Low |
 |------------|--------------|--------------|--------------|
-| 25 | 12 | 6 | 7 |
+| 27 | 12 | 7 | 8 |
 
 ## Legend Prioritas & Status
 - **High:** Wajib dikerjakan (Must Have V1)
@@ -638,3 +638,52 @@ Hapus AccountWidget (Avatar + Welcome) dan FilamentInfoWidget (v5.6.8 + Document
 
 **Files:**
 - `app/Providers/Filament/AdminPanelProvider.php`
+
+---
+
+## T-25: Kolom Refferensi di Activity Log Widget (Done)
+
+- **Modul:** Dashboard
+- **Prioritas:** Mid
+- **Status:** Done
+- **Dependensi:** T-23
+
+**Deskripsi:**
+Tambah kolom `reference` di tabel activity_logs dan widget dashboard. Menampilkan nomor referensi dari masing-masing task (no_plat_mobil, no_sj_retur, no_po_referensi, no_referensi_sj, nama_supir).
+
+**Acceptance Criteria:**
+- [x] Migration `add_reference_to_activity_logs` — kolom varchar nullable
+- [x] 5 task models: tambah `reference` di `created` event
+- [x] ActivityLog: tambah `reference` ke `$fillable`
+- [x] ActivityLogSeeder: mapping reference untuk data lama
+- [x] RecentActivityWidget: kolom Refferensi setelah Aktivitas
+
+**Files:**
+- `database/migrations/xxxx_add_reference_to_activity_logs.php`
+- `app/Models/ActivityLog.php`
+- `app/Models/TaskReturSupplier.php`
+- `app/Models/TaskReturCabang.php`
+- `app/Models/TaskTerimaSupplier.php`
+- `app/Models/TaskKeluarBarang.php`
+- `app/Models/TaskKirimanMobil.php`
+- `database/seeders/ActivityLogSeeder.php`
+- `app/Filament/Widgets/RecentActivityWidget.php`
+
+---
+
+## T-26: Checker Retur — 2 Card Dashboard (Done)
+
+- **Modul:** Dashboard
+- **Prioritas:** Low
+- **Status:** Done
+- **Dependensi:** T-09
+
+**Deskripsi:**
+Ubah dashboard Checker Retur dari 1 card gabungan menjadi 2 card terpisah (Retur ke Supplier & Retur dari Cabang).
+
+**Acceptance Criteria:**
+- [x] Checker Retur lihat: card "Retur ke Supplier" + card "Retur dari Cabang"
+- [x] Checker lain tetap 1 card sesuai modulnya
+
+**Files:**
+- `app/Filament/Widgets/StatsOverviewWidget.php`
