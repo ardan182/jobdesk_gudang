@@ -22,6 +22,7 @@ class ListTaskReturCabangs extends ListRecords
         return [
             Action::make('createTask')
                 ->label('Tambah')
+                ->color('primary')
                 ->modalHeading('Tambah Task Retur Cabang')
                 ->modalWidth(Width::Full)
                 ->form([

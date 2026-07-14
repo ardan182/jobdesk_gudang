@@ -22,40 +22,49 @@ class MasterKendaraansTable
                 TextColumn::make('nomor_polisi')
                     ->label('Nomor Polisi')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->grow(false),
                 TextColumn::make('jenis_kendaraan')
                     ->label('Jenis')
                     ->badge()
                     ->color(fn (string $state): string => $state === 'mobil' ? 'info' : 'warning')
-                    ->formatStateUsing(fn (string $state): string => $state === 'mobil' ? 'Mobil' : 'Motor'),
+                    ->formatStateUsing(fn (string $state): string => $state === 'mobil' ? 'Mobil' : 'Motor')
+                    ->grow(false),
                 TextColumn::make('merek_dan_model')
                     ->label('Merek & Model')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->grow(false),
                 TextColumn::make('masa_berlaku_stnk')
                     ->label('Masa Berlaku STNK')
                     ->date('d/m/Y')
-                    ->sortable(),
+                    ->sortable()
+                    ->grow(false),
                 TextColumn::make('masa_berlaku_kir')
                     ->label('Masa Berlaku KIR')
                     ->date('d/m/Y')
-                    ->sortable(),
+                    ->sortable()
+                    ->grow(false),
                 TextColumn::make('nomor_rangka')
                     ->label('Nomor Rangka')
                     ->searchable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->grow(false),
                 TextColumn::make('nomor_mesin')
                     ->label('Nomor Mesin')
                     ->searchable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->grow(false),
                 TextColumn::make('no_stnk')
                     ->label('No STNK')
                     ->searchable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->grow(false),
                 TextColumn::make('no_kir')
                     ->label('No KIR')
                     ->searchable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->grow(false),
                 TextColumn::make('keterangan')
                     ->label('Keterangan')
                     ->limit(40)
@@ -64,10 +73,12 @@ class MasterKendaraansTable
                     ->label('Dibuat')
                     ->date('d/m/Y H:i')
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->grow(false),
             ])
             ->recordActions([
                 ViewAction::make()
+                    ->color('info')
                     ->modalHeading('Detail Kendaraan')
                     ->modalWidth('lg')
                     ->infolist([
@@ -85,12 +96,14 @@ class MasterKendaraansTable
                         TextEntry::make('keterangan')->label('Keterangan'),
                     ]),
                 EditAction::make()
+                    ->color('warning')
                     ->modalHeading('Edit Kendaraan')
                     ->modalWidth('lg'),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make()
+                        ->color('danger')
                         ->visible(fn () => auth()->user()?->hasRole('Admin') ?? false),
                 ]),
             ]);

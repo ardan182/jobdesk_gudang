@@ -19,7 +19,8 @@ class WarehouseEmployeesTable
                 TextColumn::make('nama_karyawan')
                     ->label('Nama Karyawan')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->grow(false),
                 TextColumn::make('no_whatsapp')
                     ->label('No WhatsApp')
                     ->icon('heroicon-o-phone')
@@ -27,7 +28,8 @@ class WarehouseEmployeesTable
                     ->url(fn ($record) => $record->no_whatsapp
                         ? 'https://wa.me/' . preg_replace('/[^0-9]/', '', $record->no_whatsapp)
                         : null)
-                    ->openUrlInNewTab(),
+                    ->openUrlInNewTab()
+                    ->grow(false),
                 TextColumn::make('divisi_gudang')
                     ->label('Divisi')
                     ->badge()
@@ -40,11 +42,13 @@ class WarehouseEmployeesTable
                         'Kirim Cabang' => 'gray',
                         'Umum' => 'gray',
                         default => 'gray',
-                    }),
+                    })
+                    ->grow(false),
                 TextColumn::make('created_at')
                     ->label('Dibuat')
                     ->date('d/m/Y H:i')
-                    ->sortable(),
+                    ->sortable()
+                    ->grow(false),
             ])
             ->filters([
                 SelectFilter::make('divisi_gudang')
@@ -61,12 +65,14 @@ class WarehouseEmployeesTable
             ])
             ->recordActions([
                 EditAction::make()
+                    ->color('warning')
                     ->modalHeading('Edit Master Employee Gudang')
                     ->modalWidth('lg'),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make()
+                        ->color('danger')
                         ->visible(fn () => auth()->user()?->hasRole('Admin') ?? false),
                 ]),
             ]);

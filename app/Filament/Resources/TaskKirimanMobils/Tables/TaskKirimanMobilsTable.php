@@ -25,37 +25,48 @@ class TaskKirimanMobilsTable
                 TextColumn::make('id_task')
                     ->label('ID Task')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->grow(false),
                 TextColumn::make('cabang')
                     ->label('Cabang')
-                    ->searchable(),
+                    ->searchable()
+                    ->width('140px')
+                    ->grow(false),
                 TextColumn::make('no_plat_mobil')
                     ->label('No Plat')
-                    ->searchable(),
+                    ->searchable()
+                    ->width('130px')
+                    ->grow(false),
                 TextColumn::make('jam_muat')
                     ->label('Jam Muat')
                     ->time('H:i')
-                    ->sortable(),
+                    ->sortable()
+                    ->grow(false),
                 TextColumn::make('jam_selesai_muat')
                     ->label('Jam Selesai')
                     ->time('H:i')
-                    ->sortable(),
+                    ->sortable()
+                    ->grow(false),
                 TextColumn::make('jam_berangkat')
                     ->label('Jam Berangkat')
                     ->time('H:i')
-                    ->sortable(),
+                    ->sortable()
+                    ->grow(false),
                 TextColumn::make('nama_supir')
                     ->label('Supir')
-                    ->searchable(),
+                    ->searchable()
+                    ->grow(false),
                 TextColumn::make('user.name')
                     ->label('Checker')
                     ->searchable()
                     ->sortable()
-                    ->visible(fn () => auth()->user()?->hasRole('Admin') ?? false),
+                    ->visible(fn () => auth()->user()?->hasRole('Admin') ?? false)
+                    ->grow(false),
                 TextColumn::make('created_at')
                     ->label('Tanggal')
                     ->date('d/m/Y')
-                    ->sortable(),
+                    ->sortable()
+                    ->grow(false),
             ])
             ->filters([
                 Filter::make('created_at')
@@ -80,6 +91,7 @@ class TaskKirimanMobilsTable
             ->recordAction('view')
             ->recordActions([
                 ViewAction::make()
+                    ->color('info')
                     ->modalHeading('Detail Kiriman Mobil')
                     ->modalSubmitAction(false)
                     ->modalCancelAction(fn (Action $action) => $action->label('Tutup'))
@@ -97,11 +109,13 @@ class TaskKirimanMobilsTable
                                 TextEntry::make('keterangan')->label('Keterangan')->columnSpanFull(),
                             ]),
                     ]),
-                EditAction::make(),
+                EditAction::make()
+                    ->color('warning'),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make()
+                        ->color('danger')
                         ->visible(fn () => auth()->user()?->hasRole('Admin') ?? false),
                 ]),
             ]);

@@ -4,7 +4,7 @@
 
 | Total Task | Priority High | Priority Mid | Priority Low |
 |------------|--------------|--------------|--------------|
-| 31 | 15 | 9 | 7 |
+| 34 | 15 | 11 | 8 |
 
 ## Legend Prioritas & Status
 - **High:** Wajib dikerjakan (Must Have V1)
@@ -827,3 +827,79 @@ Buat menu Master Supplier dengan fitur import dari file Excel (XLSX, XLS, CSV). 
 - `app/Exports/SupplierTemplateExport.php`
 - `app/Filament/Resources/Suppliers/` (resource, pages, schemas, tables)
 - `routes/web.php` (route download template)
+
+---
+
+## T-32: Column Width Optimization — grow(false) + width (Done)
+
+- **Modul:** — UI/UX
+- **Prioritas:** Mid
+- **Status:** Done
+- **Dependensi:** —
+
+**Deskripsi:**
+Optimasi lebar kolom tabel grid Filament agar fit content (tidak stretch rata). Kolom terakhir (keterangan) dibiarkan tanpa grow(false) sebagai buffer penyerap sisa ruang.
+
+**Acceptance Criteria:**
+- [x] `->grow(false)` pada semua kolom standar di 5 tabel checker
+- [x] `->width('140px')` sampai `->width('160px')` pada kolom variable-length
+- [x] Kolom keterangan dibiarkan tanpa grow(false) sebagai buffer
+- [x] Pattern yang sama diterapkan ke 6 Master tables
+- [x] Total 11 table files diupdate (5 task + 6 master)
+
+**Files:**
+- `app/Filament/Resources/Task*/*Table.php` (5 files)
+- `app/Filament/Resources/Master*/*Table.php` (3 files)
+- `app/Filament/Resources/Expeditions/Tables/ExpeditionsTable.php`
+- `app/Filament/Resources/Suppliers/Tables/SuppliersTable.php`
+- `app/Filament/Resources/WarehouseEmployees/Tables/WarehouseEmployeesTable.php`
+
+---
+
+## T-33: Compact Table + Striped Rows (Done)
+
+- **Modul:** — UI/UX
+- **Prioritas:** Low
+- **Status:** Done
+- **Dependensi:** T-32
+
+**Deskripsi:**
+Atur tabel agar tampil compact (padding minimal) dan striped (baris ganjil-genap beda warna) untuk readability.
+
+**Acceptance Criteria:**
+- [x] `->striped()` pada TaskKeluarBarangsTable
+- [x] CSS override padding: cell `py-0.5`, header `py-1`
+- [x] CSS striped dengan opacity sesuai tema
+- [x] Berlaku global untuk semua tabel via AdminPanelProvider
+
+**Files:**
+- `app/Filament/Resources/TaskKeluarBarangs/Tables/TaskKeluarBarangsTable.php`
+- `app/Providers/Filament/AdminPanelProvider.php`
+
+---
+
+## T-34: Color-coded Actions (Done)
+
+- **Modul:** — UI/UX
+- **Prioritas:** Mid
+- **Status:** Done
+- **Dependensi:** —
+
+**Deskripsi:**
+Berikan warna semantic pada semua Action (button) di aplikasi untuk memperjelas makna dan konsekuensi setiap aksi.
+
+**Acceptance Criteria:**
+- [x] CreateAction / Tambah → `->color('primary')` pada semua List pages
+- [x] ViewAction / Lihat → `->color('info')` pada semua table dengan view modal
+- [x] EditAction / Ubah → `->color('warning')` pada semua table
+- [x] DeleteAction / Hapus → `->color('danger')` pada semua DeleteBulkAction
+- [x] Import Supplier → `->color('primary')`
+- [x] ~45 actions diwarnai di 20+ file
+
+**Files:**
+- 5 Task table files: EditAction, ViewAction, DeleteBulkAction
+- 6 Master table files: EditAction, ViewAction, DeleteBulkAction
+- 5 Task List pages: CreateAction
+- 7 Master List pages: CreateAction
+- 1 User List page: CreateAction
+- 1 Supplier list page: Import Action

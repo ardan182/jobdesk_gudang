@@ -272,6 +272,9 @@ Tidak ada — ini aplikasi internal perusahaan untuk efisiensi operasional gudan
 - Tampilan mobile-friendly (checker bisa input via HP/tablet)
 - Bahasa Indonesia pada label & dropdown
 - Form repeater untuk input cepat multi-baris
+- Tabel compact (padding minimal) dengan striped rows
+- Action buttons dengan warna semantic (primary/warning/info/danger)
+- Kolom tabel fit content (tidak stretch rata) dengan lebar optimal
 
 ---
 

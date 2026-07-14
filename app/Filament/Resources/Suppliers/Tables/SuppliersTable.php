@@ -22,12 +22,15 @@ class SuppliersTable
                     ->label('Kode Supplier')
                     ->searchable()
                     ->sortable()
-                    ->toggleable(),
+                    ->toggleable()
+                    ->grow(false),
                 TextColumn::make('nama_supplier')
                     ->label('Nama Supplier')
                     ->searchable()
                     ->sortable()
-                    ->toggleable(),
+                    ->toggleable()
+                    ->width('160px')
+                    ->grow(false),
                 TextColumn::make('no_telepon')
                     ->label('No Telepon')
                     ->icon('heroicon-o-phone')
@@ -37,7 +40,8 @@ class SuppliersTable
                         : null)
                     ->openUrlInNewTab()
                     ->sortable()
-                    ->toggleable(),
+                    ->toggleable()
+                    ->grow(false),
                 TextColumn::make('alamat')
                     ->label('Alamat')
                     ->limit(50)
@@ -50,10 +54,12 @@ class SuppliersTable
                     ->label('Dibuat')
                     ->date('d/m/Y H:i')
                     ->sortable()
-                    ->toggleable(),
+                    ->toggleable()
+                    ->grow(false),
             ])
             ->recordActions([
                 ViewAction::make()
+                    ->color('info')
                     ->modalHeading('Detail Supplier')
                     ->modalWidth('lg')
                     ->infolist([
@@ -71,12 +77,14 @@ class SuppliersTable
                         TextEntry::make('keterangan')->label('Keterangan'),
                     ]),
                 EditAction::make()
+                    ->color('warning')
                     ->modalHeading('Edit Supplier')
                     ->modalWidth('lg'),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make()
+                        ->color('danger')
                         ->visible(fn () => auth()->user()?->hasRole('Admin') ?? false),
                 ]),
             ]);

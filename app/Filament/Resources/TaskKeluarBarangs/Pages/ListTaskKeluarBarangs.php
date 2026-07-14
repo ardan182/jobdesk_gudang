@@ -22,6 +22,7 @@ class ListTaskKeluarBarangs extends ListRecords
         return [
             Action::make('createTask')
                 ->label('Tambah')
+                ->color('primary')
                 ->modalHeading('Tambah Task Keluar Barang')
                 ->modalWidth(Width::Full)
                 ->form([

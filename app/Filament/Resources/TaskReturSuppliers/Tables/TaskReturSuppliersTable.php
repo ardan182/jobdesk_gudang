@@ -25,27 +25,36 @@ class TaskReturSuppliersTable
                 TextColumn::make('id_task')
                     ->label('ID Task')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->grow(false),
                 TextColumn::make('nama_supplier_ekspedisi')
                     ->label('Supplier / Ekspedisi')
-                    ->searchable(),
+                    ->searchable()
+                    ->width('160px')
+                    ->grow(false),
                 TextColumn::make('no_plat_mobil')
                     ->label('No Plat')
-                    ->searchable(),
+                    ->searchable()
+                    ->width('130px')
+                    ->grow(false),
                 TextColumn::make('nama_sopir')
                     ->label('Sopir')
-                    ->searchable(),
+                    ->searchable()
+                    ->grow(false),
                 TextColumn::make('jam_muat')
                     ->label('Jam Muat')
                     ->time('H:i')
-                    ->sortable(),
+                    ->sortable()
+                    ->grow(false),
                 TextColumn::make('jumlah_kolian')
                     ->label('Kolian')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->grow(false),
                 TextColumn::make('admin_sj_retur')
                     ->label('Admin SJ')
-                    ->searchable(),
+                    ->searchable()
+                    ->grow(false),
                 TextColumn::make('status')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
@@ -59,16 +68,19 @@ class TaskReturSuppliersTable
                         'tukar' => 'Tukar',
                         'pot_nota' => 'Pot Nota',
                         default => $state,
-                    }),
+                    })
+                    ->grow(false),
                 TextColumn::make('user.name')
                     ->label('Checker')
                     ->searchable()
                     ->sortable()
-                    ->visible(fn () => auth()->user()?->hasRole('Admin') ?? false),
+                    ->visible(fn () => auth()->user()?->hasRole('Admin') ?? false)
+                    ->grow(false),
                 TextColumn::make('created_at')
                     ->label('Tanggal')
                     ->date('d/m/Y')
-                    ->sortable(),
+                    ->sortable()
+                    ->grow(false),
             ])
             ->filters([
                 Filter::make('created_at')
@@ -93,6 +105,7 @@ class TaskReturSuppliersTable
             ->recordAction('view')
             ->recordActions([
                 ViewAction::make()
+                    ->color('info')
                     ->modalHeading('Detail Retur Supplier')
                     ->modalSubmitAction(false)
                     ->modalCancelAction(fn (Action $action) => $action->label('Tutup'))
@@ -111,11 +124,13 @@ class TaskReturSuppliersTable
                                 TextEntry::make('keterangan')->label('Keterangan')->columnSpanFull(),
                             ]),
                     ]),
-                EditAction::make(),
+                EditAction::make()
+                    ->color('warning'),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make()
+                        ->color('danger')
                         ->visible(fn () => auth()->user()?->hasRole('Admin') ?? false),
                 ]),
             ]);

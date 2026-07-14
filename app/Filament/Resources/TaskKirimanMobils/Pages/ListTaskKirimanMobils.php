@@ -22,6 +22,7 @@ class ListTaskKirimanMobils extends ListRecords
         return [
             Action::make('createTask')
                 ->label('Tambah')
+                ->color('primary')
                 ->modalHeading('Tambah Task Kiriman Mobil')
                 ->modalWidth(Width::Full)
                 ->form([

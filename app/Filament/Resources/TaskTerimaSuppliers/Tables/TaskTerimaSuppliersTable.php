@@ -25,24 +25,32 @@ class TaskTerimaSuppliersTable
                 TextColumn::make('id_task')
                     ->label('ID Task')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->grow(false),
                 TextColumn::make('nama_supplier_ekspedisi')
                     ->label('Supplier / Ekspedisi')
-                    ->searchable(),
+                    ->searchable()
+                    ->width('160px')
+                    ->grow(false),
                 TextColumn::make('no_po_referensi')
                     ->label('No PO Referensi')
-                    ->searchable(),
+                    ->searchable()
+                    ->width('140px')
+                    ->grow(false),
                 TextColumn::make('jumlah_kolian')
                     ->label('Kolian')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->grow(false),
                 TextColumn::make('jam_bongkar')
                     ->label('Jam Bongkar')
                     ->time('H:i')
-                    ->sortable(),
+                    ->sortable()
+                    ->grow(false),
                 TextColumn::make('nama_sopir')
                     ->label('Sopir')
-                    ->searchable(),
+                    ->searchable()
+                    ->grow(false),
                 TextColumn::make('status')
                     ->label('Status')
                     ->badge()
@@ -57,16 +65,19 @@ class TaskTerimaSuppliersTable
                         'kurang' => 'Kurang',
                         'lebih' => 'Lebih',
                         default => $state,
-                    }),
+                    })
+                    ->grow(false),
                 TextColumn::make('user.name')
                     ->label('Checker')
                     ->searchable()
                     ->sortable()
-                    ->visible(fn () => auth()->user()?->hasRole('Admin') ?? false),
+                    ->visible(fn () => auth()->user()?->hasRole('Admin') ?? false)
+                    ->grow(false),
                 TextColumn::make('created_at')
                     ->label('Tanggal')
                     ->date('d/m/Y')
-                    ->sortable(),
+                    ->sortable()
+                    ->grow(false),
             ])
             ->filters([
                 Filter::make('created_at')
@@ -91,6 +102,7 @@ class TaskTerimaSuppliersTable
             ->recordAction('view')
             ->recordActions([
                 ViewAction::make()
+                    ->color('info')
                     ->modalHeading('Detail Terima Supplier')
                     ->modalSubmitAction(false)
                     ->modalCancelAction(fn (Action $action) => $action->label('Tutup'))
@@ -108,11 +120,13 @@ class TaskTerimaSuppliersTable
                                 TextEntry::make('keterangan')->label('Keterangan')->columnSpanFull(),
                             ]),
                     ]),
-                EditAction::make(),
+                EditAction::make()
+                    ->color('warning'),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make()
+                        ->color('danger')
                         ->visible(fn () => auth()->user()?->hasRole('Admin') ?? false),
                 ]),
             ]);

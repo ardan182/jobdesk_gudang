@@ -21,7 +21,9 @@ class ExpeditionsTable
                 TextColumn::make('nama_ekspedisi')
                     ->label('Nama Ekspedisi')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->width('160px')
+                    ->grow(false),
                 TextColumn::make('no_telepon')
                     ->label('No Telepon')
                     ->icon('heroicon-o-phone')
@@ -29,17 +31,20 @@ class ExpeditionsTable
                     ->url(fn ($record) => $record->no_telepon
                         ? 'https://wa.me/' . preg_replace('/[^0-9]/', '', $record->no_telepon)
                         : null)
-                    ->openUrlInNewTab(),
+                    ->openUrlInNewTab()
+                    ->grow(false),
                 TextColumn::make('alamat')
                     ->label('Alamat')
                     ->limit(50),
                 TextColumn::make('created_at')
                     ->label('Dibuat')
                     ->date('d/m/Y H:i')
-                    ->sortable(),
+                    ->sortable()
+                    ->grow(false),
             ])
             ->recordActions([
                 ViewAction::make()
+                    ->color('info')
                     ->modalHeading('Detail Ekspedisi')
                     ->modalWidth('lg')
                     ->infolist([
@@ -55,12 +60,14 @@ class ExpeditionsTable
                         TextEntry::make('alamat')->label('Alamat'),
                     ]),
                 EditAction::make()
+                    ->color('warning')
                     ->modalHeading('Edit Ekspedisi')
                     ->modalWidth('lg'),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make()
+                        ->color('danger')
                         ->visible(fn () => auth()->user()?->hasRole('Admin') ?? false),
                 ]),
             ]);

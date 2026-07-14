@@ -102,6 +102,22 @@ class AdminPanelProvider extends PanelProvider
                         text-overflow: clip !important;
                         word-break: break-word !important;
                     }
+
+                    /* ─── Compact table ─── */
+                    .fi-ta-table > tbody > tr > .fi-ta-cell {
+                        padding-top: 1px !important;
+                        padding-bottom: 1px !important;
+                    }
+                    .fi-ta-table > thead > tr > .fi-ta-header-cell {
+                        padding-top: 2px !important;
+                        padding-bottom: 2px !important;
+                    }
+                    .fi-ta-row.fi-striped {
+                        background-color: rgba(249, 250, 251, 0.5) !important;
+                    }
+                    .dark .fi-ta-row.fi-striped {
+                        background-color: rgba(255, 255, 255, 0.04) !important;
+                    }
                 </style>
                 <script>
                     document.addEventListener(\'alpine:init\', () => {

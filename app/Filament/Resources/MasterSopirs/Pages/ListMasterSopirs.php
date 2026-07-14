@@ -15,6 +15,7 @@ class ListMasterSopirs extends ListRecords
     {
         return [
             CreateAction::make()
+                ->color("primary")
                 ->modalHeading('Tambah Master Sopir')
                 ->form(MasterSopirForm::getFormFields())
                 ->modalWidth('lg'),

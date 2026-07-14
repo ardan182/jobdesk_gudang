@@ -24,6 +24,7 @@ class ListSuppliers extends ListRecords
         return [
             Action::make('importSupplier')
                 ->label('Import Supplier')
+                ->color('primary')
                 ->icon('heroicon-o-arrow-up-tray')
                 ->modalHeading('Import Supplier dari CSV')
                 ->modalWidth('lg')
@@ -75,6 +76,7 @@ class ListSuppliers extends ListRecords
                         ->send();
                 }),
             CreateAction::make()
+                ->color("primary")
                 ->modalHeading('Tambah Supplier')
                 ->form(SupplierForm::getFormFields())
                 ->modalWidth('lg'),

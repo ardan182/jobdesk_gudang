@@ -21,11 +21,13 @@ class TaskKeluarBarangsTable
     {
         return $table
             ->defaultSort('created_at', 'desc')
+            ->striped()
             ->columns([
                 TextColumn::make('id_task')
                     ->label('ID Task')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->grow(false),
                 TextColumn::make('toko_tujuan')
                     ->label('Toko Tujuan')
                     ->badge()
@@ -38,24 +40,33 @@ class TaskKeluarBarangsTable
                         'cicaheum' => 'Cicaheum',
                         'barokah' => 'Barokah',
                         default => $state,
-                    }),
+                    })
+                    ->width('140px')
+                    ->grow(false),
                 TextColumn::make('supplier')
                     ->label('Supplier')
-                    ->searchable(),
+                    ->searchable()
+                    ->width('150px')
+                    ->grow(false),
                 TextColumn::make('no_referensi_sj')
                     ->label('No Referensi SJ')
-                    ->searchable(),
+                    ->searchable()
+                    ->width('140px')
+                    ->grow(false),
                 TextColumn::make('jumlah_kolian')
                     ->label('Kolian')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->grow(false),
                 TextColumn::make('jam_naik')
                     ->label('Jam Naik')
                     ->time('H:i')
-                    ->sortable(),
+                    ->sortable()
+                    ->grow(false),
                 TextColumn::make('nama_koordinator')
                     ->label('Koordinator')
-                    ->searchable(),
+                    ->searchable()
+                    ->grow(false),
                 TextColumn::make('status')
                     ->label('Status')
                     ->badge()
@@ -70,16 +81,19 @@ class TaskKeluarBarangsTable
                         'kurang' => 'Kurang',
                         'lebih' => 'Lebih',
                         default => $state,
-                    }),
+                    })
+                    ->grow(false),
                 TextColumn::make('user.name')
                     ->label('Checker')
                     ->searchable()
                     ->sortable()
-                    ->visible(fn () => auth()->user()?->hasRole('Admin') ?? false),
+                    ->visible(fn () => auth()->user()?->hasRole('Admin') ?? false)
+                    ->grow(false),
                 TextColumn::make('created_at')
                     ->label('Tanggal')
                     ->date('d/m/Y')
-                    ->sortable(),
+                    ->sortable()
+                    ->grow(false),
             ])
             ->filters([
                 Filter::make('created_at')
@@ -104,6 +118,7 @@ class TaskKeluarBarangsTable
             ->recordAction('view')
             ->recordActions([
                 ViewAction::make()
+                    ->color('info')
                     ->modalHeading('Detail Keluar Barang')
                     ->modalSubmitAction(false)
                     ->modalCancelAction(fn (Action $action) => $action->label('Tutup'))
@@ -122,11 +137,13 @@ class TaskKeluarBarangsTable
                                 TextEntry::make('keterangan')->label('Keterangan')->columnSpanFull(),
                             ]),
                     ]),
-                EditAction::make(),
+                EditAction::make()
+                    ->color('warning'),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make()
+                        ->color('danger')
                         ->visible(fn () => auth()->user()?->hasRole('Admin') ?? false),
                 ]),
             ]);

@@ -22,6 +22,7 @@ class ListTaskTerimaSuppliers extends ListRecords
         return [
             Action::make('createTask')
                 ->label('Tambah')
+                ->color('primary')
                 ->modalHeading('Tambah Task Terima Supplier')
                 ->modalWidth(Width::Full)
                 ->form([

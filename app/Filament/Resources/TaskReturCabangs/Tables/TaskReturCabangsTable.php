@@ -25,10 +25,13 @@ class TaskReturCabangsTable
                 TextColumn::make('id_task')
                     ->label('ID Task')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->grow(false),
                 TextColumn::make('cabang')
                     ->label('Cabang')
-                    ->searchable(),
+                    ->searchable()
+                    ->width('140px')
+                    ->grow(false),
                 TextColumn::make('jenis_retur')
                     ->label('Jenis Retur')
                     ->badge()
@@ -41,30 +44,38 @@ class TaskReturCabangsTable
                         'retur_jelek' => 'Retur Jelek',
                         'retur_bagus' => 'Retur Bagus',
                         default => $state,
-                    }),
+                    })
+                    ->grow(false),
                 TextColumn::make('no_sj_retur')
                     ->label('No SJ')
-                    ->searchable(),
+                    ->searchable()
+                    ->width('140px')
+                    ->grow(false),
                 TextColumn::make('total_kolian')
                     ->label('Total Kolian')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->grow(false),
                 TextColumn::make('jam_bongkar')
                     ->label('Jam Bongkar')
                     ->time('H:i')
-                    ->sortable(),
+                    ->sortable()
+                    ->grow(false),
                 TextColumn::make('nama_sopir')
                     ->label('Sopir')
-                    ->searchable(),
+                    ->searchable()
+                    ->grow(false),
                 TextColumn::make('user.name')
                     ->label('Checker')
                     ->searchable()
                     ->sortable()
-                    ->visible(fn () => auth()->user()?->hasRole('Admin') ?? false),
+                    ->visible(fn () => auth()->user()?->hasRole('Admin') ?? false)
+                    ->grow(false),
                 TextColumn::make('created_at')
                     ->label('Tanggal')
                     ->date('d/m/Y')
-                    ->sortable(),
+                    ->sortable()
+                    ->grow(false),
             ])
             ->filters([
                 Filter::make('created_at')
@@ -89,6 +100,7 @@ class TaskReturCabangsTable
             ->recordAction('view')
             ->recordActions([
                 ViewAction::make()
+                    ->color('info')
                     ->modalHeading('Detail Retur Cabang')
                     ->modalSubmitAction(false)
                     ->modalCancelAction(fn (Action $action) => $action->label('Tutup'))
@@ -106,11 +118,13 @@ class TaskReturCabangsTable
                                 TextEntry::make('keterangan')->label('Keterangan')->columnSpanFull(),
                             ]),
                     ]),
-                EditAction::make(),
+                EditAction::make()
+                    ->color('warning'),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make()
+                        ->color('danger')
                         ->visible(fn () => auth()->user()?->hasRole('Admin') ?? false),
                 ]),
             ]);

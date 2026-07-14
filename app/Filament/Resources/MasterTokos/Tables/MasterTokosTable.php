@@ -18,7 +18,8 @@ class MasterTokosTable
                 TextColumn::make('nama_toko')
                     ->label('Nama Toko')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->grow(false),
                 TextColumn::make('alamat')
                     ->label('Alamat')
                     ->searchable()
@@ -26,16 +27,19 @@ class MasterTokosTable
                 TextColumn::make('created_at')
                     ->label('Dibuat')
                     ->date('d/m/Y H:i')
-                    ->sortable(),
+                    ->sortable()
+                    ->grow(false),
             ])
             ->recordActions([
                 EditAction::make()
+                    ->color('warning')
                     ->modalHeading('Edit Master Toko')
                     ->modalWidth('lg'),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make()
+                        ->color('danger')
                         ->visible(fn () => auth()->user()?->hasRole('Admin') ?? false),
                 ]),
             ]);

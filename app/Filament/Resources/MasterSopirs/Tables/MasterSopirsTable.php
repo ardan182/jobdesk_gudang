@@ -20,7 +20,8 @@ class MasterSopirsTable
                 TextColumn::make('nama_sopir')
                     ->label('Nama Sopir')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->grow(false),
                 TextColumn::make('no_whatsapp')
                     ->label('No WhatsApp')
                     ->icon('heroicon-o-phone')
@@ -28,15 +29,18 @@ class MasterSopirsTable
                     ->url(fn ($record) => $record->no_whatsapp
                         ? 'https://wa.me/' . preg_replace('/[^0-9]/', '', $record->no_whatsapp)
                         : null)
-                    ->openUrlInNewTab(),
+                    ->openUrlInNewTab()
+                    ->grow(false),
                 TextColumn::make('created_at')
                     ->label('Dibuat')
                     ->date('d/m/Y H:i')
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->grow(false),
             ])
             ->recordActions([
                 ViewAction::make()
+                    ->color('info')
                     ->modalHeading('Detail Sopir')
                     ->modalWidth('lg')
                     ->infolist([
@@ -51,12 +55,14 @@ class MasterSopirsTable
                             ->iconColor('success'),
                     ]),
                 EditAction::make()
+                    ->color('warning')
                     ->modalHeading('Edit Master Sopir')
                     ->modalWidth('lg'),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make()
+                        ->color('danger')
                         ->visible(fn () => auth()->user()?->hasRole('Admin') ?? false),
                 ]),
             ]);

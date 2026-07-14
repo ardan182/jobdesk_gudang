@@ -15,6 +15,7 @@ class ListWarehouseEmployees extends ListRecords
     {
         return [
             CreateAction::make()
+                ->color("primary")
                 ->modalHeading('Tambah Master Employee Gudang')
                 ->form(WarehouseEmployeeForm::getFormFields())
                 ->modalWidth('lg'),
