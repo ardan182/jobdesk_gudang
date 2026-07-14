@@ -1,39 +1,39 @@
 <?php
 
-namespace App\Filament\Resources\MasterMobils;
+namespace App\Filament\Resources\MasterKendaraans;
 
-use App\Filament\Resources\MasterMobils\Pages\ListMasterMobils;
-use App\Filament\Resources\MasterMobils\Schemas\MasterMobilForm;
-use App\Filament\Resources\MasterMobils\Tables\MasterMobilsTable;
-use App\Models\MasterMobil;
+use App\Filament\Resources\MasterKendaraans\Pages\ListMasterKendaraans;
+use App\Filament\Resources\MasterKendaraans\Schemas\MasterKendaraanForm;
+use App\Filament\Resources\MasterKendaraans\Tables\MasterKendaraansTable;
+use App\Models\MasterKendaraan;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 
-class MasterMobilResource extends Resource
+class MasterKendaraanResource extends Resource
 {
-    protected static ?string $model = MasterMobil::class;
+    protected static ?string $model = MasterKendaraan::class;
 
     protected static string|\BackedEnum|null $navigationIcon = Heroicon::OutlinedTruck;
 
-    protected static ?string $navigationLabel = 'Master Mobil';
+    protected static ?string $navigationLabel = 'Master Kendaraan';
 
-    protected static ?string $modelLabel = 'Master Mobil';
+    protected static ?string $modelLabel = 'Master Kendaraan';
 
-    protected static ?string $pluralModelLabel = 'Master Mobil';
+    protected static ?string $pluralModelLabel = 'Master Kendaraan';
 
     protected static string|\UnitEnum|null $navigationGroup = 'Master';
 
     public static function form(Schema $schema): Schema
     {
-        return MasterMobilForm::configure($schema);
+        return MasterKendaraanForm::configure($schema);
     }
 
     public static function table(Table $table): Table
     {
-        return MasterMobilsTable::configure($table);
+        return MasterKendaraansTable::configure($table);
     }
 
     public static function canViewAny(): bool
@@ -54,7 +54,7 @@ class MasterMobilResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => ListMasterMobils::route('/'),
+            'index' => ListMasterKendaraans::route('/'),
         ];
     }
 }

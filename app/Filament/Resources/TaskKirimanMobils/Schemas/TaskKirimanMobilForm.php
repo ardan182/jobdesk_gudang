@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources\TaskKirimanMobils\Schemas;
 
-use App\Models\MasterMobil;
+use App\Models\MasterKendaraan;
 use App\Models\MasterSopir;
 use App\Models\MasterToko;
 use Filament\Forms\Components\Select;
@@ -23,7 +23,7 @@ class TaskKirimanMobilForm
                 ->required(),
             Select::make('no_plat_mobil')
                 ->label('No Plat Mobil')
-                ->options(MasterMobil::pluck('no_plat_mobil', 'no_plat_mobil'))
+                ->options(MasterKendaraan::pluck('nomor_polisi', 'nomor_polisi'))
                 ->searchable()
                 ->required(),
             TimePicker::make('jam_muat')
