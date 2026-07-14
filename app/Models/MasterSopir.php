@@ -10,5 +10,6 @@ class MasterSopir extends Model
 
     protected $fillable = [
         'nama_sopir',
+        'no_whatsapp',
     ];
 }

@@ -5,6 +5,7 @@ namespace App\Filament\Resources\MasterSopirs\Tables;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -14,17 +15,41 @@ class MasterSopirsTable
     {
         return $table
             ->defaultSort('created_at', 'desc')
+            ->recordUrl(null)
             ->columns([
                 TextColumn::make('nama_sopir')
                     ->label('Nama Sopir')
                     ->searchable()
                     ->sortable(),
+                TextColumn::make('no_whatsapp')
+                    ->label('No WhatsApp')
+                    ->icon('heroicon-o-phone')
+                    ->iconColor('success')
+                    ->url(fn ($record) => $record->no_whatsapp
+                        ? 'https://wa.me/' . preg_replace('/[^0-9]/', '', $record->no_whatsapp)
+                        : null)
+                    ->openUrlInNewTab(),
                 TextColumn::make('created_at')
                     ->label('Dibuat')
                     ->date('d/m/Y H:i')
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->recordActions([
+                ViewAction::make()
+                    ->modalHeading('Detail Sopir')
+                    ->modalWidth('lg')
+                    ->infolist([
+                        \Filament\Infolists\Components\TextEntry::make('nama_sopir')->label('Nama Sopir'),
+                        \Filament\Infolists\Components\TextEntry::make('no_whatsapp')
+                            ->label('No WhatsApp')
+                            ->url(fn ($record) => $record->no_whatsapp
+                                ? 'https://wa.me/' . preg_replace('/[^0-9]/', '', $record->no_whatsapp)
+                                : null)
+                            ->openUrlInNewTab()
+                            ->icon('heroicon-o-phone')
+                            ->iconColor('success'),
+                    ]),
                 EditAction::make()
                     ->modalHeading('Edit Master Sopir')
                     ->modalWidth('lg'),

@@ -4,7 +4,7 @@
 
 | Total Task | Priority High | Priority Mid | Priority Low |
 |------------|--------------|--------------|--------------|
-| 28 | 13 | 7 | 8 |
+| 29 | 13 | 9 | 7 |
 
 ## Legend Prioritas & Status
 - **High:** Wajib dikerjakan (Must Have V1)
@@ -714,3 +714,55 @@ Buat menu Master Employee Gudang untuk Admin mengelola data karyawan gudang (nam
 - `database/migrations/xxxx_create_warehouse_employees_table.php`
 - `app/Models/WarehouseEmployee.php`
 - `app/Filament/Resources/WarehouseEmployees/` (resource, pages, schemas, tables)
+
+---
+
+## T-28: Master Sopir — No WhatsApp + View Modal + WA Link (Done)
+
+- **Modul:** Master Sopir
+- **Prioritas:** Mid
+- **Status:** Done
+- **Dependensi:** T-19
+
+**Deskripsi:**
+Tambah kolom `no_whatsapp` di Master Sopir. Klik baris tampilkan modal detail. No WhatsApp ada icon telepon yang klik → buka wa.me di tab baru. Tambah toggle columns.
+
+**Acceptance Criteria:**
+- [x] Migration `add_no_whatsapp_to_master_sopirs` (string 20, nullable)
+- [x] Model: tambah `no_whatsapp` ke `$fillable`
+- [x] Form: field `no_whatsapp` (tel), columns 2
+- [x] Table: `no_whatsapp` → icon phone + url wa.me + openUrlInNewTab
+- [x] `recordUrl(null)` + ViewAction modal detail
+- [x] `created_at` → toggleable(isToggledHiddenByDefault: true)
+
+**Files:**
+- `database/migrations/xxxx_add_no_whatsapp_to_master_sopirs.php`
+- `app/Models/MasterSopir.php`
+- `app/Filament/Resources/MasterSopirs/Schemas/MasterSopirForm.php`
+- `app/Filament/Resources/MasterSopirs/Tables/MasterSopirsTable.php`
+
+---
+
+## T-29: Master Kendaraan — Tambah Kolom + Toggle Columns (Done)
+
+- **Modul:** Master Kendaraan
+- **Prioritas:** Mid
+- **Status:** Done
+- **Dependensi:** T-01
+
+**Deskripsi:**
+Tambah kolom masa_berlaku_stnk, masa_berlaku_kir, keterangan di Master Kendaraan. Atur default toggle columns.
+
+**Acceptance Criteria:**
+- [x] Migration: tambah masa_berlaku_stnk (date), masa_berlaku_kir (date), keterangan (text)
+- [x] Model: tambah fillable
+- [x] Form: DatePicker + Textarea, columns 3
+- [x] Table: 11 kolom dengan toggleable
+- [x] Default muncul: nomor_polisi, jenis, merek, masa stnk, masa kir
+- [x] Default hidden: rangka, mesin, stnk, kir, keterangan, created_at
+
+**Files:**
+- `database/migrations/xxxx_add_columns_to_master_kendaraans.php`
+- `app/Models/MasterKendaraan.php`
+- `app/Filament/Resources/MasterKendaraans/Schemas/MasterKendaraanForm.php`
+- `app/Filament/Resources/MasterKendaraans/Tables/MasterKendaraansTable.php`
