@@ -293,9 +293,11 @@ Tidak ada — ini aplikasi internal perusahaan untuk efisiensi operasional gudan
 - **Spatie Laravel Permission** — role & permission management
 - **Master Toko** — data toko/cabang terpusat, dropdown di form Kiriman Mobil, Keluar Barang, Retur Cabang
 - **Master Sopir** — data sopir terpusat, dropdown di form task
-- **Master Mobil** — data mobil (nama & plat) terpusat, dropdown di form Kiriman Mobil
+- **Master Kendaraan** — data kendaraan terpusat (nomor polisi, jenis, rangka, mesin, STNK, KIR), dropdown di form Kiriman Mobil
 - **Master Toko** — data toko/cabang terpusat, dropdown di form Kiriman Mobil, Keluar Barang, Retur Cabang
 - **Master Employee Gudang** — data karyawan gudang (nama, wa, divisi) untuk keperluan operasional
+- **Master Ekspedisi** — data vendor jasa pengiriman luar (nama, telepon, alamat)
+- **Master Supplier** — data supplier dengan fitur import Excel (XLSX/XLS/CSV)
 - **Composer / NPM** — dependency manager
 
 ### Asumsi

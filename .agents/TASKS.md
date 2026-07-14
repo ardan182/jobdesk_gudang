@@ -4,7 +4,7 @@
 
 | Total Task | Priority High | Priority Mid | Priority Low |
 |------------|--------------|--------------|--------------|
-| 29 | 13 | 9 | 7 |
+| 31 | 15 | 9 | 7 |
 
 ## Legend Prioritas & Status
 - **High:** Wajib dikerjakan (Must Have V1)
@@ -766,3 +766,64 @@ Tambah kolom masa_berlaku_stnk, masa_berlaku_kir, keterangan di Master Kendaraan
 - `app/Models/MasterKendaraan.php`
 - `app/Filament/Resources/MasterKendaraans/Schemas/MasterKendaraanForm.php`
 - `app/Filament/Resources/MasterKendaraans/Tables/MasterKendaraansTable.php`
+
+---
+
+## T-30: Master Ekspedisi (Done)
+
+- **Modul:** Master Ekspedisi
+- **Prioritas:** High
+- **Status:** Done
+- **Dependensi:** T-01, T-02
+
+**Deskripsi:**
+Buat menu Master Ekspedisi untuk data vendor jasa pengiriman luar.
+
+**Acceptance Criteria:**
+- [x] Migration `create_expeditions_table` (id, nama_ekspedisi, no_telepon, alamat, timestamps)
+- [x] Model `Expedition`
+- [x] Resource Admin only, grup "Master", icon OutlinedBuildingOffice2
+- [x] Form: nama_ekspedisi (required), no_telepon (tel), alamat (textarea, columnSpanFull)
+- [x] Table: nama_ekspedisi (searchable), no_telepon (icon WA + wa.me), alamat (limit 50), created_at
+- [x] recordAction('view') + ViewAction modal + EditAction modal
+
+**Files:**
+- `database/migrations/xxxx_create_expeditions_table.php`
+- `app/Models/Expedition.php`
+- `app/Filament/Resources/Expeditions/` (resource, pages, schemas, tables)
+
+---
+
+## T-31: Master Supplier + Import Excel XLSX/XLS/CSV (Done)
+
+- **Modul:** Master Supplier
+- **Prioritas:** High
+- **Status:** Done
+- **Dependensi:** T-01, T-02
+
+**Deskripsi:**
+Buat menu Master Supplier dengan fitur import dari file Excel (XLSX, XLS, CSV). Import skip duplikat berdasarkan kode_supplier. Template download dalam format HTML .xls (buka di Excel).
+
+**Acceptance Criteria:**
+- [x] Migration `create_suppliers_table` (id, kode_supplier unique, nama_supplier, alamat, no_telepon, keterangan, timestamps)
+- [x] Model `Supplier`
+- [x] Resource Admin only, grup "Master", icon OutlinedBuildingStorefront
+- [x] Form: kode_supplier (unique, uppercase via JS), nama_supplier, no_telepon, alamat, keterangan
+- [x] Table: kode_supplier (searchable), nama_supplier (searchable), no_telepon (icon WA), alamat (toggleable hidden), keterangan (toggleable hidden)
+- [x] recordAction('view') + ViewAction modal + EditAction modal
+- [x] Download template Excel (.xls) — route `suppliers.template.download`
+- [x] Import modal dengan FileUpload + template link
+- [x] Parse XLSX via ZipArchive + SimpleXML
+- [x] Parse XLS (HTML) via DOMDocument
+- [x] Parse CSV via fgetcsv
+- [x] Skip duplikat kode_supplier
+- [x] File upload permanen via ->storeFiles()->disk('local')->directory('imports')
+- [x] Header sanitasi: strip HTML + strip * dari header sebelum komparasi
+
+**Files:**
+- `database/migrations/xxxx_create_suppliers_table.php`
+- `app/Models/Supplier.php`
+- `app/Imports/SupplierImport.php`
+- `app/Exports/SupplierTemplateExport.php`
+- `app/Filament/Resources/Suppliers/` (resource, pages, schemas, tables)
+- `routes/web.php` (route download template)
