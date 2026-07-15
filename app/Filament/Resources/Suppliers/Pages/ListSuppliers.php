@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources\Suppliers\Pages;
 
-use App\Exports\SupplierTemplateExport;
+use App\Exports\SuppliersExport;
 use App\Filament\Resources\Suppliers\SupplierResource;
 use App\Filament\Resources\Suppliers\Schemas\SupplierForm;
 use App\Imports\SupplierImport;
