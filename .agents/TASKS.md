@@ -4,7 +4,7 @@
 
 | Total Task | Priority High | Priority Mid | Priority Low |
 |------------|--------------|--------------|--------------|
-| 34 | 15 | 11 | 8 |
+| 35 | 15 | 11 | 9 |
 
 ## Legend Prioritas & Status
 - **High:** Wajib dikerjakan (Must Have V1)
@@ -903,3 +903,26 @@ Berikan warna semantic pada semua Action (button) di aplikasi untuk memperjelas 
 - 7 Master List pages: CreateAction
 - 1 User List page: CreateAction
 - 1 Supplier list page: Import Action
+
+---
+
+## T-35: Compact Table CSS — Striped + Rapat (Done)
+
+- **Modul:** — UI
+- **Prioritas:** Low
+- **Status:** Done
+- **Dependensi:** —
+
+**Deskripsi:**
+Perkecil padding vertikal baris tabel di Filament. Target semua elemen dalam cell (fi-ta-cell, fi-ta-col, fi-ta-text-item, fi-ta-text, fi-badge) dengan CSS `!important` di `head.end` render hook.
+
+**Acceptance Criteria:**
+- [x] CSS target `.fi-ta-cell`, `.fi-ta-col`, `.fi-ta-text-item`, `.fi-ta-text`, `.fi-ta-text-has-badges` → padding 2px
+- [x] CSS target `.fi-badge` → padding 1px
+- [x] CSS target `.fi-ta-header-cell` → padding 4px
+- [x] `line-height: 1.2` untuk compact
+- [x] Striped rows dengan background transparan
+- [x] Dark mode support
+
+**Files:**
+- `app/Providers/Filament/AdminPanelProvider.php`

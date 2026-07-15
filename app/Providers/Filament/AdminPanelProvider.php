@@ -104,19 +104,27 @@ class AdminPanelProvider extends PanelProvider
                     }
 
                     /* ─── Compact table ─── */
-                    .fi-ta-table > tbody > tr > .fi-ta-cell {
-                        padding-top: 1px !important;
-                        padding-bottom: 1px !important;
-                    }
-                    .fi-ta-table > thead > tr > .fi-ta-header-cell {
+                    .fi-ta-cell, .fi-ta-col,
+                    .fi-ta-text-item, .fi-ta-text,
+                    .fi-ta-text-has-badges {
                         padding-top: 2px !important;
                         padding-bottom: 2px !important;
+                        line-height: 1.2 !important;
+                    }
+                    .fi-ta-header-cell {
+                        padding-top: 4px !important;
+                        padding-bottom: 4px !important;
+                    }
+                    .fi-badge {
+                        padding-top: 1px !important;
+                        padding-bottom: 1px !important;
+                        line-height: 1.2 !important;
                     }
                     .fi-ta-row.fi-striped {
-                        background-color: rgba(249, 250, 251, 0.5) !important;
+                        background-color: rgba(249,250,251,0.5) !important;
                     }
                     .dark .fi-ta-row.fi-striped {
-                        background-color: rgba(255, 255, 255, 0.04) !important;
+                        background-color: rgba(255,255,255,0.04) !important;
                     }
                 </style>
                 <script>

@@ -1,12 +1,13 @@
 <?php
 
-use App\Exports\SupplierTemplateExport;
+use App\Exports\SuppliersExport;
 use Illuminate\Support\Facades\Route;
+use Maatwebsite\Excel\Facades\Excel;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
 Route::get('/suppliers/template', function () {
-    return app(SupplierTemplateExport::class)->download();
+    return Excel::download(new SuppliersExport, 'template-supplier.xlsx');
 })->name('suppliers.template.download');
