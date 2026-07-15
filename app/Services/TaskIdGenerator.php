@@ -12,6 +12,7 @@ class TaskIdGenerator
         'terima_supplier' => 'TRM-SUP',
         'keluar_barang' => 'KLR',
         'kiriman_mobil' => 'KRM',
+        'datang_mobil_supplier' => 'ARR-SUP',
     ];
 
     const TABLE_MAP = [
@@ -20,6 +21,7 @@ class TaskIdGenerator
         'terima_supplier' => 'task_terima_suppliers',
         'keluar_barang' => 'task_keluar_barangs',
         'kiriman_mobil' => 'task_kiriman_mobils',
+        'datang_mobil_supplier' => 'arrival_supplier_trucks',
     ];
 
     private static array $lastGenerated = [];

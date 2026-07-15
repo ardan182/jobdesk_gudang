@@ -301,6 +301,8 @@ Tidak ada — ini aplikasi internal perusahaan untuk efisiensi operasional gudan
 - **Master Employee Gudang** — data karyawan gudang (nama, wa, divisi) untuk keperluan operasional
 - **Master Ekspedisi** — data vendor jasa pengiriman luar (nama, telepon, alamat)
 - **Master Supplier** — data supplier dengan fitur import Excel (XLSX/XLS/CSV)
+- **Datang Mobil Supplier** — log awal kedatangan armada supplier sebelum dibongkar (grup Penerimaan)
+- **Activity Log** — log aktivitas create/update di semua modul, ditampilkan di dashboard widget
 - **Composer / NPM** — dependency manager
 
 ### Asumsi

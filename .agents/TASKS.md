@@ -4,7 +4,7 @@
 
 | Total Task | Priority High | Priority Mid | Priority Low |
 |------------|--------------|--------------|--------------|
-| 39 | 15 | 15 | 9 |
+| 41 | 16 | 16 | 9 |
 
 ## Legend Prioritas & Status
 - **High:** Wajib dikerjakan (Must Have V1)
@@ -1021,4 +1021,51 @@ Tambah `updated` event di 5 model task untuk mencatat edit ke activity_logs. For
 - `app/Models/TaskTerimaSupplier.php`
 - `app/Models/TaskKeluarBarang.php`
 - `app/Models/TaskKirimanMobil.php`
+- `app/Filament/Widgets/RecentActivityWidget.php`
+
+---
+
+## T-40: Datang Mobil Supplier — Modul Baru (Done)
+
+- **Modul:** Datang Mobil Supplier
+- **Prioritas:** High
+- **Status:** Done
+- **Dependensi:** T-01, T-02, T-06
+
+**Deskripsi:**
+Modul baru di grup "Penerimaan" untuk mencatat log kedatangan armada supplier sebelum dibongkar. Prefix `ARR-SUP`.
+
+**Acceptance Criteria:**
+- [x] Migration `create_arrival_supplier_trucks_table`
+- [x] Model `ArrivalSupplierTruck` + relasi Supplier, Expedition, User
+- [x] Boot: auto id_task + user_id + ActivityLog
+- [x] Resource grup Penerimaan, role "Checker Terima"
+- [x] Form 8 field, layout columns(3)
+- [x] Table 9 kolom + toggleable + iconButton
+- [x] TaskIdGenerator: tambah prefix ARR-SUP
+
+**Files:**
+- `database/migrations/xxxx_create_arrival_supplier_trucks_table.php`
+- `app/Models/ArrivalSupplierTruck.php`
+- `app/Services/TaskIdGenerator.php`
+- `app/Filament/Resources/TaskDatangMobilSuppliers/`
+
+---
+
+## T-41: Activity Log — Hapus Limit Deskripsi (Done)
+
+- **Modul:** Dashboard
+- **Prioritas:** Mid
+- **Status:** Done
+- **Dependensi:** T-39
+
+**Deskripsi:**
+Hapus limit karakter pada kolom deskripsi dan refferensi di widget aktivitas dashboard.
+
+**Acceptance Criteria:**
+- [x] `description`: `->limit(120)` → `->wrap()`
+- [x] `reference`: `->limit(30)` → tanpa limit
+- [x] Teks panjang wrap ke baris baru
+
+**Files:**
 - `app/Filament/Widgets/RecentActivityWidget.php`

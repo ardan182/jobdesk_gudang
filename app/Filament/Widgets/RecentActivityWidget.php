@@ -29,11 +29,10 @@ class RecentActivityWidget extends BaseWidget
                 TextColumn::make('description')
                     ->label('Aktivitas')
                     ->searchable()
-                    ->limit(120),
+                    ->wrap(),
                 TextColumn::make('reference')
                     ->label('Refferensi')
-                    ->searchable()
-                    ->limit(30),
+                    ->searchable(),
                 TextColumn::make('module')
                     ->label('Modul')
                     ->badge()
