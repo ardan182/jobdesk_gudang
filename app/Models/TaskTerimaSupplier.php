@@ -12,8 +12,11 @@ class TaskTerimaSupplier extends Model
         'id_task',
         'nama_supplier_ekspedisi',
         'no_po_referensi',
+        'jam_datang',
         'jumlah_kolian',
         'jam_bongkar',
+        'selesai_bongkar',
+        'lembar_sj',
         'nama_sopir',
         'status',
         'keterangan',
@@ -21,7 +24,10 @@ class TaskTerimaSupplier extends Model
     ];
 
     protected $casts = [
+        'jam_datang' => 'datetime:H:i',
         'jam_bongkar' => 'datetime:H:i',
+        'selesai_bongkar' => 'datetime:H:i',
+        'lembar_sj' => 'integer',
     ];
 
     protected static function booted(): void
@@ -43,6 +49,30 @@ class TaskTerimaSupplier extends Model
                 'description' => "Supplier: {$model->nama_supplier_ekspedisi} → {$model->status}",
                 'reference' => $model->no_po_referensi,
                 'action' => 'create',
+            ]);
+        });
+
+        static::updated(function ($model) {
+            $changes = [];
+            $tracked = ['status', 'nama_supplier_ekspedisi', 'no_po_referensi', 'jam_datang', 'jumlah_kolian', 'jam_bongkar', 'selesai_bongkar', 'lembar_sj', 'nama_sopir', 'keterangan'];
+            foreach ($tracked as $field) {
+                $old = $model->getOriginal($field);
+                $new = $model->$field;
+                $oldStr = $old ?? '-';
+                $newStr = $new ?? '-';
+                if ($oldStr !== $newStr) {
+                    $changes[] = "$field: $oldStr → $newStr";
+                }
+            }
+            if (empty($changes)) return;
+
+            ActivityLog::create([
+                'user_id' => auth()->id() ?? $model->user_id,
+                'module' => 'Terima Supplier',
+                'id_task' => $model->id_task,
+                'description' => "Supplier: {$model->nama_supplier_ekspedisi} — " . implode('; ', $changes),
+                'reference' => $model->no_po_referensi,
+                'action' => 'update',
             ]);
         });
     }

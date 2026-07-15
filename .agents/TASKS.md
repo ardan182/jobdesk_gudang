@@ -4,7 +4,7 @@
 
 | Total Task | Priority High | Priority Mid | Priority Low |
 |------------|--------------|--------------|--------------|
-| 35 | 15 | 11 | 9 |
+| 39 | 15 | 15 | 9 |
 
 ## Legend Prioritas & Status
 - **High:** Wajib dikerjakan (Must Have V1)
@@ -926,3 +926,99 @@ Perkecil padding vertikal baris tabel di Filament. Target semua elemen dalam cel
 
 **Files:**
 - `app/Providers/Filament/AdminPanelProvider.php`
+
+---
+
+## T-36: Pagination 50 + Icon-Only Actions (Done)
+
+- **Modul:** — UI
+- **Prioritas:** Mid
+- **Status:** Done
+- **Dependensi:** T-35
+
+**Deskripsi:**
+Ubah pagination default dari 25 ke 50, opsi [50, 100, 200, all]. Ubah semua tombol aksi tabel jadi icon-only dengan tooltip.
+
+**Acceptance Criteria:**
+- [x] AppServiceProvider: `defaultPaginationPageOption(50)`, options [50, 100, 200, 'all']
+- [x] 12 table files: ViewAction → `->iconButton()->tooltip('Lihat Detail')`
+- [x] 12 table files: EditAction → `->iconButton()->tooltip('Ubah Data')`
+- [x] 12 table files: DeleteBulkAction → `->iconButton()->tooltip('Hapus Data')`
+
+**Files:**
+- `app/Providers/AppServiceProvider.php`
+- 12 Table files
+
+---
+
+## T-37: Kolom Jam Datang & Selesai Bongkar — Terima Supplier (Done)
+
+- **Modul:** Task Terima Supplier
+- **Prioritas:** Mid
+- **Status:** Done
+- **Dependensi:** T-06
+
+**Deskripsi:**
+Tambah 2 kolom waktu: jam_datang, selesai_bongkar.
+
+**Acceptance Criteria:**
+- [x] Migration: `jam_datang` time nullable, `selesai_bongkar` time nullable
+- [x] Model: + fillable + casts datetime:H:i
+- [x] Form: + 2 TimePicker
+- [x] Table: + 2 kolom + 2 entry infolist
+
+**Files:**
+- `database/migrations/xxxx_add_jam_datang_selesai_bongkar.php`
+- `app/Models/TaskTerimaSupplier.php`
+- `app/Filament/Resources/TaskTerimaSuppliers/Schemas/TaskTerimaSupplierForm.php`
+- `app/Filament/Resources/TaskTerimaSuppliers/Tables/TaskTerimaSuppliersTable.php`
+
+---
+
+## T-38: Kolom Lembar SJ — Terima Supplier (Done)
+
+- **Modul:** Task Terima Supplier
+- **Prioritas:** Mid
+- **Status:** Done
+- **Dependensi:** T-37
+
+**Deskripsi:**
+Tambah kolom `lembar_sj` (integer, nullable, default 1) sebelum nama_sopir.
+
+**Acceptance Criteria:**
+- [x] Migration: `lembar_sj` integer nullable default 1
+- [x] Model: + fillable + integer cast
+- [x] Form: + TextInput numeric default 1
+- [x] Table: + kolom grid + entry infolist
+
+**Files:**
+- `database/migrations/xxxx_add_lembar_sj_to_task_terima_suppliers.php`
+- `app/Models/TaskTerimaSupplier.php`
+- `app/Filament/Resources/TaskTerimaSuppliers/Schemas/TaskTerimaSupplierForm.php`
+- `app/Filament/Resources/TaskTerimaSuppliers/Tables/TaskTerimaSuppliersTable.php`
+
+---
+
+## T-39: Activity Log — Track Update + Perubahan Field (Done)
+
+- **Modul:** Dashboard
+- **Prioritas:** Mid
+- **Status:** Done
+- **Dependensi:** T-23
+
+**Deskripsi:**
+Tambah `updated` event di 5 model task untuk mencatat edit ke activity_logs. Format: `field: lama → baru`. Limit deskripsi dashboard dari 60 ke 120 karakter.
+
+**Acceptance Criteria:**
+- [x] 5 task models: `updated` event → track perubahan field relevan
+- [x] Format: `"Module — field1: lama → baru; field2: lama → baru"`
+- [x] Skip jika tidak ada perubahan
+- [x] RecentActivityWidget: `->limit(120)`
+
+**Files:**
+- `app/Models/TaskReturSupplier.php`
+- `app/Models/TaskReturCabang.php`
+- `app/Models/TaskTerimaSupplier.php`
+- `app/Models/TaskKeluarBarang.php`
+- `app/Models/TaskKirimanMobil.php`
+- `app/Filament/Widgets/RecentActivityWidget.php`

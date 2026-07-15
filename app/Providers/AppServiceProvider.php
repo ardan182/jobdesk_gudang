@@ -15,7 +15,8 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Table::configureUsing(function (Table $table): void {
-            $table->defaultPaginationPageOption(25);
+            $table->defaultPaginationPageOption(50);
+            $table->paginationPageOptions([50, 100, 200, 'all']);
         }, isImportant: true);
     }
 }

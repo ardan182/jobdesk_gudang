@@ -211,9 +211,9 @@
 
 **FR-13: Activity Log Dashboard**
 - **Prioritas:** 🟡 Should Have
-- **Input:** Auto-log dari model `created` event
-- **Proses:** Setiap input task otomatis tercatat di `activity_logs`
-- **Output:** Widget dashboard berupa Filament `TableWidget` — user, aktivitas, refferensi (no_plat/no_sj/no_po/no_ref/nama_supir), modul (badge warna), waktu
+- **Input:** Auto-log dari model `created` & `updated` event
+- **Proses:** Setiap input task otomatis tercatat di `activity_logs`. Edit task mencatat field yang berubah (`field: lama → baru`)
+- **Output:** Widget dashboard berupa Filament `TableWidget` — user, aktivitas (max 120 karakter), refferensi, modul (badge warna), waktu
 - **Aturan:** Filter per modul, pagination 10/25/50, sort by waktu terbaru
 
 ### Modul 8: Master Sopir

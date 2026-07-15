@@ -46,6 +46,30 @@ class TaskKeluarBarang extends Model
                 'action' => 'create',
             ]);
         });
+
+        static::updated(function ($model) {
+            $changes = [];
+            $tracked = ['status', 'toko_tujuan', 'supplier', 'no_referensi_sj', 'jumlah_kolian', 'jam_naik', 'nama_koordinator', 'keterangan'];
+            foreach ($tracked as $field) {
+                $old = $model->getOriginal($field);
+                $new = $model->$field;
+                $oldStr = $old ?? '-';
+                $newStr = $new ?? '-';
+                if ($oldStr !== $newStr) {
+                    $changes[] = "$field: $oldStr → $newStr";
+                }
+            }
+            if (empty($changes)) return;
+
+            ActivityLog::create([
+                'user_id' => auth()->id() ?? $model->user_id,
+                'module' => 'Keluar Barang',
+                'id_task' => $model->id_task,
+                'description' => "Toko: {$model->toko_tujuan} — " . implode('; ', $changes),
+                'reference' => $model->no_referensi_sj,
+                'action' => 'update',
+            ]);
+        });
     }
 
     public function user(): BelongsTo

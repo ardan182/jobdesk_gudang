@@ -40,6 +40,8 @@ class MasterSopirsTable
             ])
             ->recordActions([
                 ViewAction::make()
+                    ->iconButton()
+                    ->tooltip('Lihat Detail')
                     ->color('info')
                     ->modalHeading('Detail Sopir')
                     ->modalWidth('lg')
@@ -55,6 +57,8 @@ class MasterSopirsTable
                             ->iconColor('success'),
                     ]),
                 EditAction::make()
+                    ->iconButton()
+                    ->tooltip('Ubah Data')
                     ->color('warning')
                     ->modalHeading('Edit Master Sopir')
                     ->modalWidth('lg'),
@@ -62,6 +66,8 @@ class MasterSopirsTable
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make()
+                        ->iconButton()
+                        ->tooltip('Hapus Data')
                         ->color('danger')
                         ->visible(fn () => auth()->user()?->hasRole('Admin') ?? false),
                 ]),

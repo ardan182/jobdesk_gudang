@@ -34,11 +34,17 @@ class UsersTable
                 //
             ])
             ->recordActions([
-                EditAction::make(),
+                EditAction::make()
+                    ->iconButton()
+                    ->tooltip('Ubah Data')
+                    ->color('warning'),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                    DeleteBulkAction::make()
+                        ->iconButton()
+                        ->tooltip('Hapus Data')
+                        ->color('danger'),
                 ]),
             ]);
     }

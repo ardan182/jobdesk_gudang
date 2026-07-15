@@ -65,6 +65,8 @@ class WarehouseEmployeesTable
             ])
             ->recordActions([
                 EditAction::make()
+                    ->iconButton()
+                    ->tooltip('Ubah Data')
                     ->color('warning')
                     ->modalHeading('Edit Master Employee Gudang')
                     ->modalWidth('lg'),
@@ -72,6 +74,8 @@ class WarehouseEmployeesTable
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make()
+                        ->iconButton()
+                        ->tooltip('Hapus Data')
                         ->color('danger')
                         ->visible(fn () => auth()->user()?->hasRole('Admin') ?? false),
                 ]),

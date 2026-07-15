@@ -32,6 +32,8 @@ class MasterTokosTable
             ])
             ->recordActions([
                 EditAction::make()
+                    ->iconButton()
+                    ->tooltip('Ubah Data')
                     ->color('warning')
                     ->modalHeading('Edit Master Toko')
                     ->modalWidth('lg'),
@@ -39,6 +41,8 @@ class MasterTokosTable
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make()
+                        ->iconButton()
+                        ->tooltip('Hapus Data')
                         ->color('danger')
                         ->visible(fn () => auth()->user()?->hasRole('Admin') ?? false),
                 ]),

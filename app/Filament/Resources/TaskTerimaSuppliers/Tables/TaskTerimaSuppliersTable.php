@@ -42,9 +42,24 @@ class TaskTerimaSuppliersTable
                     ->numeric()
                     ->sortable()
                     ->grow(false),
+                TextColumn::make('jam_datang')
+                    ->label('Jam Datang')
+                    ->time('H:i')
+                    ->sortable()
+                    ->grow(false),
                 TextColumn::make('jam_bongkar')
                     ->label('Jam Bongkar')
                     ->time('H:i')
+                    ->sortable()
+                    ->grow(false),
+                TextColumn::make('selesai_bongkar')
+                    ->label('Selesai Bongkar')
+                    ->time('H:i')
+                    ->sortable()
+                    ->grow(false),
+                TextColumn::make('lembar_sj')
+                    ->label('Lembar SJ')
+                    ->numeric()
                     ->sortable()
                     ->grow(false),
                 TextColumn::make('nama_sopir')
@@ -102,6 +117,8 @@ class TaskTerimaSuppliersTable
             ->recordAction('view')
             ->recordActions([
                 ViewAction::make()
+                    ->iconButton()
+                    ->tooltip('Lihat Detail')
                     ->color('info')
                     ->modalHeading('Detail Terima Supplier')
                     ->modalSubmitAction(false)
@@ -113,19 +130,26 @@ class TaskTerimaSuppliersTable
                                 TextEntry::make('id_task')->label('ID Task'),
                                 TextEntry::make('nama_supplier_ekspedisi')->label('Supplier / Ekspedisi'),
                                 TextEntry::make('no_po_referensi')->label('No PO Referensi'),
+                                TextEntry::make('jam_datang')->label('Jam Datang'),
                                 TextEntry::make('jumlah_kolian')->label('Kolian'),
                                 TextEntry::make('jam_bongkar')->label('Jam Bongkar'),
+                                TextEntry::make('selesai_bongkar')->label('Selesai Bongkar'),
+                                TextEntry::make('lembar_sj')->label('Lembar SJ'),
                                 TextEntry::make('nama_sopir')->label('Sopir'),
                                 TextEntry::make('status')->label('Status')->badge(),
                                 TextEntry::make('keterangan')->label('Keterangan')->columnSpanFull(),
                             ]),
                     ]),
                 EditAction::make()
+                    ->iconButton()
+                    ->tooltip('Ubah Data')
                     ->color('warning'),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make()
+                        ->iconButton()
+                        ->tooltip('Hapus Data')
                         ->color('danger')
                         ->visible(fn () => auth()->user()?->hasRole('Admin') ?? false),
                 ]),

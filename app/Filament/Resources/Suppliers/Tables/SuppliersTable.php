@@ -59,6 +59,8 @@ class SuppliersTable
             ])
             ->recordActions([
                 ViewAction::make()
+                    ->iconButton()
+                    ->tooltip('Lihat Detail')
                     ->color('info')
                     ->modalHeading('Detail Supplier')
                     ->modalWidth('lg')
@@ -77,6 +79,8 @@ class SuppliersTable
                         TextEntry::make('keterangan')->label('Keterangan'),
                     ]),
                 EditAction::make()
+                    ->iconButton()
+                    ->tooltip('Ubah Data')
                     ->color('warning')
                     ->modalHeading('Edit Supplier')
                     ->modalWidth('lg'),
@@ -84,6 +88,8 @@ class SuppliersTable
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make()
+                        ->iconButton()
+                        ->tooltip('Hapus Data')
                         ->color('danger')
                         ->visible(fn () => auth()->user()?->hasRole('Admin') ?? false),
                 ]),

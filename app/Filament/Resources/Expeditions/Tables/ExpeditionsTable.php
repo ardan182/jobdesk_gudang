@@ -44,6 +44,8 @@ class ExpeditionsTable
             ])
             ->recordActions([
                 ViewAction::make()
+                    ->iconButton()
+                    ->tooltip('Lihat Detail')
                     ->color('info')
                     ->modalHeading('Detail Ekspedisi')
                     ->modalWidth('lg')
@@ -60,6 +62,8 @@ class ExpeditionsTable
                         TextEntry::make('alamat')->label('Alamat'),
                     ]),
                 EditAction::make()
+                    ->iconButton()
+                    ->tooltip('Ubah Data')
                     ->color('warning')
                     ->modalHeading('Edit Ekspedisi')
                     ->modalWidth('lg'),
@@ -67,6 +71,8 @@ class ExpeditionsTable
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make()
+                        ->iconButton()
+                        ->tooltip('Hapus Data')
                         ->color('danger')
                         ->visible(fn () => auth()->user()?->hasRole('Admin') ?? false),
                 ]),

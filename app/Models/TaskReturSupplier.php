@@ -46,6 +46,30 @@ class TaskReturSupplier extends Model
                 'action' => 'create',
             ]);
         });
+
+        static::updated(function ($model) {
+            $changes = [];
+            $tracked = ['status', 'nama_supplier_ekspedisi', 'no_plat_mobil', 'nama_sopir', 'jam_muat', 'jumlah_kolian', 'admin_sj_retur', 'keterangan'];
+            foreach ($tracked as $field) {
+                $old = $model->getOriginal($field);
+                $new = $model->$field;
+                $oldStr = $old ?? '-';
+                $newStr = $new ?? '-';
+                if ($oldStr !== $newStr) {
+                    $changes[] = "$field: $oldStr → $newStr";
+                }
+            }
+            if (empty($changes)) return;
+
+            ActivityLog::create([
+                'user_id' => auth()->id() ?? $model->user_id,
+                'module' => 'Retur Supplier',
+                'id_task' => $model->id_task,
+                'description' => "Supplier: {$model->nama_supplier_ekspedisi} — " . implode('; ', $changes),
+                'reference' => $model->no_plat_mobil,
+                'action' => 'update',
+            ]);
+        });
     }
 
     public function user(): BelongsTo

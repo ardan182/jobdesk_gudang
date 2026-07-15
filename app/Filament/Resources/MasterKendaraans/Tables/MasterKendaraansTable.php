@@ -78,6 +78,8 @@ class MasterKendaraansTable
             ])
             ->recordActions([
                 ViewAction::make()
+                    ->iconButton()
+                    ->tooltip('Lihat Detail')
                     ->color('info')
                     ->modalHeading('Detail Kendaraan')
                     ->modalWidth('lg')
@@ -96,6 +98,8 @@ class MasterKendaraansTable
                         TextEntry::make('keterangan')->label('Keterangan'),
                     ]),
                 EditAction::make()
+                    ->iconButton()
+                    ->tooltip('Ubah Data')
                     ->color('warning')
                     ->modalHeading('Edit Kendaraan')
                     ->modalWidth('lg'),
@@ -103,6 +107,8 @@ class MasterKendaraansTable
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make()
+                        ->iconButton()
+                        ->tooltip('Hapus Data')
                         ->color('danger')
                         ->visible(fn () => auth()->user()?->hasRole('Admin') ?? false),
                 ]),

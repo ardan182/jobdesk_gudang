@@ -45,6 +45,30 @@ class TaskReturCabang extends Model
                 'action' => 'create',
             ]);
         });
+
+        static::updated(function ($model) {
+            $changes = [];
+            $tracked = ['cabang', 'jenis_retur', 'no_sj_retur', 'total_kolian', 'jam_bongkar', 'nama_sopir', 'keterangan'];
+            foreach ($tracked as $field) {
+                $old = $model->getOriginal($field);
+                $new = $model->$field;
+                $oldStr = $old ?? '-';
+                $newStr = $new ?? '-';
+                if ($oldStr !== $newStr) {
+                    $changes[] = "$field: $oldStr → $newStr";
+                }
+            }
+            if (empty($changes)) return;
+
+            ActivityLog::create([
+                'user_id' => auth()->id() ?? $model->user_id,
+                'module' => 'Retur Cabang',
+                'id_task' => $model->id_task,
+                'description' => "Cabang: {$model->cabang} — " . implode('; ', $changes),
+                'reference' => $model->no_sj_retur,
+                'action' => 'update',
+            ]);
+        });
     }
 
     public function user(): BelongsTo

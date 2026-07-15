@@ -47,6 +47,30 @@ class TaskKirimanMobil extends Model
                 'action' => 'create',
             ]);
         });
+
+        static::updated(function ($model) {
+            $changes = [];
+            $tracked = ['cabang', 'no_plat_mobil', 'jam_muat', 'jam_selesai_muat', 'jam_berangkat', 'nama_supir', 'keterangan'];
+            foreach ($tracked as $field) {
+                $old = $model->getOriginal($field);
+                $new = $model->$field;
+                $oldStr = $old ?? '-';
+                $newStr = $new ?? '-';
+                if ($oldStr !== $newStr) {
+                    $changes[] = "$field: $oldStr → $newStr";
+                }
+            }
+            if (empty($changes)) return;
+
+            ActivityLog::create([
+                'user_id' => auth()->id() ?? $model->user_id,
+                'module' => 'Kiriman Mobil',
+                'id_task' => $model->id_task,
+                'description' => "Cabang: {$model->cabang} — " . implode('; ', $changes),
+                'reference' => $model->nama_supir,
+                'action' => 'update',
+            ]);
+        });
     }
 
     public function user(): BelongsTo
