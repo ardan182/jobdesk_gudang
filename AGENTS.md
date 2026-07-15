@@ -90,3 +90,12 @@ Filament v5 Resource parent class uses property types `string|\BackedEnum|null` 
 ## Dependencies
 - `filament/filament` — admin panel v5
 - `spatie/laravel-permission` — role middleware
+
+## Pull & update di PC kantor (Windows/Linux)
+```bash
+git pull
+composer install --no-dev     # bukan composer update!
+php artisan migrate
+php artisan optimize:clear    # bersihkan semua cache
+npm run build                 # rebuild CSS/JS (jika ada perubahan)
+```
