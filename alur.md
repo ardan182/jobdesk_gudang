@@ -1,6 +1,6 @@
 # 📋 Alur Program Jobdesk Gudang AP
 
-**Tanggal:** 09 Juli 2026
+**Tanggal:** 17 Juli 2026
 
 ---
 
@@ -25,10 +25,12 @@ Di sebelah kiri ada **menu samping (sidebar)**. Ini daftar modulnya:
 
 | Menu | Untuk Siapa |
 |------|-------------|
-| 🔄 **Retur** | Checker Retur |
-| 📥 **Penerimaan** | Checker Terima |
-| 📤 **Pengiriman** | Checker Keluar & Checker Kiriman |
-| ⚙️ **Pengaturan** | Admin saja (buat user baru) |
+| 📊 **Master** (6 menu) | Admin saja |
+| 🔄 **Retur** (2 menu) | Checker Retur |
+| 📥 **Penerimaan** (Datang Mobil + Terima) | Checker Terima |
+| 📤 **Pengiriman** (Keluar + Kiriman) | Checker Keluar & Checker Kiriman |
+| 📋 **Administrasi** (Cuti & Absensi) | Admin saja |
+| ⚙️ **Pengaturan** (Users) | Admin saja |
 
 ---
 
@@ -175,14 +177,55 @@ Di sebelah kiri ada **menu samping (sidebar)**. Ini daftar modulnya:
 
 ---
 
+## 📥 Modul 6: Datang Mobil Supplier
+
+**Dipake oleh:** Checker Terima
+**Gunanya:** Mencatat kedatangan mobil supplier
+
+### Cara Input
+
+1. Klik menu **"Datang Mobil Supplier"** di sidebar (grup Penerimaan)
+2. Klik tombol **"Tambah"**
+3. Isi data: No Plat, Nama Sopir, Nama Supplier, Jam Datang, Jam Selesai Bongkar
+4. Klik **"Simpan"**
+
+---
+
+## 📋 Modul 7: Cuti & Absensi
+
+**Dipake oleh:** Admin
+**Gunanya:** Melihat dan mencatat cuti/sakit/izin karyawan per bulan
+
+### Cara Input
+
+1. Klik menu **"Cuti & Absensi"** di sidebar (grup Administrasi)
+2. Pilih **Bulan** dan **Tahun** untuk lihat matriks
+3. Klik tombol **"Input Cuti / Absen"**
+4. Pilih karyawan, tanggal, tipe (Cuti/Sakit/Izin), isi keterangan
+5. Klik **"Simpan"**
+
+### Cara Hapus
+
+Klik badge **C/S/I** di tabel matriks → konfirmasi → terhapus.
+
+### Aturan
+
+- ✅ Cuti max **12 hari per tahun** (reset tiap tahun)
+- ✅ Sakit & Izin **tidak terbatas**
+- ✅ Tidak bisa input **tanggal kemarin**
+- ❌ Tidak boleh **duplikat tanggal** per karyawan
+
+---
+
 ## ⚡ Yang Terisi Otomatis (Tidak Perlu Diisi Manual)
 
 | Data | Keterangan |
 |------|------------|
-| 🆔 **ID Task** | Dibuat otomatis — contoh: `RET-SUP-20260709-001` |
-| 🔢 **Nomor Baris** | Otomatis 1, 2, 3... setiap kali nambah baris |
+| 🆔 **ID Task** | Dibuat otomatis — contoh: `RET-SUP-00001` (format baru: prefix + 5 digit) |
 | 👤 **Checker** | Otomatis sesuai yang login |
 | 📅 **Tanggal** | Otomatis hari ini |
+
+> ⚠️ Setiap 1 baris = 1 ID Task (tidak lagi 1 ID untuk banyak baris)
 
 ---
 
