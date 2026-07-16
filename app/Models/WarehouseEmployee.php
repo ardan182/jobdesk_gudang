@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class WarehouseEmployee extends Model
 {
@@ -11,6 +12,11 @@ class WarehouseEmployee extends Model
     protected $fillable = [
         'nama_karyawan',
         'no_whatsapp',
-        'divisi_gudang',
+        'division_id',
     ];
+
+    public function division(): BelongsTo
+    {
+        return $this->belongsTo(Division::class);
+    }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Exports;
 
+use App\Models\Division;
 use Symfony\Component\HttpFoundation\Response;
 use ZipArchive;
 
@@ -9,13 +10,15 @@ class EmployeesExport
 {
     public function download(): Response
     {
+        $divisiList = Division::pluck('nama_divisi')->toArray();
+        $defaultDivisi = $divisiList ?: ['Retur', 'Pecah Belah', 'Sariindah', 'Elektrik', 'CS Gudang', 'Kirim Cabang', 'Umum'];
+
         $headers = ['Nama Karyawan', 'No WhatsApp', 'Divisi Gudang'];
         $sample = [
-            ['Budi Santoso', '08123456789', 'Retur'],
-            ['Sari Dewi', '082233445566', 'Pecah Belah'],
-            ['Ahmad Hidayat', '083355779911', 'Sariindah'],
+            ['Karyawan 1', '08123456789', $defaultDivisi[0] ?? 'Retur'],
+            ['Karyawan 2', '082233445566', $defaultDivisi[1] ?? 'Pecah Belah'],
+            ['Karyawan 3', '083355779911', $defaultDivisi[2] ?? 'Sariindah'],
         ];
-        $divisiList = ['Retur', 'Pecah Belah', 'Sariindah', 'Elektrik', 'CS Gudang', 'Kirim Cabang', 'Umum'];
 
         $zip = new ZipArchive;
         $tmp = tempnam(sys_get_temp_dir(), 'xlsx');

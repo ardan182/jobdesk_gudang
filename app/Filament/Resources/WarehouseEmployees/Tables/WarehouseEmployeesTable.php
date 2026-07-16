@@ -30,19 +30,10 @@ class WarehouseEmployeesTable
                         : null)
                     ->openUrlInNewTab()
                     ->grow(false),
-                TextColumn::make('divisi_gudang')
+                TextColumn::make('division.nama_divisi')
                     ->label('Divisi')
                     ->badge()
-                    ->color(fn (string $state): string => match ($state) {
-                        'Retur' => 'warning',
-                        'Pecah Belah' => 'info',
-                        'Sariindah' => 'success',
-                        'Elektrik' => 'danger',
-                        'CS Gudang' => 'primary',
-                        'Kirim Cabang' => 'gray',
-                        'Umum' => 'gray',
-                        default => 'gray',
-                    })
+                    ->color('gray')
                     ->grow(false),
                 TextColumn::make('created_at')
                     ->label('Dibuat')
@@ -51,17 +42,9 @@ class WarehouseEmployeesTable
                     ->grow(false),
             ])
             ->filters([
-                SelectFilter::make('divisi_gudang')
+                SelectFilter::make('division_id')
                     ->label('Divisi')
-                    ->options([
-                        'Retur' => 'Retur',
-                        'Pecah Belah' => 'Pecah Belah',
-                        'Sariindah' => 'Sariindah',
-                        'Elektrik' => 'Elektrik',
-                        'CS Gudang' => 'CS Gudang',
-                        'Kirim Cabang' => 'Kirim Cabang',
-                        'Umum' => 'Umum',
-                    ]),
+                    ->relationship('division', 'nama_divisi'),
             ])
             ->recordActions([
                 EditAction::make()

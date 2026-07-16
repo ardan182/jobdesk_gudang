@@ -18,17 +18,11 @@ class WarehouseEmployeeForm
                 ->label('No WhatsApp')
                 ->tel()
                 ->placeholder('Contoh: 08123456789'),
-            Select::make('divisi_gudang')
-                ->label('Divisi Gudang')
-                ->options([
-                    'Retur' => 'Retur',
-                    'Pecah Belah' => 'Pecah Belah',
-                    'Sariindah' => 'Sariindah',
-                    'Elektrik' => 'Elektrik',
-                    'CS Gudang' => 'CS Gudang',
-                    'Kirim Cabang' => 'Kirim Cabang',
-                    'Umum' => 'Umum',
-                ])
+            Select::make('division_id')
+                ->label('Divisi')
+                ->relationship('division', 'nama_divisi')
+                ->searchable()
+                ->preload()
                 ->required(),
         ];
     }
