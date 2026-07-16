@@ -4,7 +4,7 @@
 
 | Total Task | Priority High | Priority Mid | Priority Low |
 |------------|--------------|--------------|--------------|
-| 41 | 16 | 16 | 9 |
+| 42 | 16 | 17 | 9 |
 
 ## Legend Prioritas & Status
 - **High:** Wajib dikerjakan (Must Have V1)
@@ -1069,3 +1069,27 @@ Hapus limit karakter pada kolom deskripsi dan refferensi di widget aktivitas das
 
 **Files:**
 - `app/Filament/Widgets/RecentActivityWidget.php`
+
+---
+
+## T-42: Employee Export Template — Master Employee Gudang (Done)
+
+- **Modul:** Master Employee Gudang
+- **Prioritas:** Mid
+- **Status:** Done
+- **Dependensi:** T-27
+
+**Deskripsi:**
+Buat export template XLSX untuk Master Employee Gudang menggunakan ZipArchive + XML (native tanpa library).
+
+**Acceptance Criteria:**
+- [x] `EmployeesExport.php` — generate XLSX via ZipArchive + XML
+- [x] Header: Nama Karyawan, No WhatsApp, Divisi Gudang
+- [x] Sample data 3 baris (bukan dari DB)
+- [x] Data Validation dropdown Divisi
+- [x] Route + tombol Import di List page
+
+**Files:**
+- `app/Exports/EmployeesExport.php`
+- `routes/web.php`
+- `app/Filament/Resources/WarehouseEmployees/Pages/ListWarehouseEmployees.php`

@@ -213,10 +213,19 @@
 - **Prioritas:** 🟡 Should Have
 - **Input:** Auto-log dari model `created` & `updated` event
 - **Proses:** Setiap input task otomatis tercatat di `activity_logs`. Edit task mencatat field yang berubah (`field: lama → baru`)
-- **Output:** Widget dashboard berupa Filament `TableWidget` — user, aktivitas (max 120 karakter), refferensi, modul (badge warna), waktu
+- **Output:** Widget dashboard berupa Filament `TableWidget` — user, aktivitas (wrap), refferensi, modul (badge warna), waktu
 - **Aturan:** Filter per modul, pagination 10/25/50, sort by waktu terbaru
 
-### Modul 8: Master Sopir
+### Modul 8: Master Employee Gudang
+
+**FR-14: Import Employee Template**
+- **Prioritas:** 🟡 Should Have
+- **Input:** Download template XLSX via tombol "Import Employee"
+- **Proses:** Generate file `.xlsx` dengan ZipArchive + XML (native PHP, tanpa library). Data sample 3 baris. Divisi Gudang dilengkapi Excel Data Validation dropdown.
+- **Output:** File `employee-template.xlsx` — siap diisi user
+- **Aturan:** Hanya Admin yang bisa akses. Route `GET /employees/template`.
+
+### Modul 9: Master Sopir
 
 **FR-13: CRUD Master Sopir**
 - **Prioritas:** 🔴 Must Have
