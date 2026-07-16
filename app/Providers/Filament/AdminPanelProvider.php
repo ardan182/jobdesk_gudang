@@ -42,6 +42,7 @@ class AdminPanelProvider extends PanelProvider
                 NavigationGroup::make('Retur')->collapsed(true),
                 NavigationGroup::make('Penerimaan')->collapsed(true),
                 NavigationGroup::make('Pengiriman')->collapsed(true),
+                NavigationGroup::make('Administrasi')->collapsed(true),
                 NavigationGroup::make('Pengaturan')->collapsed(true),
             ])
             ->font('Arial', provider: LocalFontProvider::class)
@@ -131,7 +132,7 @@ class AdminPanelProvider extends PanelProvider
                     document.addEventListener(\'alpine:init\', () => {
                         if (Alpine.store(\'sidebar\')) {
                             Alpine.store(\'sidebar\').collapsedGroups = [
-                                \'Master\', \'Retur\', \'Penerimaan\', \'Pengiriman\', \'Pengaturan\'
+                                \'Master\', \'Retur\', \'Penerimaan\', \'Pengiriman\', \'Administrasi\', \'Pengaturan\'
                             ];
                         }
                     });
@@ -141,6 +142,7 @@ class AdminPanelProvider extends PanelProvider
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->pages([
                 Dashboard::class,
+                \App\Filament\Pages\ManageLeaves::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
