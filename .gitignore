@@ -25,3 +25,8 @@ _ide_helper.php
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# Agent documentation — jangan buat di root, gunakan .agents/ saja
+/PRD.md
+/TASKS.md
+/TECH-SPEC.md

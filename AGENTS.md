@@ -2,6 +2,10 @@
 
 Laravel 13 monolith with a single Filament v5 admin panel at `/admin`. Multi-user CRUD app for warehouse daily task logging, employee leave tracking, and master data management.
 
+## 📁 Dokumentasi — WAJIB di `.agents/`
+
+Semua file dokumentasi (PRD, Tech Spec, Task list) HARUS disimpan di folder `.agents/`. **Jangan pernah membuat** `PRD.md`, `TASKS.md`, atau `TECH-SPEC.md` di root project — file-file itu sudah di-ignore oleh `.gitignore`.
+
 ## Setup
 
 ```bash
