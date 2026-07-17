@@ -7,6 +7,10 @@
     $hariIni = now();
     $jenisWarna = ['Cuti' => '#f43f5e', 'Sakit' => '#eab308', 'Izin' => '#3b82f6'];
     $jenisLabel = ['Cuti' => 'C', 'Sakit' => 'S', 'Izin' => 'I'];
+    $employees = $this->employees;
+    $calendar = $this->calendar;
+    $bulan = $this->bulan;
+    $tahun = $this->tahun;
 @endphp
 {{-- Legend --}}
 <div class="flex flex-wrap items-center gap-3 pb-2 text-xs text-gray-400">
@@ -54,8 +58,8 @@
                                 $dateStr = $hariIni->month($bulan)->day($day)->format('Y-m-d');
                                 $isWeekend = in_array($hariIni->month($bulan)->day($day)->dayOfWeek, [0, 6]);
                             @endphp
-                            <td class="fi-ta-cell text-center {{ $isWeekend ? 'bg-red-50/40 dark:bg-red-900/5' : '' }}" style="min-width:34px;max-width:34px">
-                                <div class="fi-ta-col flex justify-center text-center">
+                            <td class="fi-ta-cell text-center align-middle {{ $isWeekend ? 'bg-red-50/40 dark:bg-red-900/5' : '' }}" style="min-width:34px;max-width:34px">
+                                <div class="fi-ta-col flex justify-center text-center items-center">
                                     @if ($jenis)
                                         <button x-on:click="if (confirm('Hapus {{ strtolower($jenis) }} tgl {{ str_pad($day, 2, '0', STR_PAD_LEFT) }}/{{ str_pad($bulan, 2, '0', STR_PAD_LEFT) }}/{{ $tahun }}?')) $wire.deleteLeave({{ $emp['id'] }}, '{{ $dateStr }}')"
                                             class="inline-flex items-center justify-center w-6 h-6 rounded text-white text-xs font-bold cursor-pointer hover:opacity-80 hover:scale-110 transition-all shadow-sm"
@@ -68,8 +72,8 @@
                                 </div>
                             </td>
                         @endforeach
-                        <td class="fi-ta-cell text-center sticky right-0 z-10 border-l border-gray-200 dark:border-gray-700" style="background:inherit">
-                            <div class="fi-ta-col flex justify-center text-center">
+                        <td class="fi-ta-cell text-center align-middle sticky right-0 z-10 border-l border-gray-200 dark:border-gray-700" style="background:inherit">
+                            <div class="fi-ta-col flex justify-center text-center items-center">
                                 <div class="fi-ta-text-item fi-ta-text text-sm font-semibold"
                                     style="{{ $emp['sisa_cuti'] < 3 ? 'color:#ef4444' : ($emp['sisa_cuti'] < 7 ? 'color:#f59e0b' : 'color:#22c55e') }}">
                                     {{ $emp['sisa_cuti'] }}

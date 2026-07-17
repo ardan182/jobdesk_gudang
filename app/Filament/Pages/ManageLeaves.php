@@ -15,6 +15,7 @@ use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Schemas\Components\Html;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\View;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 
@@ -30,10 +31,10 @@ class ManageLeaves extends Page
 
     protected static string|\UnitEnum|null $navigationGroup = 'Administrasi';
 
-    public int $bulan = 0;
-    public int $tahun = 0;
-    public ?int $filter_divisi = null;
-    public bool $hanya_absen = false;
+    public $bulan = 0;
+    public $tahun = 0;
+    public $filter_divisi = null;
+    public $hanya_absen = false;
 
     public array $employees = [];
     public array $calendar = [];
@@ -54,6 +55,16 @@ class ManageLeaves extends Page
         }
     }
 
+    public function updatedFilterDivisi(): void
+    {
+        $this->loadData();
+    }
+
+    public function updatedHanyaAbsen(): void
+    {
+        $this->loadData();
+    }
+
     public function loadData(): void
     {
         $daysInMonth = now()->month($this->bulan)->daysInMonth;
@@ -63,7 +74,7 @@ class ManageLeaves extends Page
 
         $query = WarehouseEmployee::with('division');
 
-        if ($this->filter_divisi) {
+        if (filled($this->filter_divisi)) {
             $query->where('division_id', $this->filter_divisi);
         }
 
@@ -166,19 +177,14 @@ class ManageLeaves extends Page
                             ->live(),
                         Select::make('filter_divisi')
                             ->label('Divisi')
-                            ->options(array_merge(['' => 'Semua'], Division::pluck('nama_divisi', 'id')->toArray()))
+                            ->options(['' => 'Semua'] + Division::pluck('nama_divisi', 'id')->toArray())
                             ->default(null)
                             ->live(),
                         Checkbox::make('hanya_absen')
                             ->label('Hanya yang absen')
                             ->live(),
                     ]),
-                Html::make(view('filament.pages.manage-leaves-matrix', [
-                    'employees' => $this->employees,
-                    'calendar' => $this->calendar,
-                    'bulan' => $this->bulan,
-                    'tahun' => $this->tahun,
-                ])->render()),
+                View::make('filament.pages.manage-leaves-matrix'),
             ]);
     }
 
