@@ -14,7 +14,8 @@ class ListUsers extends ListRecords
     {
         return [
             CreateAction::make()
-                ->color("primary"),
+                ->color("primary")
+                ->icon('heroicon-m-plus'),
         ];
     }
 }

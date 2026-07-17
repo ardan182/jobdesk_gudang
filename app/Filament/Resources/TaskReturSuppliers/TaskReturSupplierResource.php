@@ -20,13 +20,13 @@ class TaskReturSupplierResource extends Resource
 {
     protected static ?string $model = TaskReturSupplier::class;
 
-    protected static string|\BackedEnum|null $navigationIcon = Heroicon::OutlinedClipboardDocumentCheck;
+    protected static string|\BackedEnum|null $navigationIcon = Heroicon::OutlinedArrowUpOnSquare;
 
-    protected static ?string $navigationLabel = 'Retur ke Supplier';
+    protected static ?string $navigationLabel = 'Retur Keluar ke Supplier';
 
-    protected static ?string $modelLabel = 'Retur ke Supplier';
+    protected static ?string $modelLabel = 'Retur Keluar ke Supplier';
 
-    protected static ?string $pluralModelLabel = 'Retur ke Supplier';
+    protected static ?string $pluralModelLabel = 'Retur Keluar ke Supplier';
 
     protected static string|\UnitEnum|null $navigationGroup = 'Retur';
 

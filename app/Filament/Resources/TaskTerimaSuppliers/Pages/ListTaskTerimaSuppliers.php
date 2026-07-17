@@ -23,6 +23,7 @@ class ListTaskTerimaSuppliers extends ListRecords
             Action::make('createTask')
                 ->label('Tambah')
                 ->color('primary')
+                ->icon('heroicon-m-plus')
                 ->modalHeading('Tambah Task Terima Supplier')
                 ->modalWidth(Width::Full)
                 ->form([

@@ -77,6 +77,7 @@ class ListSuppliers extends ListRecords
                 }),
             CreateAction::make()
                 ->color("primary")
+                ->icon('heroicon-m-plus')
                 ->modalHeading('Tambah Supplier')
                 ->form(SupplierForm::getFormFields())
                 ->modalWidth('lg'),

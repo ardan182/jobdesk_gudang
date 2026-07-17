@@ -37,6 +37,8 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->sidebarCollapsibleOnDesktop()
             ->sidebarWidth('14rem')
+
+            ->favicon(asset('images/favicon.svg'))
             ->navigationGroups([
                 NavigationGroup::make('Master')->collapsed(true),
                 NavigationGroup::make('Retur')->collapsed(true),

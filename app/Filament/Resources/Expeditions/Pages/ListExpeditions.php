@@ -16,6 +16,7 @@ class ListExpeditions extends ListRecords
         return [
             CreateAction::make()
                 ->color("primary")
+                ->icon('heroicon-m-plus')
                 ->modalHeading('Tambah Ekspedisi')
                 ->form(ExpeditionForm::getFormFields())
                 ->modalWidth('lg'),

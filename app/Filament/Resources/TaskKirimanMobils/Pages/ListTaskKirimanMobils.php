@@ -23,6 +23,7 @@ class ListTaskKirimanMobils extends ListRecords
             Action::make('createTask')
                 ->label('Tambah')
                 ->color('primary')
+                ->icon('heroicon-m-plus')
                 ->modalHeading('Tambah Task Kiriman Mobil')
                 ->modalWidth(Width::Full)
                 ->form([

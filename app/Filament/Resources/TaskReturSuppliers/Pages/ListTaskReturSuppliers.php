@@ -23,6 +23,7 @@ class ListTaskReturSuppliers extends ListRecords
             Action::make('createTask')
                 ->label('Tambah')
                 ->color('primary')
+                ->icon('heroicon-m-plus')
                 ->modalHeading('Tambah Task Retur Supplier')
                 ->modalWidth(Width::Full)
                 ->form([

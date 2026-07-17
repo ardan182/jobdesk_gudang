@@ -18,13 +18,13 @@ class TaskReturCabangResource extends Resource
 {
     protected static ?string $model = TaskReturCabang::class;
 
-    protected static string|\BackedEnum|null $navigationIcon = Heroicon::OutlinedDocumentText;
+    protected static string|\BackedEnum|null $navigationIcon = Heroicon::OutlinedArrowPath;
 
-    protected static ?string $navigationLabel = 'Retur dari Cabang';
+    protected static ?string $navigationLabel = 'Retur Masuk dari Cabang';
 
-    protected static ?string $modelLabel = 'Retur dari Cabang';
+    protected static ?string $modelLabel = 'Retur Masuk dari Cabang';
 
-    protected static ?string $pluralModelLabel = 'Retur dari Cabang';
+    protected static ?string $pluralModelLabel = 'Retur Masuk dari Cabang';
 
     protected static string|\UnitEnum|null $navigationGroup = 'Retur';
 

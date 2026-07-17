@@ -17,13 +17,13 @@ class SupplierSjResource extends Resource
 
     protected static ?string $slug = 'input-sj-supplier';
 
-    protected static string|\BackedEnum|null $navigationIcon = Heroicon::OutlinedDocumentPlus;
+    protected static string|\BackedEnum|null $navigationIcon = Heroicon::OutlinedDocumentText;
 
-    protected static ?string $navigationLabel = 'INPUT SJ dari SUPLIER';
+    protected static ?string $navigationLabel = 'Input SJ dari Supplier';
 
-    protected static ?string $modelLabel = 'Input SJ dari Suplier';
+    protected static ?string $modelLabel = 'Input SJ dari Supplier';
 
-    protected static ?string $pluralModelLabel = 'Input SJ dari Suplier';
+    protected static ?string $pluralModelLabel = 'Input SJ dari Supplier';
 
     protected static string|\UnitEnum|null $navigationGroup = 'Penerimaan';
 

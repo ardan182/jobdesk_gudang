@@ -983,5 +983,35 @@
     "mtime": 1783598924.0883715,
     "ast_hash": "b6216d61c03e6ce0c9aea6ca7808f7ca",
     "semantic_hash": ""
+  },
+  "app/Filament/Resources/SupplierSj/Pages/ListSupplierSjs.php": {
+    "mtime": 1784294659.1121697,
+    "ast_hash": "0d1d671d728f29068bd8614b99b123db",
+    "semantic_hash": ""
+  },
+  "app/Filament/Resources/SupplierSj/Schemas/SupplierSjForm.php": {
+    "mtime": 1784294459.2927651,
+    "ast_hash": "abb82dc931aac14b7ad5ff056f3da884",
+    "semantic_hash": ""
+  },
+  "app/Filament/Resources/SupplierSj/SupplierSjResource.php": {
+    "mtime": 1784294502.5604913,
+    "ast_hash": "337b37a0b2848bd91c5cfb37bf9f8b4e",
+    "semantic_hash": ""
+  },
+  "app/Filament/Resources/SupplierSj/Tables/SupplierSjsTable.php": {
+    "mtime": 1784294464.0278442,
+    "ast_hash": "bc699ccd81d71b34a45a9c4a6ed8d4a3",
+    "semantic_hash": ""
+  },
+  "app/Models/SupplierSj.php": {
+    "mtime": 1784294358.8411083,
+    "ast_hash": "6cabc28ef866abd53795b19f434a20dc",
+    "semantic_hash": ""
+  },
+  "database/migrations/2026_07_17_201902_create_supplier_sjs_table.php": {
+    "mtime": 1784294353.589023,
+    "ast_hash": "a9089880bfa1de50e44aca105c9d4ad8",
+    "semantic_hash": ""
   }
 }

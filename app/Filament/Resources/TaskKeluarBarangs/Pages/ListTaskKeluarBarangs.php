@@ -23,6 +23,7 @@ class ListTaskKeluarBarangs extends ListRecords
             Action::make('createTask')
                 ->label('Tambah')
                 ->color('primary')
+                ->icon('heroicon-m-plus')
                 ->modalHeading('Tambah Task Keluar Barang')
                 ->modalWidth(Width::Full)
                 ->form([

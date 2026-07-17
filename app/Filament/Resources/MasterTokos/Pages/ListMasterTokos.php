@@ -16,6 +16,7 @@ class ListMasterTokos extends ListRecords
         return [
             CreateAction::make()
                 ->color("primary")
+                ->icon('heroicon-m-plus')
                 ->modalHeading('Tambah Master Toko')
                 ->form(MasterTokoForm::getFormFields())
                 ->modalWidth('lg'),

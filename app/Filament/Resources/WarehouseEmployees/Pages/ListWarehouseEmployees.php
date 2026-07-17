@@ -96,6 +96,7 @@ class ListWarehouseEmployees extends ListRecords
                                         Action::make('create')
                                             ->label('Buat Master Employee Gudang')
                                             ->color('primary')
+                                            ->icon('heroicon-m-plus')
                                             ->modalHeading('Tambah Master Employee Gudang')
                                             ->form(WarehouseEmployeeForm::getFormFields())
                                             ->modalWidth('lg')

@@ -16,6 +16,7 @@ class ListMasterKendaraans extends ListRecords
         return [
             CreateAction::make()
                 ->color("primary")
+                ->icon('heroicon-m-plus')
                 ->modalHeading('Tambah Kendaraan')
                 ->form(MasterKendaraanForm::getFormFields())
                 ->modalWidth('lg'),
