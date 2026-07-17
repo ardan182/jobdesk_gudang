@@ -18,13 +18,13 @@ class TaskKeluarBarangResource extends Resource
 {
     protected static ?string $model = TaskKeluarBarang::class;
 
-    protected static string|\BackedEnum|null $navigationIcon = Heroicon::OutlinedArrowUpTray;
+    protected static string|\BackedEnum|null $navigationIcon = Heroicon::OutlinedClipboardDocumentCheck;
 
-    protected static ?string $navigationLabel = 'Keluar Barang';
+    protected static ?string $navigationLabel = 'Checker Keluar Barang';
 
-    protected static ?string $modelLabel = 'Keluar Barang';
+    protected static ?string $modelLabel = 'Checker Keluar Barang';
 
-    protected static ?string $pluralModelLabel = 'Keluar Barang';
+    protected static ?string $pluralModelLabel = 'Checker Keluar Barang';
 
     protected static string|\UnitEnum|null $navigationGroup = 'Pengiriman';
 

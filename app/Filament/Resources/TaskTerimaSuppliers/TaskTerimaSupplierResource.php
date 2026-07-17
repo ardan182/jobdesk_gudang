@@ -18,13 +18,13 @@ class TaskTerimaSupplierResource extends Resource
 {
     protected static ?string $model = TaskTerimaSupplier::class;
 
-    protected static string|\BackedEnum|null $navigationIcon = Heroicon::OutlinedArrowDownTray;
+    protected static string|\BackedEnum|null $navigationIcon = Heroicon::OutlinedClipboardDocumentList;
 
-    protected static ?string $navigationLabel = 'Terima Barang Supplier';
+    protected static ?string $navigationLabel = 'Checker Terima Barang Supplier';
 
-    protected static ?string $modelLabel = 'Terima Barang Supplier';
+    protected static ?string $modelLabel = 'Checker Terima Barang Supplier';
 
-    protected static ?string $pluralModelLabel = 'Terima Barang Supplier';
+    protected static ?string $pluralModelLabel = 'Checker Terima Barang Supplier';
 
     protected static string|\UnitEnum|null $navigationGroup = 'Penerimaan';
 

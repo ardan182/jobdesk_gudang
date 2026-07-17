@@ -14,6 +14,7 @@ class WarehouseEmployee extends Model
         'nama_karyawan',
         'no_whatsapp',
         'division_id',
+        'jatah_cuti',
     ];
 
     public function division(): BelongsTo
