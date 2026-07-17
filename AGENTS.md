@@ -1,6 +1,6 @@
 # AGENTS.md — Jobdesk Gudang AP
 
-Laravel 13 monolith with a single Filament v5 admin panel at `/admin`. Single-user CRUD app for warehouse daily task logging.
+Laravel 13 monolith with a single Filament v5 admin panel at `/admin`. Multi-user CRUD app for warehouse daily task logging, employee leave tracking, and master data management.
 
 ## Setup
 
@@ -28,7 +28,7 @@ QUEUE_CONNECTION=sync
 ```bash
 composer test          # php artisan config:clear → php artisan test
 ```
-No Pest, uses PHPUnit 12. No test factories for task models exist yet.
+No Pest, uses PHPUnit 12.
 
 ## Dev server
 
@@ -40,62 +40,64 @@ composer dev           # concurrently: artisan serve + queue:listen + pail + vit
 
 ### Panel
 - Single panel at `App\Providers\Filament\AdminPanelProvider` — id `admin`, path `/admin`
-- Resources auto-discovered from `app/Filament/Resources/{ModelPlural}/` (Filament v5 per-model subdirectory layout)
-- Each resource split into: `Schemas/{Model}Form.php`, `Tables/{Model}sTable.php`, `Pages/{Create|Edit|List}{Model}.php`
+- Filament v5 auto-discovery for resources, pages, widgets
+- Navigation groups collapsed by default via Alpine + localStorage
 
 ### 5 roles (Spatie Permission)
 `Admin | Checker Retur | Checker Terima | Checker Keluar | Checker Kiriman`
 
-Role-based access pattern (every resource follows this):
+Role-based access pattern:
 ```php
-canViewAny()        → auth()->user()?->hasRole('Admin') || auth()->user()?->hasRole('Checker X')
-canDelete()         → only Admin  // checker cannot delete
-shouldRegisterNavigation() → same as canViewAny
+canViewAny()        → hasRole('Admin') || hasRole('Checker X')
+canDelete()         → only Admin
 getEloquentQuery()  → where('user_id', auth()->id()) for non-Admin
 ```
 
-### 5 task tables (one per module)
-`task_retur_suppliers | task_retur_cabangs | task_terima_suppliers | task_keluar_barangs | task_kiriman_mobils`
+### 6 task tables (one per module)
+`task_retur_suppliers | task_retur_cabangs | task_datang_mobil_suppliers | task_terima_suppliers | task_keluar_barangs | task_kiriman_mobils`
 
-All share `id_task` (indexed, not unique per migration), `no_baris` (daily counter), `user_id` (FK).
+All share `id_task` (indexed, not unique), `user_id` (FK). `no_baris` was dropped.
 
 ### TaskIdGenerator (`app/Services/TaskIdGenerator.php`)
-Auto-generates `id_task` format `{PREFIX}-{YYYYMMDD}-{XXX}` with per-day counters. Prefixes: `RET-SUP`, `RET-CAB`, `TRM-SUP`, `KLR`, `KRM`.
-
-**Key behavior:** 1 `id_task` per batch submit (all rows in 1 submit share same `id_task`), `no_baris` auto-increment per row. `id_task` is INDEX not UNIQUE.
-
-**Timezone quirk:** App uses `Asia/Jakarta`, DB stores `created_at` in UTC. All counter queries use `whereBetween(created_at, [startOfDay utc, endOfDay utc])` instead of `whereDate(created_at, today())` to match local date correctly.
+Auto-generates `id_task` format `{PREFIX}-{NNNNN}` with global sequential counter via `task_id_counters` table. Prefixes: `RET-SUP`, `RET-CAB`, `ARR-SUP`, `TRM-SUP`, `KLR`, `KRM`.
 
 ### Batch insert (Repeater form)
-Each module's `Create{Model}Page.php` and `List{Model}sPage.php` overrides `create()` / `action()` to handle multi-row input from a Filament Repeater. **1 `id_task` per batch submit** — all rows in 1 form submission share the same `id_task`. `no_baris` auto-increments per row inside the batch. Also have a `creating` boot event on each model as fallback for single-record creates.
-
-Each Repeater form includes both a dedicated Create page and an inline "Tambah" modal on the List page.
+Each module's List page has a modal with Repeater form. **Each row gets its own `id_task`** (sequential, no longer batch-shared).
 
 ### Property type quirk
-Filament v5 Resource parent class uses property types `string|\BackedEnum|null` for `$navigationIcon` and `string|\UnitEnum|null` for `$navigationGroup`. Subclass types must match **exactly** — use `string|\BackedEnum|null` and `string|\UnitEnum|null`, not `?string`.
+Filament v5 Resource parent class uses `string|\BackedEnum|null` for `$navigationIcon` and `string|\UnitEnum|null` for `$navigationGroup`. Subclass types must match exactly.
+
+### Export/Import (ZipArchive native)
+All XLSX exports use **ZipArchive + XML manual** (no maatwebsite/phpspreadsheet). PHP 8.5+ incompatible with those packages.
 
 ## Key files
 
 | Path | Purpose |
 |------|---------|
-| `app/Services/TaskIdGenerator.php` | ID & baris counter logic |
-| `app/Models/Task{ReturSupplier,ReturCabang,TerimaSupplier,KeluarBarang,KirimanMobil}.php` | 5 task models |
-| `app/Filament/Resources/{Task*}/Task*Resource.php` | CRUD + role guard |
-| `app/Filament/Resources/{Task*}/Pages/Create*Task*.php` | Repeater batch create |
-| `app/Filament/Resources/{Task*}/Schemas/*Form.php` | Input form fields |
-| `app/Filament/Resources/{Task*}/Tables/*Table.php` | Table + date filter |
-| `app/Filament/Widgets/StatsOverviewWidget.php` | Dashboard cards |
+| `app/Services/TaskIdGenerator.php` | Sequential counter ID generation |
+| `app/Models/Task*` | 6 task models |
+| `app/Models/WarehouseEmployee.php` | Employees + division_id |
+| `app/Models/WarehouseLeave.php` | Leave/absence tracking |
+| `app/Filament/Resources/` | All CRUD resources |
+| `app/Filament/Pages/ManageLeaves.php` | Monthly attendance matrix |
+| `app/Filament/Widgets/StatsOverviewWidget.php` | Dashboard stats |
+| `app/Filament/Widgets/RecentActivityWidget.php` | Activity log |
+| `app/Exports/SuppliersExport.php` | Supplier XLSX template |
+| `app/Exports/EmployeesExport.php` | Employee XLSX template |
+| `app/Imports/SupplierImport.php` | Supplier CSV/XLSX/XLS import |
+| `app/Imports/WarehouseEmployeeImport.php` | Employee CSV/XLSX/XLS import |
 | `database/seeders/RoleSeeder.php` | Seed 5 roles |
 
 ## Dependencies
 - `filament/filament` — admin panel v5
 - `spatie/laravel-permission` — role middleware
+- Zero export/import libraries — all native ZipArchive + XML
 
 ## Pull & update di PC kantor (Windows/Linux)
 ```bash
 git pull
-composer install --no-dev     # bukan composer update!
+composer install --no-dev
 php artisan migrate
-php artisan optimize:clear    # bersihkan semua cache
-npm run build                 # rebuild CSS/JS (jika ada perubahan)
+php artisan optimize
+npm run build
 ```
