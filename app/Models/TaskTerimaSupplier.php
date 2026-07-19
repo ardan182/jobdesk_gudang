@@ -77,6 +77,18 @@ class TaskTerimaSupplier extends Model
                 'action' => 'update',
             ]);
         });
+
+        static::deleted(function ($model) {
+            if ($model->arrival_supplier_truck_id) {
+                $truck = ArrivalSupplierTruck::find($model->arrival_supplier_truck_id);
+                if ($truck) {
+                    $truck->update([
+                        'status' => 'PROSES',
+                        'jam_selesai' => null,
+                    ]);
+                }
+            }
+        });
     }
 
     public function user(): BelongsTo

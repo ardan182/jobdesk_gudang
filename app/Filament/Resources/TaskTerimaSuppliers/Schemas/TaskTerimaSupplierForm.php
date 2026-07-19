@@ -23,16 +23,23 @@ class TaskTerimaSupplierForm
                 ->schema([
                     Select::make('arrival_supplier_truck_id')
                         ->label('Pilih Mobil Datang Supplier')
-                        ->relationship('arrivalSupplierTruck', 'no_plat_mobil', fn ($query) =>
-                            $query->where('status', 'PROSES')
-                                ->whereIn('jenis_kiriman', ['DATANG', 'DATANG & RETUR'])
-                        )
-                        ->getOptionLabelFromRecordUsing(fn ($record) =>
-                            "{$record->no_plat_mobil} - {$record->supplier?->nama_supplier} - {$record->jenis_kiriman} - (" . ($record->tanggal_datang?->format('d/m/Y') ?? '-') . ')'
-                        )
+                        ->options(function ($component) {
+                            $record = $component->getRecord();
+                            $query = ArrivalSupplierTruck::where('status', 'PROSES')
+                                ->whereIn('jenis_kiriman', ['DATANG', 'DATANG & RETUR']);
+
+                            if ($record && $record->arrival_supplier_truck_id) {
+                                $query->orWhere('id', $record->arrival_supplier_truck_id);
+                            }
+
+                            return $query->get()->mapWithKeys(fn ($truck) => [
+                                $truck->id => "{$truck->no_plat_mobil} - {$truck->supplier?->nama_supplier} - {$truck->jenis_kiriman} - (" . ($truck->tanggal_datang?->format('d/m/Y') ?? '-') . ')',
+                            ]);
+                        })
                         ->searchable()
                         ->preload()
                         ->placeholder('Pilih mobil datang...')
+                        ->disabled(fn ($component) => $component->getRecord() !== null)
                         ->columnSpanFull()
                         ->reactive()
                         ->afterStateUpdated(function ($state, $set, $get) {

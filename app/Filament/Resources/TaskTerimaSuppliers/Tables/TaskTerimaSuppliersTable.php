@@ -93,11 +93,18 @@ class TaskTerimaSuppliersTable
                     ->sortable()
                     ->visible(fn () => auth()->user()?->hasRole('Admin') ?? false)
                     ->grow(false),
-                TextColumn::make('helpers_count')
+                TextColumn::make('helpers_names')
                     ->label('Helpers')
                     ->badge()
                     ->color('success')
-                    ->getStateUsing(fn ($record) => $record->helpers->pluck('nama_karyawan')->toArray()),
+                    ->getStateUsing(function ($record) {
+                        $names = $record->helpers->pluck('nama_karyawan');
+                        $result = $names->take(2)->toArray();
+                        if ($names->count() > 2) {
+                            $result[] = '+' . ($names->count() - 2) . ' more';
+                        }
+                        return $result;
+                    }),
                 TextColumn::make('created_at')
                     ->label('Tanggal')
                     ->date('d/m/Y')

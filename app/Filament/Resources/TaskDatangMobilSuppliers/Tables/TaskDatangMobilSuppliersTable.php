@@ -3,11 +3,13 @@
 namespace App\Filament\Resources\TaskDatangMobilSuppliers\Tables;
 
 use App\Filament\Resources\TaskDatangMobilSuppliers\Schemas\TaskDatangMobilSupplierForm;
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Infolists\Components\TextEntry;
+use Filament\Schemas\Components\Section;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -100,29 +102,34 @@ class TaskDatangMobilSuppliersTable
             ->filters([])
             ->recordActions([
                 ViewAction::make()
-                    ->color('info')
                     ->iconButton()
                     ->tooltip('Lihat Detail')
+                    ->color('info')
                     ->modalHeading('Detail Datang Mobil Supplier')
-                    ->modalWidth('lg')
-                    ->infolist([
-                        TextEntry::make('id_task')->label('ID Task'),
-                        TextEntry::make('supplier.nama_supplier')->label('Supplier'),
-                        TextEntry::make('expedition.nama_ekspedisi')->label('Ekspedisi'),
-                        TextEntry::make('nama_sopir')->label('Sopir'),
-                        TextEntry::make('no_plat_mobil')->label('No Plat'),
-                        TextEntry::make('jenis_kiriman')->label('Jenis Kiriman')->badge(),
-                        TextEntry::make('tanggal_datang')->label('Tgl Datang')->date('d/m/Y'),
-                        TextEntry::make('jam_datang')->label('Jam Datang'),
-                        TextEntry::make('jam_selesai')->label('Jam Selesai'),
-                        TextEntry::make('status')->label('Status')
-                            ->badge()
-                            ->color(fn (string $state): string => match ($state) {
-                                'PROSES' => 'warning',
-                                'SELESAI' => 'success',
-                                default => 'gray',
-                            }),
-                        TextEntry::make('keterangan')->label('Keterangan'),
+                    ->modalSubmitAction(false)
+                    ->modalCancelAction(fn (Action $action) => $action->label('Tutup'))
+                    ->schema([
+                        Section::make('Informasi Mobil Supplier')
+                            ->columns(2)
+                            ->schema([
+                                TextEntry::make('id_task')->label('ID Task'),
+                                TextEntry::make('supplier.nama_supplier')->label('Supplier'),
+                                TextEntry::make('expedition.nama_ekspedisi')->label('Ekspedisi'),
+                                TextEntry::make('nama_sopir')->label('Sopir'),
+                                TextEntry::make('no_plat_mobil')->label('No Plat'),
+                                TextEntry::make('jenis_kiriman')->label('Jenis Kiriman')->badge(),
+                                TextEntry::make('tanggal_datang')->label('Tgl Datang')->date('d/m/Y'),
+                                TextEntry::make('jam_datang')->label('Jam Datang'),
+                                TextEntry::make('jam_selesai')->label('Jam Selesai'),
+                                TextEntry::make('status')->label('Status')
+                                    ->badge()
+                                    ->color(fn (string $state): string => match ($state) {
+                                        'PROSES' => 'warning',
+                                        'SELESAI' => 'success',
+                                        default => 'gray',
+                                    }),
+                                TextEntry::make('keterangan')->label('Keterangan'),
+                            ]),
                     ]),
                 EditAction::make()
                     ->color('warning')

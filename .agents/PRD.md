@@ -1,6 +1,6 @@
 # PRD — Jobdesk Gudang AP
 
-**Versi:** 1.3 | **Tanggal:** 19 Juli 2026
+**Versi:** 1.4 | **Tanggal:** 19 Juli 2026
 
 ---
 
@@ -110,3 +110,35 @@ Semua punya: `id_task` (indexed), `user_id` (FK).
 | Pengiriman | Checker Keluar Barang, Kiriman Mobil |
 | Administrasi (Admin) | Cuti & Absensi |
 | Pengaturan (Admin) | Users |
+
+---
+
+## 5. Data Integrity & Protection
+
+### 5.1 Cascade Hapus
+- **TaskTerimaSupplier dihapus** → `deleted` event revert `ArrivalSupplierTruck.status` ke `PROSES`, `jam_selesai` ke `null`
+- **ArrivalSupplierTruck dihapus** → `deleting` event cek apakah terikat `TaskTerimaSupplier`. Jika iya, **cegah hapus** dengan `ValidationException`
+
+### 5.2 Edit Mode Protection
+- `arrival_supplier_truck_id` dropdown di **disable** saat Edit — tidak bisa ganti mobil
+- Dropdown options: include record yang sedang diedit (via `->options()` closure) agar validasi tidak gagal
+
+### 5.3 Helpers Display
+- Grid helpers: max **2 nama** + `+N more` badge hijau
+- Tampil compact 1 baris (tidak melebar vertikal)
+
+---
+
+## 6. UI Modal Standards
+
+### ViewAction Detail Modal
+Semua modul menggunakan **tampilan seragam**:
+- `Section::make('Judul')->columns(2)` — layout 2 kolom rapi
+- `->modalSubmitAction(false)` — hapus tombol submit
+- `->modalCancelAction(fn => label('Tutup'))` — tombol tutup
+- Badge warna untuk status dan jenis
+
+### Edit/Create Modal
+- Form dalam `Section` + `columns(3)` — rapi
+- Field disabled: autofill dari relasi (tidak bisa diubah)
+- Select: `->searchable()->preload()` untuk UX cepat

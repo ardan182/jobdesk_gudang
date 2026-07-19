@@ -338,6 +338,52 @@ Di `retrieved` event model ArrivalSupplierTruck: cari `TaskTerimaSupplier` denga
 
 ---
 
+## 18. Data Integrity & Protection
+
+### TaskTerimaSupplier `deleted` event
+- Saat `TaskTerimaSupplier` dihapus → revert `ArrivalSupplierTruck.status` ke `'PROSES'`, `jam_selesai` ke `null`
+- Method: `static::deleted(function ($model) { ... })`
+
+### ArrivalSupplierTruck `deleting` event
+- Sebelum hapus, cek `TaskTerimaSupplier::where('arrival_supplier_truck_id', $this->id)->exists()`
+- Jika ada → `throw ValidationException::withMessages(...)` — data tidak bisa dihapus
+- Method: `static::deleting(function ($model) { ... })`
+
+### Edit Mode Protection
+- `arrival_supplier_truck_id` dropdown **disabled** saat Edit (via `->disabled(fn ($cmp) => $cmp->getRecord() !== null)`)
+- Select pakai `->options()` closure: include record yg sedang diedit + filter `status = 'PROSES'`
+
+### Helpers Grid Display
+- Max 2 nama helpers + `+N more` dalam green badge
+- Tidak melebar vertikal
+
+---
+
+## 19. UI Modal Standards
+
+### ViewAction (Detail)
+Semua modul menggunakan template seragam:
+```php
+ViewAction::make()
+    ->iconButton()
+    ->tooltip('Lihat Detail')
+    ->color('info')
+    ->modalHeading('Detail ...')
+    ->modalSubmitAction(false)
+    ->modalCancelAction(fn (Action $a) => $a->label('Tutup'))
+    ->schema([
+        Section::make('Informasi ...')->columns(2)->schema([
+            TextEntry::make(...),
+        ]),
+    ]),
+```
+
+### Create/Edit Modal
+- Form dalam `Section` + `columns(3)` untuk 3 kolom field
+- Field disabled dari relasi (autofill) → `->disabled()->dehydrated(true)`
+- Select: `->searchable()->preload()` untuk UX cepat
+- Modal width: `Width::Full` untuk 3-kolom form; default untuk detail
+
 ## 15. Graphify Knowledge Graph
 
 Project memiliki knowledge graph di `graphify-out/`:

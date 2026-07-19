@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Services\TaskIdGenerator;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Validation\ValidationException;
 
 class ArrivalSupplierTruck extends Model
 {
@@ -70,6 +71,14 @@ class ArrivalSupplierTruck extends Model
                 $model->jam_selesai = $terima->selesai_bongkar;
                 $model->status = 'SELESAI';
                 $model->saveQuietly();
+            }
+        });
+
+        static::deleting(function ($model) {
+            if (TaskTerimaSupplier::where('arrival_supplier_truck_id', $model->id)->exists()) {
+                throw ValidationException::withMessages([
+                    'id_task' => 'Data mobil tidak dapat dihapus karena sudah atau sedang diproses di menu Checker Terima Barang.',
+                ]);
             }
         });
     }

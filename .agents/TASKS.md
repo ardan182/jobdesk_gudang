@@ -75,7 +75,17 @@
 - [x] Status enum: komplit/kurang/lebih → selesai_tanpa_retur/selesai_ada_retur
 - [x] Graphify install + hook
 
-## Fase 8: Polish & Fixes ⏳
+## Fase 8: Bug Fixes ✅
+
+- [x] TaskTerimaSupplier deleted → revert ArrivalSupplierTruck status ke PROSES
+- [x] ArrivalSupplierTruck deleting → cegah hapus jika terikat TaskTerimaSupplier
+- [x] Edit modal: arrival_supplier_truck_id validation error (ganti relationship→options)
+- [x] Edit modal: dropdown mobil datang di-disable
+- [x] Helpers grid: compact 2 nama + more count (green badges)
+- [x] ViewAction Datang Mobil Supplier → Section 2 kolom (seragam dengan Terima Supplier)
+- [x] Form Section 1 kolom untuk Datang Mobil Supplier
+
+## Fase 9: Polish & Fixes ⏳
 
 - [ ] Export semua master data (Ekspedisi, Kendaraan, Sopir, Toko)
 - [ ] Import master data (Ekspedisi, Kendaraan, Sopir, Toko)
