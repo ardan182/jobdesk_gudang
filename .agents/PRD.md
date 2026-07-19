@@ -1,143 +1,112 @@
 # PRD — Jobdesk Gudang AP
 
-**Versi:** 1.2 | **Tanggal:** 17 Juli 2026
+**Versi:** 1.3 | **Tanggal:** 19 Juli 2026
 
 ---
 
 ## 1. Ringkasan
 
-Aplikasi pencatatan jobdesk harian gudang berbasis web. Digitalisasi log harian — retur, penerimaan, pengiriman barang — dengan multi-user role-based access via Filament v5 admin panel.
+Aplikasi pencatatan jobdesk harian gudang berbasis web. Digitalisasi log harian — retur, penerimaan, pengiriman barang — dengan multi-user role-based access via Filament v5 admin panel. Plus modul Cuti & Absensi, master data dengan import/export, dan integrasi antar modul.
 
 ---
 
 ## 2. Fitur Utama
 
 ### 2.1 Manajemen Master Data
-- **6 Master Module:** Ekspedisi, Kendaraan, Sopir (+no_whatsapp), Toko, Supplier (import XLSX/XLS/CSV), Employee Gudang (import + Divisions Tabs)
+- **7 Master Module:** Ekspedisi, Kendaraan, Sopir (+no_whatsapp), Toko, Supplier (import XLSX/XLS/CSV), Employee Gudang (import + Divisions Tabs), Divisions
 - **Divisions:** Kelola divisi via widget di Employee Gudang
 - **Import:** Supplier & Employee via upload CSV/XLSX/XLS (ZipArchive, tanpa library eksternal)
 - **Export Template:** Download template XLSX via route `suppliers/template`, `employees/template`
 
-### 2.2 Modul Task (Log Harian)
-| Modul | Prefix | Role |
-|-------|--------|------|
-| Retur ke Supplier | RET-SUP | Checker Retur |
-| Retur dari Cabang | RET-CAB | Checker Retur |
-| Datang Mobil Supplier | ARR-SUP | Checker Terima |
-| Terima Barang Supplier | TRM-SUP | Checker Terima |
-| Keluar Barang | KLR | Checker Keluar |
-| Kiriman Mobil | KRM | Checker Kiriman |
+### 2.2 Modul Task (Log Harian) — Single Form
 
-Semua modul:
-- **Input via Repeater modal** (tidak ada halaman Edit terpisah)
-- **Batch submit:** 1 ID_TASK per submit, semua row dalam 1 form share ID yang sama
-- **ID_TASK:** Auto-generate format `PREFIX-NNNNN` (global sequential counter 5 digit, per-row unique)
-- **ViewAction + EditAction** via iconButton + tooltip
-- **Only Admin can delete** — Checker roles hanya bisa view/create/edit own records
+| Modul | Prefix | Role | Grup |
+|-------|--------|------|------|
+| Retur Masuk dari Cabang | RET-CAB | Checker Retur | Retur |
+| Retur Keluar ke Supplier | RET-SUP | Checker Retur | Retur |
+| Datang Mobil Supplier | ARR-SUP | Checker Terima | Penerimaan |
+| Checker Terima Barang Supplier | TRM-SUP | Checker Terima | Penerimaan |
+| Checker Keluar Barang | KLR | Checker Keluar | Pengiriman |
+| Kiriman Mobil | KRM | Checker Kiriman | Pengiriman |
 
-### 2.3 Cuti & Absensi
+Semua modul: **single form modal** (tanpa Repeater multi-row), **ID_TASK** auto format `PREFIX-NNNNN`, ViewAction + EditAction iconButton, **hanya Admin yang bisa delete**.
+
+### 2.3 Modul Non-Task (Single Form)
+
+| Modul | Grup | Keterangan |
+|-------|------|------------|
+| Input SJ dari Supplier | Penerimaan | Input surat jalan, status kosong/sudah |
+| Retur Masuk dari Supplier | Retur | Log retur masuk dari supplier |
+| Retur Keluar untuk Cabang | Retur | Log retur keluar ke cabang |
+
+### 2.4 Datang Mobil Supplier — Fitur Lengkap
+- **jenis_kiriman:** DATANG, RETUR, DATANG & RETUR
+- **status:** PROSES (default), SELESAI (auto saat matching Terima Supplier)
+- Auto-sync: saat `selesai_bongkar` terisi di Terima Supplier → `jam_selesai` + `status=SELESAI` di Datang Mobil
+
+### 2.5 Checker Terima Supplier — Fitur Baru
+- **FK ke `arrival_supplier_trucks`:** Pilih mobil datang, autofill supplier/sopir/jam
+- **Helpers (pivot):** Multi-select karyawan pembantu via `task_terima_supplier_helpers`
+- **Status:** `selesai_tanpa_retur` (hijau) / `selesai_ada_retur` (kuning)
+- **Filter dropdown:** Hanya mobil dengan status PROSES + jenis DATANG / DATANG & RETUR
+- **Tampilkan:** Jenis Kiriman, ID Task Mobil (info), Helpers (badge) di grid + modal detail
+
+### 2.6 Cuti & Absensi
 - Halaman `ManageLeaves` di grup **Administrasi**
-- **Monthly matrix grid:** Karyawan (rows) x Tanggal (columns)
+- **Tabs:** Papan Absensi (matrix grid) + Atur Saldo Cuti (jatah cuti per karyawan)
 - **Filter:** Bulan, Tahun, Divisi, Hanya yang absen
-- **Warna:** Cuti (merah `C`), Sakit (kuning `S`), Izin (biru `I`)
-- **Hapus:** klik badge langsung hapus
-- **Input:** Modal form dengan pilih karyawan, tanggal, tipe, keterangan
-- **Validasi:**
-  - `minDate(today)` — tidak bisa backdate
-  - No duplicate date per karyawan
-  - Max 12 Cuti per tahun (reset tahunan)
-  - Sakit & Izin unlimited
-- **Sisa Cuti:** Kolom sticky kanan, hijau jika >0, merah jika 0
-- **Striped rows**, sticky nama karyawan (kiri), sticky sisa cuti (kanan)
+- **Validasi:** minDate (no backdate), no duplicate, max jatah_cuti/tahun
+- **Sisa Cuti:** `jatah_cuti - totalCutiDipakai` (warna merah jika 0)
 
-### 2.4 Dashboard
-- **StatsOverviewWidget:** 6 card (5 task + admin user count) — real-time per role
-- **RecentActivityWidget:** 10 log terakhir, deskripsi `wrap` (tanpa truncate)
+### 2.7 Dashboard
+- **StatsOverviewWidget:** 5 card (Admin) atau sesuai role
+- **RecentActivityWidget:** 10 log terakhir, filter module, pagination
 
-### 2.5 Role & Akses (Spatie Permission)
+### 2.8 Role & Access (Spatie Permission)
+
 | Role | Hak |
 |------|-----|
-| **Admin** | Full access — lihat semua data semua user, CRUD user, delete semua record |
-| **Checker Retur** | Retur Supplier + Retur Cabang — hanya melihat/edit data sendiri |
-| **Checker Terima** | Datang Mobil + Terima Supplier — hanya melihat/edit data sendiri |
-| **Checker Keluar** | Keluar Barang — hanya melihat/edit data sendiri |
-| **Checker Kiriman** | Kiriman Mobil — hanya melihat/edit data sendiri |
+| **Admin** | Full — semua menu, semua data, CRUD user, delete semua |
+| **Checker Retur** | Retur Masuk Cabang, Retur Keluar Supplier — data sendiri |
+| **Checker Terima** | Datang Mobil, Terima Supplier — data sendiri |
+| **Checker Keluar** | Keluar Barang — data sendiri |
+| **Checker Kiriman** | Kiriman Mobil — data sendiri |
 
-### 2.6 UI/UX
-- **Navigation groups collapsed by default** (kecuali group aktif) via Alpine + localStorage
-- **Compact table:** `py-0.125rem` cell, `striped` rows
-- **Color-coded actions:** `->color()` pada semua tombol
-- **Column width:** `->grow(false)` + `->width()` di semua 11 tabel
-- **Sidebar:** Collapsible + persist state
-
----
-
-## 3. Alur Data
-
-### ID_TASK Generation
-- File: `app/Services/TaskIdGenerator.php`
-- Format: `{PREFIX}-{5 digit global counter}` — contoh `RET-SUP-00001`
-- Counter tabel `task_id_counters` — increment + lock per transaksi
-- 1 row = 1 ID_TASK (tidak lagi batch share ID)
-
-### Batch Insert Flow
-1. User isi repeater → klik Simpan
-2. System loop setiap row → panggil `TaskIdGenerator::generate()` per row
-3. Insert semua row ke DB → flash notifikasi sukses
+### 2.9 UI/UX
+- **Primary color:** `#EA580C` (orange)
+- **Compact table:** `py-2px` cells, `striped` rows, table borders
+- **Sidebar:** collapsible, groups collapsed by default, persist via localStorage
+- **Icons:** Semua tombol Create pake `->icon('heroicon-m-plus')`
+- **Font:** Arial 14px
 
 ---
 
-## 4. Tech Stack
+## 3. Database
 
-| Layer | Teknologi |
-|-------|-----------|
-| Backend | Laravel 13 |
-| Admin Panel | Filament v5 |
-| Database | MySQL / MariaDB |
-| Auth | Spatie Laravel Permission |
-| Frontend | Tailwind CSS + Alpine.js (Filament bundled) |
-| Export/Import | ZipArchive (native PHP, no external lib) |
+### 6 Task Tables
+`task_retur_cabangs | task_retur_suppliers | arrival_supplier_trucks | task_terima_suppliers | task_keluar_barangs | task_kiriman_mobils`
+Semua punya: `id_task` (indexed), `user_id` (FK).
 
-### Constraints Teknis
-- **PHP 8.5.8** — terlalu baru untuk `maatwebsite/excel` dan `phpoffice/phpspreadsheet` (require PHP <8.5). Semua XLSX via ZipArchive + SimpleXML.
-- **Laravel 13** — storage disk `local` root di `storage/app/private/`
-- **Livewire FileUpload** — file import disimpan permanen di `storage/app/private/imports/`
-
----
-
-## 5. Struktur Database
-
-### Task Tables (6)
-`task_retur_suppliers | task_retur_cabangs | task_datang_mobil_suppliers | task_terima_suppliers | task_keluar_barangs | task_kiriman_mobils`
-
-Semua punya: `id_task` (indexed, not unique), `user_id` (FK), timestamps.
-
-### Master Tables
+### 7 Master Tables
 `expeditions | master_kendaraans | master_sopirs | master_tokos | suppliers | warehouse_employees | divisions`
 
-### Leave Table
-`warehouse_leaves` — `warehouse_employee_id | tanggal | tipe (Cuti|Sakit|Izin) | keterangan | user_id`
+### 5 Non-Task Tables
+`supplier_sjs | supplier_return_inbounds | branch_return_outbounds | warehouse_leaves | activity_logs`
 
 ### Support Tables
-`task_id_counters` — global counter untuk ID_TASK
+`task_terima_supplier_helpers` (pivot: task_terima_suppliers ↔ warehouse_employees)
+`task_id_counters` (global counter ID_TASK)
+
 ---
 
-## 6. Role Access Matrix
+## 4. UI Navigation
 
-| Menu | Admin | Retur | Terima | Keluar | Kiriman |
-|------|-------|-------|--------|--------|---------|
-| Dashboard | ✓ | ✓ | ✓ | ✓ | ✓ |
-| Master Ekspedisi | ✓ | - | - | - | - |
-| Master Kendaraan | ✓ | - | - | - | - |
-| Master Sopir | ✓ | - | - | - | - |
-| Master Toko | ✓ | - | - | - | - |
-| Master Supplier | ✓ | - | - | - | - |
-| Master Employee Gudang | ✓ | - | - | - | - |
-| Retur Supplier | ✓ | ✓ | - | - | - |
-| Retur Cabang | ✓ | ✓ | - | - | - |
-| Datang Mobil Supplier | ✓ | - | ✓ | - | - |
-| Terima Supplier | ✓ | - | ✓ | - | - |
-| Keluar Barang | ✓ | - | - | ✓ | - |
-| Kiriman Mobil | ✓ | - | - | - | ✓ |
-| Cuti & Absensi | ✓ | - | - | - | - |
-| Users | ✓ | - | - | - | - |
+| Grup | Menu |
+|------|------|
+| (dashboard) | Dasbor |
+| Master (Admin) | Ekspedisi, Kendaraan, Sopir, Toko, Supplier, Employee Gudang |
+| Retur | Retur Masuk Cabang, Retur Keluar Supplier, Retur Masuk Supplier, Retur Keluar Cabang |
+| Penerimaan | Input SJ Supplier, Datang Mobil Supplier, Checker Terima Barang Supplier |
+| Pengiriman | Checker Keluar Barang, Kiriman Mobil |
+| Administrasi (Admin) | Cuti & Absensi |
+| Pengaturan (Admin) | Users |

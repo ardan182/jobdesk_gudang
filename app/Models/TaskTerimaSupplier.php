@@ -5,11 +5,13 @@ namespace App\Models;
 use App\Services\TaskIdGenerator;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class TaskTerimaSupplier extends Model
 {
     protected $fillable = [
         'id_task',
+        'arrival_supplier_truck_id',
         'nama_supplier_ekspedisi',
         'no_po_referensi',
         'jam_datang',
@@ -80,5 +82,16 @@ class TaskTerimaSupplier extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function arrivalSupplierTruck(): BelongsTo
+    {
+        return $this->belongsTo(ArrivalSupplierTruck::class);
+    }
+
+    public function helpers(): BelongsToMany
+    {
+        return $this->belongsToMany(WarehouseEmployee::class, 'task_terima_supplier_helpers')
+            ->withTimestamps();
     }
 }

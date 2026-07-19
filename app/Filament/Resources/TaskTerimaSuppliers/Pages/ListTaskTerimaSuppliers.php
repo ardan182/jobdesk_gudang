@@ -6,12 +6,8 @@ use App\Filament\Resources\TaskTerimaSuppliers\Schemas\TaskTerimaSupplierForm;
 use App\Filament\Resources\TaskTerimaSuppliers\TaskTerimaSupplierResource;
 use App\Services\TaskIdGenerator;
 use Filament\Actions\Action;
-use Filament\Forms\Components\Repeater;
-use Filament\Forms\Components\Repeater\TableColumn;
 use Filament\Resources\Pages\ListRecords;
-use Filament\Support\Enums\Alignment;
 use Filament\Support\Enums\Width;
-use Illuminate\Support\Facades\DB;
 
 class ListTaskTerimaSuppliers extends ListRecords
 {
@@ -26,37 +22,18 @@ class ListTaskTerimaSuppliers extends ListRecords
                 ->icon('heroicon-m-plus')
                 ->modalHeading('Tambah Task Terima Supplier')
                 ->modalWidth(Width::Full)
-                ->form([
-                    Repeater::make('tasks')
-                        ->schema(TaskTerimaSupplierForm::getFormFields())
-                        ->table([
-                            TableColumn::make('Supplier / Ekspedisi'),
-                            TableColumn::make('No PO'),
-                            TableColumn::make('Kolian'),
-                            TableColumn::make('Jam Bongkar'),
-                            TableColumn::make('Sopir'),
-                            TableColumn::make('Status'),
-                            TableColumn::make('Keterangan'),
-                        ])
-                        ->addActionAlignment(Alignment::End)
-                        ->label('Daftar Task')
-                        ->default([[]])
-                        ->reorderable(false)
-                        ->addActionLabel('Tambah Baris'),
-                ])
+                ->form(TaskTerimaSupplierForm::getFormFields())
                 ->action(function (array $data) {
-                    $ids = [];
-                    foreach ($data['tasks'] as $i => $task) {
-                        $ids[$i] = TaskIdGenerator::generate('terima_supplier');
-                    }
+                    $helpers = $data['helpers'] ?? [];
+                    unset($data['helpers'], $data['jenis_kiriman_tampil']);
 
-                    DB::transaction(function () use ($data, $ids) {
-                        foreach ($data['tasks'] as $i => $taskData) {
-                            $taskData['user_id'] = auth()->id();
-                            $taskData['id_task'] = $ids[$i];
-                            $this->getModel()::create($taskData);
-                        }
-                    });
+                    $data['id_task'] = TaskIdGenerator::generate('terima_supplier');
+                    $data['user_id'] = auth()->id();
+
+                    $record = $this->getModel()::create($data);
+                    if (filled($helpers)) {
+                        $record->helpers()->sync($helpers);
+                    }
                 }),
         ];
     }

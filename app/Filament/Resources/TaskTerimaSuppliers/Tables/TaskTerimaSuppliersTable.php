@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\TaskTerimaSuppliers\Tables;
 
+use App\Filament\Resources\TaskTerimaSuppliers\Schemas\TaskTerimaSupplierForm;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -13,6 +14,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Tables\Filters\Filter;
 use Filament\Forms\Components\DatePicker;
+use Filament\Support\Enums\Width;
 use Illuminate\Database\Eloquent\Builder;
 
 class TaskTerimaSuppliersTable
@@ -26,6 +28,11 @@ class TaskTerimaSuppliersTable
                     ->label('ID Task')
                     ->searchable()
                     ->sortable()
+                    ->grow(false),
+                TextColumn::make('arrivalSupplierTruck.no_plat_mobil')
+                    ->label('Plat Mobil')
+                    ->searchable()
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('nama_supplier_ekspedisi')
                     ->label('Supplier / Ekspedisi')
@@ -70,15 +77,13 @@ class TaskTerimaSuppliersTable
                     ->label('Status')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
-                        'komplit' => 'success',
-                        'kurang' => 'danger',
-                        'lebih' => 'warning',
+                        'selesai_tanpa_retur' => 'success',
+                        'selesai_ada_retur' => 'warning',
                         default => 'gray',
                     })
                     ->formatStateUsing(fn (string $state): string => match ($state) {
-                        'komplit' => 'Komplit',
-                        'kurang' => 'Kurang',
-                        'lebih' => 'Lebih',
+                        'selesai_tanpa_retur' => 'Selesai',
+                        'selesai_ada_retur' => 'Selesai Ada Retur',
                         default => $state,
                     })
                     ->grow(false),
@@ -88,6 +93,11 @@ class TaskTerimaSuppliersTable
                     ->sortable()
                     ->visible(fn () => auth()->user()?->hasRole('Admin') ?? false)
                     ->grow(false),
+                TextColumn::make('helpers_count')
+                    ->label('Helpers')
+                    ->badge()
+                    ->color('success')
+                    ->getStateUsing(fn ($record) => $record->helpers->pluck('nama_karyawan')->toArray()),
                 TextColumn::make('created_at')
                     ->label('Tanggal')
                     ->date('d/m/Y')
@@ -128,6 +138,17 @@ class TaskTerimaSuppliersTable
                             ->columns(2)
                             ->schema([
                                 TextEntry::make('id_task')->label('ID Task'),
+                                TextEntry::make('arrivalSupplierTruck.no_plat_mobil')->label('Plat Mobil'),
+                                TextEntry::make('arrivalSupplierTruck.id_task')->label('ID Task Mobil Datang'),
+                                TextEntry::make('arrivalSupplierTruck.jenis_kiriman')->label('Jenis Kiriman')
+                                    ->badge()
+                                    ->color(fn (string $state): string => match ($state) {
+                                        'DATANG' => 'info',
+                                        'RETUR' => 'warning',
+                                        'DATANG & RETUR' => 'primary',
+                                        default => 'gray',
+                                    }),
+                                TextEntry::make('arrivalSupplierTruck.supplier.nama_supplier')->label('Supplier'),
                                 TextEntry::make('nama_supplier_ekspedisi')->label('Supplier / Ekspedisi'),
                                 TextEntry::make('no_po_referensi')->label('No PO Referensi'),
                                 TextEntry::make('jam_datang')->label('Jam Datang'),
@@ -136,14 +157,41 @@ class TaskTerimaSuppliersTable
                                 TextEntry::make('selesai_bongkar')->label('Selesai Bongkar'),
                                 TextEntry::make('lembar_sj')->label('Lembar SJ'),
                                 TextEntry::make('nama_sopir')->label('Sopir'),
-                                TextEntry::make('status')->label('Status')->badge(),
+                                TextEntry::make('status')->label('Status')
+                                    ->badge()
+                                    ->color(fn (string $state): string => match ($state) {
+                                        'selesai_tanpa_retur' => 'success',
+                                        'selesai_ada_retur' => 'warning',
+                                        default => 'gray',
+                                    })
+                                    ->formatStateUsing(fn (string $state): string => match ($state) {
+                                        'selesai_tanpa_retur' => 'Selesai',
+                                        'selesai_ada_retur' => 'Selesai Ada Retur',
+                                        default => $state,
+                                    }),
+                                TextEntry::make('helpers_list')
+                                    ->label('Helpers')
+                                    ->badge()
+                                    ->color('success')
+                                    ->separator(', ')
+                                    ->state(function ($record) {
+                                        return $record->helpers->pluck('nama_karyawan')->toArray();
+                                    }),
                                 TextEntry::make('keterangan')->label('Keterangan')->columnSpanFull(),
                             ]),
                     ]),
                 EditAction::make()
                     ->iconButton()
                     ->tooltip('Ubah Data')
-                    ->color('warning'),
+                    ->color('warning')
+                    ->modalWidth(Width::Full)
+                    ->form(TaskTerimaSupplierForm::getFormFields())
+                    ->using(function ($record, array $data) {
+                        $helpers = $data['helpers'] ?? [];
+                        unset($data['helpers'], $data['jenis_kiriman_tampil']);
+                        $record->update($data);
+                        $record->helpers()->sync(filled($helpers) ? $helpers : []);
+                    }),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

@@ -15,10 +15,12 @@ class ArrivalSupplierTruck extends Model
         'supplier_id',
         'expedition_id',
         'nama_sopir',
-        'tanggal_datang',
         'no_plat_mobil',
+        'jenis_kiriman',
+        'tanggal_datang',
         'jam_datang',
         'jam_selesai',
+        'status',
         'keterangan',
         'user_id',
     ];
@@ -27,6 +29,11 @@ class ArrivalSupplierTruck extends Model
         'tanggal_datang' => 'date',
         'jam_datang' => 'datetime:H:i',
         'jam_selesai' => 'datetime:H:i',
+    ];
+
+    protected $attributes = [
+        'jenis_kiriman' => 'DATANG',
+        'status' => 'PROSES',
     ];
 
     protected static function booted(): void
@@ -49,6 +56,21 @@ class ArrivalSupplierTruck extends Model
                 'reference' => $model->nama_sopir,
                 'action' => 'create',
             ]);
+        });
+
+        static::retrieved(function ($model) {
+            if ($model->status === 'SELESAI') return;
+
+            $terima = TaskTerimaSupplier::where('nama_sopir', $model->nama_sopir)
+                ->whereDate('created_at', $model->created_at->toDateString())
+                ->whereNotNull('selesai_bongkar')
+                ->first();
+
+            if ($terima) {
+                $model->jam_selesai = $terima->selesai_bongkar;
+                $model->status = 'SELESAI';
+                $model->saveQuietly();
+            }
         });
     }
 

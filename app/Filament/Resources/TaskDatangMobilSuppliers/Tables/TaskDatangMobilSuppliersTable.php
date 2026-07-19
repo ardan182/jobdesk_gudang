@@ -2,13 +2,12 @@
 
 namespace App\Filament\Resources\TaskDatangMobilSuppliers\Tables;
 
-use Filament\Actions\Action;
+use App\Filament\Resources\TaskDatangMobilSuppliers\Schemas\TaskDatangMobilSupplierForm;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Infolists\Components\TextEntry;
-use Filament\Schemas\Components\Section;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -34,20 +33,35 @@ class TaskDatangMobilSuppliersTable
                     ->toggleable()
                     ->width('160px')
                     ->grow(false),
+                TextColumn::make('expedition.nama_ekspedisi')
+                    ->label('Ekspedisi')
+                    ->toggleable()
+                    ->grow(false),
                 TextColumn::make('nama_sopir')
                     ->label('Sopir')
                     ->searchable()
+                    ->toggleable()
+                    ->grow(false),
+                TextColumn::make('no_plat_mobil')
+                    ->label('No Plat')
+                    ->searchable()
+                    ->toggleable()
+                    ->grow(false),
+                TextColumn::make('jenis_kiriman')
+                    ->label('Jenis Kiriman')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'DATANG' => 'info',
+                        'RETUR' => 'warning',
+                        'DATANG & RETUR' => 'primary',
+                        default => 'gray',
+                    })
                     ->toggleable()
                     ->grow(false),
                 TextColumn::make('tanggal_datang')
                     ->label('Tgl Datang')
                     ->date('d/m/Y')
                     ->sortable()
-                    ->toggleable()
-                    ->grow(false),
-                TextColumn::make('no_plat_mobil')
-                    ->label('No Plat')
-                    ->searchable()
                     ->toggleable()
                     ->grow(false),
                 TextColumn::make('jam_datang')
@@ -62,8 +76,14 @@ class TaskDatangMobilSuppliersTable
                     ->sortable()
                     ->toggleable()
                     ->grow(false),
-                TextColumn::make('expedition.nama_ekspedisi')
-                    ->label('Ekspedisi')
+                TextColumn::make('status')
+                    ->label('Status')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'PROSES' => 'warning',
+                        'SELESAI' => 'success',
+                        default => 'gray',
+                    })
                     ->toggleable()
                     ->grow(false),
                 TextColumn::make('keterangan')
@@ -91,9 +111,17 @@ class TaskDatangMobilSuppliersTable
                         TextEntry::make('expedition.nama_ekspedisi')->label('Ekspedisi'),
                         TextEntry::make('nama_sopir')->label('Sopir'),
                         TextEntry::make('no_plat_mobil')->label('No Plat'),
+                        TextEntry::make('jenis_kiriman')->label('Jenis Kiriman')->badge(),
                         TextEntry::make('tanggal_datang')->label('Tgl Datang')->date('d/m/Y'),
                         TextEntry::make('jam_datang')->label('Jam Datang'),
                         TextEntry::make('jam_selesai')->label('Jam Selesai'),
+                        TextEntry::make('status')->label('Status')
+                            ->badge()
+                            ->color(fn (string $state): string => match ($state) {
+                                'PROSES' => 'warning',
+                                'SELESAI' => 'success',
+                                default => 'gray',
+                            }),
                         TextEntry::make('keterangan')->label('Keterangan'),
                     ]),
                 EditAction::make()
@@ -101,7 +129,8 @@ class TaskDatangMobilSuppliersTable
                     ->iconButton()
                     ->tooltip('Ubah Data')
                     ->modalHeading('Edit Datang Mobil Supplier')
-                    ->modalWidth('lg'),
+                    ->modalWidth('xl')
+                    ->form(TaskDatangMobilSupplierForm::getFormFields()),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
