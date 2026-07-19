@@ -1,16 +1,16 @@
 # Graph Report - jobdesk_gudang  (2026-07-19)
 
 ## Corpus Check
-- 218 files · ~105,631 words
+- 218 files · ~104,823 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 5944 nodes · 18511 edges · 201 communities (189 shown, 12 thin omitted)
+- 5944 nodes · 18510 edges · 209 communities (197 shown, 12 thin omitted)
 - Extraction: 86% EXTRACTED · 14% INFERRED · 0% AMBIGUOUS · INFERRED: 2649 edges (avg confidence: 0.73)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `028a434d`
+- Built from commit: `fa0e239d`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -154,6 +154,14 @@
 - TaskTerimaSupplierResource
 - BackedEnum
 - UnitEnum
+- clickPercent
+- 16. Checker Terima Supplier — Fitur Integrasi
+- 9. Export/Import
+- 10. Custom Pages
+- 11. Dashboard Widgets
+- 15. Datang Mobil Supplier — Fitur Lengkap
+- 19. UI Modal Standards
+- 5. Roles & Access
 
 ## God Nodes (most connected - your core abstractions)
 1. `o()` - 234 edges
@@ -182,7 +190,7 @@
 ## Import Cycles
 - None detected.
 
-## Communities (201 total, 12 thin omitted)
+## Communities (209 total, 12 thin omitted)
 
 ### Community 0 - "code-editor.js"
 Cohesion: 0.01
@@ -190,19 +198,19 @@ Nodes (87): Ac(), addCompletion(), addCompletions(), addNamespace(), addNamespac
 
 ### Community 1 - "chart.js"
 Cohesion: 0.01
-Nodes (131): addControllers(), addPlugins(), addScales(), alpha(), bd(), Be(), bm(), Bt() (+123 more)
+Nodes (98): abutsStart(), bd(), bm(), Bt(), calculateCircumference(), _circumference(), data(), Dd() (+90 more)
 
 ### Community 2 - "rich-editor.js"
 Cohesion: 0.01
 Nodes (164): $0(), Ab(), ac(), addAttributes(), addHackNode(), addOptions(), addTextblockHacks(), af() (+156 more)
 
 ### Community 3 - "markdown-editor.js"
-Cohesion: 0.04
-Nodes (152): B(), Nh(), define(), Ac(), ad(), Ae(), af(), ai() (+144 more)
+Cohesion: 0.03
+Nodes (149): define(), Ei(), Aa(), Ac(), ad(), af(), ai(), al() (+141 more)
 
 ### Community 4 - "l"
-Cohesion: 0.04
-Nodes (123): Af(), al(), attrs(), AX(), balance(), cc(), combine(), cP() (+115 more)
+Cohesion: 0.05
+Nodes (139): attrs(), cc(), cP(), ensureLineGaps(), gapSize(), hd(), measureVisibleLineHeights(), On() (+131 more)
 
 ### Community 5 - "chart.js"
 Cohesion: 0.02
@@ -222,51 +230,51 @@ Nodes (122): aa(), acceptToken(), allows(), AQ(), atLastNode(), au(), b1(), Bg()
 
 ### Community 9 - "y"
 Cohesion: 0.13
-Nodes (62): Dg(), Ig(), le(), Se(), at(), Be(), ca(), cd() (+54 more)
+Nodes (63): Dg(), Ig(), le(), Se(), at(), Be(), ca(), cd() (+55 more)
 
 ### Community 10 - "fromObject"
 Cohesion: 0.03
-Nodes (124): ac(), ae(), after(), ag(), Al(), Am(), Bc(), before() (+116 more)
+Nodes (127): ac(), ae(), after(), ag(), Al(), Am(), before(), Bf() (+119 more)
 
 ### Community 11 - "get"
 Cohesion: 0.03
 Nodes (112): addBlockWidget(), addBreak(), addComposition(), addDelimiter(), addInlineWidget(), addLine(), addLineStart(), addLineStartIfNotCovered() (+104 more)
 
 ### Community 12 - "draw"
-Cohesion: 0.03
-Nodes (139): acquireContext(), adjustHitBoxes(), Ao(), applyStack(), aspectRatio(), B(), bh(), _calculateBarIndexPixels() (+131 more)
+Cohesion: 0.05
+Nodes (90): acquireContext(), adjustHitBoxes(), B(), bh(), calculateLabelRotation(), _calculatePadding(), clear(), _computeGridLineItems() (+82 more)
 
 ### Community 13 - ".slice"
 Cohesion: 0.07
 Nodes (76): add(), addCommands(), addGlobalAttributes(), ak(), allowsMarks(), Ap(), bk(), bp() (+68 more)
 
 ### Community 14 - "updateElements"
-Cohesion: 0.08
-Nodes (29): addEventListener(), ar(), au(), beforeDatasetDraw(), beforeDatasetsDraw(), beforeDraw(), bindResponsiveEvents(), bu() (+21 more)
+Cohesion: 0.09
+Nodes (12): ListSupplierReturnInbounds, SupplierReturnInboundForm, BackedEnum, UnitEnum, SupplierReturnInboundResource, ListSupplierSjs, EditUser, ListUsers (+4 more)
 
 ### Community 15 - "_update"
 Cohesion: 0.04
-Nodes (101): $a(), addBox(), addElements(), afterBuildTicks(), afterCalculateLabelRotation(), afterDataLimits(), afterDraw(), afterFit() (+93 more)
+Nodes (87): $a(), addBox(), addEventListener(), afterBuildTicks(), afterCalculateLabelRotation(), afterDataLimits(), afterDraw(), afterFit() (+79 more)
 
 ### Community 16 - "create"
-Cohesion: 0.04
-Nodes (56): Cl(), dc(), Dl(), dtFormatter(), Ea(), eras(), expandFormat(), extract() (+48 more)
+Cohesion: 0.05
+Nodes (61): Cl(), clone(), create(), dc(), Dl(), dtFormatter(), Ea(), Ec() (+53 more)
 
 ### Community 17 - "lineAt"
 Cohesion: 0.06
 Nodes (48): addBlock(), addElement(), addLineDeco(), applyChanges(), balanced(), baseIndent(), baseIndentFor(), blankContent() (+40 more)
 
 ### Community 18 - "constructor"
-Cohesion: 0.23
-Nodes (13): ba(), Ei(), Fr(), Kc(), mt(), Ri(), ui(), Vr() (+5 more)
+Cohesion: 0.09
+Nodes (29): addControllers(), addElements(), addPlugins(), addScales(), As(), buildOrUpdateControllers(), buildOrUpdateElements(), _dataCheck() (+21 more)
 
 ### Community 19 - "_update"
 Cohesion: 0.05
 Nodes (73): ae(), afterBuildTicks(), afterCalculateLabelRotation(), afterDataLimits(), afterFit(), afterSetDimensions(), afterTickToLabelConversion(), afterUpdate() (+65 more)
 
 ### Community 20 - "id"
-Cohesion: 0.16
-Nodes (46): d(), g(), b(), $c(), D(), _e(), Ea(), G() (+38 more)
+Cohesion: 0.08
+Nodes (26): ad(), Bc(), bg(), chartOptionScopes(), constructor(), Cs(), dg(), features() (+18 more)
 
 ### Community 21 - "facet"
 Cohesion: 0.07
@@ -281,16 +289,16 @@ Cohesion: 0.08
 Nodes (67): Jt(), A(), ue(), X(), A(), ae(), areRecordsSelected(), areRecordsToggleable() (+59 more)
 
 ### Community 24 - "r"
-Cohesion: 0.08
-Nodes (58): node(), Sd(), t(), _a(), dd(), df(), Dn(), ed() (+50 more)
+Cohesion: 0.05
+Nodes (102): Af(), al(), AX(), B(), balance(), combine(), cw(), Nh() (+94 more)
 
 ### Community 25 - "E"
 Cohesion: 0.06
-Nodes (52): aa(), add(), bo(), bs(), ca(), _cachedScopes(), cd(), Ch() (+44 more)
+Nodes (56): aa(), add(), bo(), br(), bs(), ca(), _cachedScopes(), cd() (+48 more)
 
 ### Community 26 - "inRange"
-Cohesion: 0.06
-Nodes (49): ad(), average(), beforeLayout(), bi(), cf(), Do(), Dt(), first() (+41 more)
+Cohesion: 0.04
+Nodes (64): active(), _animateOptions(), applyStack(), average(), beforeLayout(), bi(), bu(), cancel() (+56 more)
 
 ### Community 27 - "constructor"
 Cohesion: 0.06
@@ -314,7 +322,7 @@ Nodes (58): accepts(), addInner(), addMaps(), addStep(), addTransform(), appendM
 
 ### Community 32 - "Filament\Schemas\Schema"
 Cohesion: 0.07
-Nodes (11): ListTaskReturSuppliers, TaskReturSupplierForm, UnitEnum, TaskReturSupplierResource, EditUser, ListUsers, UserForm, UnitEnum (+3 more)
+Nodes (10): TaskKeluarBarangsTable, BackedEnum, UnitEnum, TaskKeluarBarangResource, ListTaskReturSuppliers, TaskReturSupplierForm, UnitEnum, TaskReturSupplierResource (+2 more)
 
 ### Community 33 - "eq"
 Cohesion: 0.08
@@ -349,8 +357,8 @@ Cohesion: 0.06
 Nodes (63): adjustHitBoxes(), afterDraw(), At(), beforeDatasetDraw(), beforeDatasetsDraw(), beforeDraw(), bi(), clear() (+55 more)
 
 ### Community 41 - "file-upload.js"
-Cohesion: 0.06
-Nodes (33): am(), Bp(), ca(), Cg(), clickPercent(), constructor(), Cp(), dm() (+25 more)
+Cohesion: 0.07
+Nodes (29): am(), Bp(), ca(), Cg(), constructor(), Cp(), Dp(), Ee() (+21 more)
 
 ### Community 42 - "updateElements"
 Cohesion: 0.06
@@ -369,8 +377,8 @@ Cohesion: 0.09
 Nodes (38): We(), Ae(), ar(), Be(), Bt(), De(), _e(), Ee() (+30 more)
 
 ### Community 46 - "find"
-Cohesion: 0.05
-Nodes (42): 10. Custom Pages, 11. Dashboard Widgets, 12. UI/UX & CSS Customizations, 13. Branch Return Outbound (Retur Keluar Cabang), 14. Supplier Return Inbound (Retur Masuk Supplier), 15. Datang Mobil Supplier — Fitur Lengkap, 15. Graphify Knowledge Graph, 16. Checker Terima Supplier — Fitur Integrasi (+34 more)
+Cohesion: 0.15
+Nodes (12): 12. UI/UX & CSS Customizations, 13. Branch Return Outbound (Retur Keluar Cabang), 14. Supplier Return Inbound (Retur Masuk Supplier), 15. Graphify Knowledge Graph, 16. File Structure (app/), 17. Input SJ dari Supplier, 1. Deskripsi, 2. Tech Stack (+4 more)
 
 ### Community 47 - "isHorizontal"
 Cohesion: 0.07
@@ -389,8 +397,8 @@ Cohesion: 0.05
 Nodes (116): addBadgesForSelectedOptions(), addSingleBadge(), addSingleSelectionDisplay(), Ae(), An(), applyDisabledState(), At(), be() (+108 more)
 
 ### Community 51 - "ManageLeaves"
-Cohesion: 0.10
-Nodes (10): ManageLeaves, BackedEnum, UnitEnum, DivisionsTableWidget, WarehouseEmployeeImport, Division, WarehouseEmployee, Filament\Pages\Page (+2 more)
+Cohesion: 0.07
+Nodes (13): ManageLeaves, BackedEnum, UnitEnum, ListWarehouseEmployees, BackedEnum, UnitEnum, WarehouseEmployeeResource, DivisionsTableWidget (+5 more)
 
 ### Community 52 - "select.js"
 Cohesion: 0.10
@@ -405,8 +413,8 @@ Cohesion: 0.12
 Nodes (33): Rd(), Ax(), bx(), ct(), dx(), ex(), Fh(), Gh() (+25 more)
 
 ### Community 55 - "select.js"
-Cohesion: 0.08
-Nodes (27): abutsStart(), ah(), contains(), difference(), divideEqually(), fc(), fromDateTimes(), gi() (+19 more)
+Cohesion: 0.22
+Nodes (10): ah(), contains(), gi(), se(), splitAt(), toISOTime(), toMillis(), Vf() (+2 more)
 
 ### Community 56 - "Xt"
 Cohesion: 0.14
@@ -449,16 +457,16 @@ Cohesion: 0.07
 Nodes (39): Qa(), average(), cc(), dataset(), er(), first(), Ge(), getCenterPoint() (+31 more)
 
 ### Community 67 - "parse"
-Cohesion: 0.04
-Nodes (72): af(), afterAutoSkip(), at(), Ba(), Bf(), br(), buildLookupTable(), buildTicks() (+64 more)
+Cohesion: 0.05
+Nodes (81): af(), afterAutoSkip(), Ao(), aspectRatio(), at(), Ba(), buildLookupTable(), _calculateBarIndexPixels() (+73 more)
 
 ### Community 68 - "fn"
 Cohesion: 0.16
 Nodes (26): aa(), c(), Dn(), fn(), ha(), ia(), Ii(), Jr() (+18 more)
 
 ### Community 69 - "getDatasetMeta"
-Cohesion: 0.15
-Nodes (17): active(), _animateOptions(), cancel(), _createAnimations(), _createDescriptors(), _d(), _descriptors(), _notify() (+9 more)
+Cohesion: 0.29
+Nodes (7): getAllParsedValues(), Iu(), je(), nu(), wi(), xi(), zu()
 
 ### Community 70 - "parse"
 Cohesion: 0.05
@@ -473,27 +481,27 @@ Cohesion: 0.11
 Nodes (23): Ah(), at(), Ba(), Ch(), cx(), Eh(), Fi(), fn() (+15 more)
 
 ### Community 73 - "TaskKeluarBarangResource.php"
-Cohesion: 0.11
-Nodes (26): afterDatasetsUpdate(), An(), generateLabels(), getDatasetMeta(), getDataVisibility(), getMaxBorderWidth(), _getSortedDatasetMetas(), getStyle() (+18 more)
+Cohesion: 0.06
+Nodes (47): afterDatasetsUpdate(), An(), ar(), beforeDatasetDraw(), beforeDatasetsDraw(), beforeDraw(), ef(), generateLabels() (+39 more)
 
 ### Community 74 - "TaskTerimaSupplierResource.php"
-Cohesion: 0.15
-Nodes (5): ExpeditionResource, BackedEnum, UnitEnum, ListExpeditions, ExpeditionForm
+Cohesion: 0.40
+Nodes (5): 18. Data Integrity & Protection, ArrivalSupplierTruck `deleting` event, Edit Mode Protection, Helpers Grid Display, TaskTerimaSupplier `deleted` event
 
 ### Community 75 - "TaskReturCabangResource.php"
-Cohesion: 0.07
-Nodes (15): TaskKeluarBarangForm, TaskKirimanMobilForm, ListTaskReturCabangs, TaskReturCabangForm, BackedEnum, UnitEnum, TaskReturCabangResource, BranchReturnOutbound (+7 more)
+Cohesion: 0.06
+Nodes (17): MasterSopirResource, BackedEnum, UnitEnum, ListMasterSopirs, ListTaskReturCabangs, TaskReturCabangForm, BackedEnum, UnitEnum (+9 more)
 
 ### Community 76 - "TaskIdGenerator"
-Cohesion: 0.05
-Nodes (36): 1. `users` (Laravel default + role), 2. `task_retur_suppliers` — Kirim Retur ke Supplier, 3. `task_retur_cabangs` — Terima Retur dari Cabang, 4. `task_terima_suppliers` — Terima Barang dari Supplier, 5. `task_keluar_barangs` — Keluar Barang dari Gudang, 6. `task_kiriman_mobils` — Kiriman Cabang Per Mobil, Alur Input Task (Repeater Form), Alur Laporan (+28 more)
+Cohesion: 0.10
+Nodes (20): 1. Tech Stack, 2. Arsitektur, 3. Database Schema, 4. Model Relations, 5. Role Access Pattern, 6. Data Integrity Hooks, 7. UI Component Standards, ArrivalSupplierTruck `deleting` (+12 more)
 
 ### Community 77 - "User.php"
 Cohesion: 0.14
 Nodes (10): User, ActivityLogSeeder, DatabaseSeeder, RoleSeeder, Illuminate\Database\Console\Seeds\WithoutModelEvents, Illuminate\Database\Eloquent\Factories\HasFactory, Illuminate\Database\Seeder, Illuminate\Foundation\Auth\User (+2 more)
 
 ### Community 78 - "addEventListener"
-Cohesion: 0.14
+Cohesion: 0.13
 Nodes (6): ListTaskDatangMobilSuppliers, TaskDatangMobilSupplierForm, TaskDatangMobilSuppliersTable, BackedEnum, UnitEnum, TaskDatangMobilSupplierResource
 
 ### Community 79 - "toString"
@@ -501,8 +509,8 @@ Cohesion: 0.15
 Nodes (5): MasterTokoResource, BackedEnum, UnitEnum, ListMasterTokos, MasterTokoForm
 
 ### Community 80 - "_generate"
-Cohesion: 0.12
-Nodes (16): ef(), Es(), eu(), Ft(), $h(), Is(), Jn(), ju() (+8 more)
+Cohesion: 0.05
+Nodes (55): alpha(), Be(), $c(), cf(), co(), color(), darken(), desaturate() (+47 more)
 
 ### Community 81 - "devDependencies"
 Cohesion: 0.11
@@ -518,11 +526,11 @@ Nodes (24): For /graphify add and --watch, For /graphify query, For the commit h
 
 ### Community 84 - "MasterKendaraanResource"
 Cohesion: 0.04
-Nodes (29): BranchReturnOutboundResource, BackedEnum, UnitEnum, ListBranchReturnOutbounds, BranchReturnOutboundForm, ListSupplierReturnInbounds, SupplierReturnInboundForm, BackedEnum (+21 more)
+Nodes (27): BranchReturnOutboundResource, BackedEnum, UnitEnum, ListBranchReturnOutbounds, BranchReturnOutboundForm, ExpeditionResource, BackedEnum, UnitEnum (+19 more)
 
 ### Community 85 - "MasterSopirResource"
-Cohesion: 0.15
-Nodes (5): MasterSopirResource, BackedEnum, UnitEnum, ListMasterSopirs, MasterSopirForm
+Cohesion: 0.40
+Nodes (5): 3. Setup & Deployment, Development, .env Wajib, Pull di PC Kantor (Windows/Linux), Testing
 
 ### Community 86 - "MasterTokoResource"
 Cohesion: 0.23
@@ -562,7 +570,7 @@ Nodes (13): Ce(), De(), Ht(), Ie(), ii(), Me(), oi(), Re() (+5 more)
 
 ### Community 95 - "te"
 Cohesion: 0.05
-Nodes (10): Ud(), Aa(), Bi(), Bn(), ji(), te(), Vi(), Xc() (+2 more)
+Nodes (11): Ud(), Bi(), Bn(), br(), Id(), ji(), on(), te() (+3 more)
 
 ### Community 96 - "selectOption"
 Cohesion: 0.26
@@ -598,15 +606,15 @@ Nodes (11): Be(), ei(), Fe(), He(), le(), Mt(), ni(), r() (+3 more)
 
 ### Community 104 - "_e"
 Cohesion: 0.20
-Nodes (11): c(), _e(), It(), jt(), ot(), s(), sa(), tm() (+3 more)
+Nodes (12): ba(), c(), _e(), It(), jt(), ot(), s(), sa() (+4 more)
 
 ### Community 105 - "oe"
-Cohesion: 0.39
-Nodes (9): cm(), De(), Ht(), me(), nm(), oe(), q(), xt() (+1 more)
+Cohesion: 0.29
+Nodes (11): cm(), De(), dm(), Ht(), me(), nm(), oe(), q() (+3 more)
 
 ### Community 106 - "addInner"
-Cohesion: 0.11
-Nodes (18): 1. Ringkasan, 2.1 Manajemen Master Data, 2.2 Modul Task (Log Harian) — Single Form, 2.3 Modul Non-Task (Single Form), 2.4 Datang Mobil Supplier — Fitur Lengkap, 2.5 Checker Terima Supplier — Fitur Baru, 2.6 Cuti & Absensi, 2.7 Dashboard (+10 more)
+Cohesion: 0.08
+Nodes (25): 1. Ringkasan, 2.1 Manajemen Master Data, 2.2 Modul Task (Log Harian) — Single Form, 2.3 Modul Non-Task (Single Form), 2.4 Datang Mobil Supplier — Fitur Lengkap, 2.5 Checker Terima Supplier — Fitur Baru, 2.6 Cuti & Absensi, 2.7 Dashboard (+17 more)
 
 ### Community 107 - "Rn"
 Cohesion: 0.11
@@ -653,16 +661,16 @@ Cohesion: 0.67
 Nodes (3): extra, laravel, dont-discover
 
 ### Community 124 - "ar"
-Cohesion: 0.67
-Nodes (3): _getTestState(), getType(), St()
+Cohesion: 0.40
+Nodes (5): 6. Database Schema, Master Tables (7), Spatie Tables, Support Tables (4), Task Tables (6) — Log Harian
 
 ### Community 182 - "Jobdesk Gudang AP"
 Cohesion: 0.20
 Nodes (9): Fitur, Format ID_TASK, Instalasi, Jobdesk Gudang AP, Konfigurasi `.env`, Lanjutan, Persyaratan Sistem, Struktur Role (+1 more)
 
 ### Community 183 - "TASKS — Jobdesk Gudang AP"
-Cohesion: 0.20
-Nodes (9): Fase 1: Foundation ✅, Fase 2: Master Data ✅, Fase 3: Task Modules ✅, Fase 4: UI/UX ✅, Fase 5: Features ✅, Fase 6: Cuti & Absensi ✅, Fase 7: Modul Baru ✅, Fase 8: Polish & Fixes ⏳ (+1 more)
+Cohesion: 0.18
+Nodes (10): Fase 1: Foundation ✅, Fase 2: Master Data ✅, Fase 3: Task Modules ✅, Fase 4: UI/UX ✅, Fase 5: Features ✅, Fase 6: Cuti & Absensi ✅, Fase 7: Modul Baru ✅, Fase 8: Bug Fixes ✅ (+2 more)
 
 ### Community 184 - "graphify reference: extra exports and benchmark"
 Cohesion: 0.22
@@ -689,23 +697,55 @@ Cohesion: 0.67
 Nodes (3): keywords, framework, laravel
 
 ### Community 196 - "TaskTerimaSupplierResource"
-Cohesion: 0.08
-Nodes (9): BackedEnum, UnitEnum, TaskKeluarBarangResource, ListTaskTerimaSuppliers, TaskTerimaSupplierForm, TaskTerimaSuppliersTable, TaskTerimaSupplierResource, Illuminate\Database\Eloquent\Builder (+1 more)
+Cohesion: 0.14
+Nodes (5): ListTaskTerimaSuppliers, TaskTerimaSupplierForm, TaskTerimaSuppliersTable, TaskTerimaSupplierResource, UnitEnum
+
+### Community 201 - "clickPercent"
+Cohesion: 0.60
+Nodes (5): clickPercent(), getPosition(), mouseUp(), movePlayhead(), timelineClicked()
+
+### Community 202 - "16. Checker Terima Supplier — Fitur Integrasi"
+Cohesion: 0.50
+Nodes (4): 16. Checker Terima Supplier — Fitur Integrasi, FK Arrival Supplier Truck, Helpers (Pivot), Status Enum
+
+### Community 203 - "9. Export/Import"
+Cohesion: 0.50
+Nodes (4): 9. Export/Import, All native PHP (ZipArchive + SimpleXML + DOMDocument), Export (ZipArchive XLSX), Import (CSV/XLSX/XLS)
+
+### Community 204 - "10. Custom Pages"
+Cohesion: 0.67
+Nodes (3): 10. Custom Pages, Cuti & Absensi (`ManageLeaves.php`), Login (`Login.php`)
+
+### Community 205 - "11. Dashboard Widgets"
+Cohesion: 0.67
+Nodes (3): 11. Dashboard Widgets, RecentActivityWidget, StatsOverviewWidget
+
+### Community 206 - "15. Datang Mobil Supplier — Fitur Lengkap"
+Cohesion: 0.67
+Nodes (3): 15. Datang Mobil Supplier — Fitur Lengkap, Auto-Sync Logic, Fields
+
+### Community 207 - "19. UI Modal Standards"
+Cohesion: 0.67
+Nodes (3): 19. UI Modal Standards, Create/Edit Modal, ViewAction (Detail)
+
+### Community 208 - "5. Roles & Access"
+Cohesion: 0.67
+Nodes (3): 5. Roles & Access, Pattern Role Access, Seeder
 
 ## Knowledge Gaps
-- **226 isolated node(s):** `1. Deskripsi`, `2. Tech Stack`, `Development`, `.env Wajib`, `Testing` (+221 more)
+- **224 isolated node(s):** `1. Deskripsi`, `2. Tech Stack`, `Development`, `.env Wajib`, `Testing` (+219 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **12 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `o()` connect `constructor` to `chart.js`, `rich-editor.js`, `l`, `chart.js`, `resolve`, `W`, `fromObject`, `get`, `draw`, `.slice`, `updateElements`, `_update`, `create`, `constructor`, `_update`, `id`, `oi`, `tables.js`, `r`, `E`, `inRange`, `constructor`, `advance`, `support.js`, `Ke`, `.append`, `eq`, `o`, `reduce`, `marks`, `draw`, `file-upload.js`, `_notify`, `sliceDoc`, `isHorizontal`, `N`, `Xt`, `select.js`, `autoload-dev`, `Ue`, `select.js`, `Xt`, `echo.js`, `Cn`, `replace`, `wc`, `_each`, `Y`, `parse`, `fn`, `getDatasetMeta`, `parse`, `app.js`, `Illuminate\Database\Eloquent\Builder`, `render`, `MasterTokoResource`, `render`, `t`, `selectOption`, `renderOptions`, `TaskKirimanMobilResource.php`, `r`, `_e`, `oe`, `e`?**
-  _High betweenness centrality (0.113) - this node is a cross-community bridge._
-- **Why does `l()` connect `l` to `code-editor.js`, `chart.js`, `rich-editor.js`, `markdown-editor.js`, `chart.js`, `constructor`, `resolve`, `W`, `y`, `fromObject`, `get`, `draw`, `.slice`, `updateElements`, `_update`, `lineAt`, `id`, `facet`, `oi`, `tables.js`, `r`, `E`, `inRange`, `constructor`, `advance`, `Ke`, `eq`, `o`, `reduce`, `slice`, `marks`, `draw`, `updateElements`, `_notify`, `sliceDoc`, `isHorizontal`, `N`, `Xt`, `select.js`, `autoload-dev`, `Ue`, `Xt`, `echo.js`, `Cn`, `replace`, `qt`, `getDatasetMeta`, `_each`, `Y`, `parse`, `fn`, `getDatasetMeta`, `parse`, `TaskKeluarBarangResource.php`, `_e`, `oe`?**
-  _High betweenness centrality (0.092) - this node is a cross-community bridge._
-- **Why does `u()` connect `l` to `code-editor.js`, `markdown-editor.js`, `constructor`, `resolve`, `W`, `fromObject`, `get`, `draw`, `.slice`, `updateElements`, `_update`, `lineAt`, `_update`, `id`, `facet`, `oi`, `tables.js`, `r`, `E`, `inRange`, `support.js`, `.append`, `o`, `reduce`, `marks`, `draw`, `updateElements`, `sliceDoc`, `slider.js`, `isHorizontal`, `N`, `Xt`, `select.js`, `autoload-dev`, `Xt`, `Vn`, `Cn`, `replace`, `wc`, `Y`, `parse`, `fn`, `parse`, `app.js`, `MasterTokoResource`, `TaskKirimanMobilResource.php`, `e`?**
-  _High betweenness centrality (0.056) - this node is a cross-community bridge._
+- **Why does `o()` connect `constructor` to `chart.js`, `rich-editor.js`, `markdown-editor.js`, `l`, `chart.js`, `resolve`, `W`, `fromObject`, `get`, `draw`, `.slice`, `_update`, `create`, `constructor`, `_update`, `id`, `oi`, `tables.js`, `r`, `E`, `inRange`, `constructor`, `advance`, `support.js`, `Ke`, `.append`, `eq`, `o`, `reduce`, `marks`, `draw`, `file-upload.js`, `_notify`, `sliceDoc`, `isHorizontal`, `N`, `Xt`, `select.js`, `autoload-dev`, `Ue`, `Xt`, `echo.js`, `Cn`, `replace`, `wc`, `_each`, `Y`, `parse`, `fn`, `parse`, `app.js`, `Illuminate\Database\Eloquent\Builder`, `TaskKeluarBarangResource.php`, `render`, `MasterTokoResource`, `render`, `t`, `selectOption`, `renderOptions`, `TaskKirimanMobilResource.php`, `r`, `_e`, `oe`, `e`?**
+  _High betweenness centrality (0.126) - this node is a cross-community bridge._
+- **Why does `l()` connect `l` to `code-editor.js`, `chart.js`, `rich-editor.js`, `markdown-editor.js`, `chart.js`, `constructor`, `resolve`, `W`, `y`, `fromObject`, `get`, `draw`, `.slice`, `_update`, `create`, `lineAt`, `constructor`, `id`, `facet`, `oi`, `tables.js`, `r`, `E`, `inRange`, `constructor`, `advance`, `Ke`, `eq`, `o`, `reduce`, `slice`, `marks`, `draw`, `updateElements`, `_notify`, `sliceDoc`, `isHorizontal`, `N`, `Xt`, `select.js`, `autoload-dev`, `Ue`, `Xt`, `echo.js`, `Cn`, `replace`, `qt`, `getDatasetMeta`, `_each`, `Y`, `parse`, `fn`, `getDatasetMeta`, `parse`, `TaskKeluarBarangResource.php`, `_generate`, `_e`, `oe`?**
+  _High betweenness centrality (0.078) - this node is a cross-community bridge._
+- **Why does `h()` connect `l` to `chart.js`, `markdown-editor.js`, `chart.js`, `constructor`, `resolve`, `W`, `y`, `fromObject`, `get`, `draw`, `.slice`, `_update`, `create`, `lineAt`, `facet`, `oi`, `tables.js`, `r`, `E`, `inRange`, `constructor`, `support.js`, `Ke`, `.append`, `eq`, `o`, `marks`, `draw`, `updateElements`, `_notify`, `sliceDoc`, `isHorizontal`, `N`, `Xt`, `select.js`, `Cn`, `replace`, `wc`, `_each`, `Y`, `parse`, `fn`, `getDatasetMeta`, `parse`, `te`, `TaskKirimanMobilResource.php`?**
+  _High betweenness centrality (0.050) - this node is a cross-community bridge._
 - **Are the 232 inferred relationships involving `o()` (e.g. with `G()` and `Be()`) actually correct?**
   _`o()` has 232 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 204 inferred relationships involving `l()` (e.g. with `L()` and `advance()`) actually correct?**

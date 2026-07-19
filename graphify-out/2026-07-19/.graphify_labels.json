@@ -197,5 +197,7 @@
   "195": "manage-leaves-saldo.blade.php",
   "196": "TaskTerimaSupplierResource",
   "197": "Ga",
-  "198": "2026_07_17_201902_create_supplier_sjs_table.php"
+  "198": "2026_07_17_201902_create_supplier_sjs_table.php",
+  "199": "BackedEnum",
+  "200": "UnitEnum"
 }
