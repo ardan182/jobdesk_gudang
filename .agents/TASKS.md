@@ -85,7 +85,17 @@
 - [x] ViewAction Datang Mobil Supplier → Section 2 kolom (seragam dengan Terima Supplier)
 - [x] Form Section 1 kolom untuk Datang Mobil Supplier
 
-## Fase 9: Polish & Fixes ⏳
+## Fase 9: Pusat Dokumen ✅
+
+- [x] Model + Migration `warehouse_documents`
+- [x] Resource Pusat Dokumen — grup Administrasi, icon document-arrow-down
+- [x] Form: FileUpload + kategori (Formulir/SOP/Template) + versi + format auto
+- [x] Grid: striped + badge kategori/format + download count
+- [x] Download action: increment counter + Storage::download
+- [x] Role access: Admin CRUD, all roles view + download
+- [x] Format file auto-fix (pathinfo di action, bukan afterStateUpdated)
+
+## Fase 10: Polish & Fixes ⏳
 
 - [ ] Export semua master data (Ekspedisi, Kendaraan, Sopir, Toko)
 - [ ] Import master data (Ekspedisi, Kendaraan, Sopir, Toko)

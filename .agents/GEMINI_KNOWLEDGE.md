@@ -359,6 +359,18 @@ Di `retrieved` event model ArrivalSupplierTruck: cari `TaskTerimaSupplier` denga
 
 ---
 
+## 20. Pusat Dokumen (WarehouseDocument)
+
+- Model `WarehouseDocument` — table `warehouse_documents`
+- Kolom: `nama_dokumen, kategori (Formulir Lapangan/SOP Gudang/Template Import), versi, file_path, format_file, deskripsi, download_count, user_id`
+- Navigation: Grup **Administrasi**, ikon `DocumentArrowDown`, label 'Pusat Dokumen'
+- **Role Access:** Admin bisa CRUD, semua Checker bisa lihat + download (tidak bisa create/edit/delete)
+- **File Upload:** `FileUpload` ke `document_templates/`, accepted: pdf, csv, xls/xlsx, ods, ppt, txt, jpg/jpeg, png (max 10MB)
+- **Format File:** Auto-set dari `pathinfo($file_path, PATHINFO_EXTENSION)` di action create (bukan `afterStateUpdated`)
+- **Grid:** striped, badge kategori (info/warning/success) + badge format (danger/success/info/warning) + download count
+- **Download Action:** Increment `download_count` + `Storage::disk('local')->download($record->file_path)`
+- **Edit modal:** `->disabled()` untuk format_file (auto)
+
 ## 19. UI Modal Standards
 
 ### ViewAction (Detail)

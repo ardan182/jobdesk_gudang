@@ -175,3 +175,57 @@ TextColumn::make('helpers_names')
     ->badge()->color('success')
     ->getStateUsing(fn ($record) => { ... limit 2 + more }),
 ```
+
+---
+
+## 8. Pusat Dokumen Module
+
+### Migration
+```php
+$table->string('nama_dokumen');
+$table->string('kategori');        // Formulir Lapangan, SOP Gudang, Template Import
+$table->string('versi')->default('v1.0');
+$table->string('file_path');
+$table->string('format_file');     // auto dari pathinfo
+$table->text('deskripsi')->nullable();
+$table->integer('download_count')->default(0);
+$table->foreignId('user_id')->constrained()->cascadeOnDelete();
+```
+
+### Form FileUpload
+```php
+FileUpload::make('file_path')
+    ->disk('local')
+    ->directory('document_templates')
+    ->storeFiles()
+    ->acceptedFileTypes([...])
+    ->maxSize(10240)
+    ->required()
+    ->columnSpanFull(),
+```
+
+### Create Action
+```php
+$data['format_file'] = strtolower(pathinfo($data['file_path'], PATHINFO_EXTENSION));
+$data['user_id'] = auth()->id();
+$this->getModel()::create($data);
+```
+
+### Download Action (Table)
+```php
+Action::make('download')
+    ->icon('heroicon-m-arrow-down-tray')
+    ->color('primary')
+    ->iconButton()
+    ->action(function ($record) {
+        $record->increment('download_count');
+        return Storage::disk('local')->download($record->file_path);
+    }),
+```
+
+### Role Access
+| Action | Admin | Checker |
+|--------|-------|---------|
+| View grid + download | ✅ | ✅ |
+| Create / Edit / Delete | ✅ | ❌ |
+

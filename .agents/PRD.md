@@ -1,6 +1,6 @@
 # PRD — Jobdesk Gudang AP
 
-**Versi:** 1.4 | **Tanggal:** 19 Juli 2026
+**Versi:** 1.5 | **Tanggal:** 19 Juli 2026
 
 ---
 
@@ -108,7 +108,7 @@ Semua punya: `id_task` (indexed), `user_id` (FK).
 | Retur | Retur Masuk Cabang, Retur Keluar Supplier, Retur Masuk Supplier, Retur Keluar Cabang |
 | Penerimaan | Input SJ Supplier, Datang Mobil Supplier, Checker Terima Barang Supplier |
 | Pengiriman | Checker Keluar Barang, Kiriman Mobil |
-| Administrasi (Admin) | Cuti & Absensi |
+| Administrasi (Admin) | Cuti & Absensi, **Pusat Dokumen** |
 | Pengaturan (Admin) | Users |
 
 ---
