@@ -154,3 +154,4 @@ Semua modul menggunakan **tampilan seragam**:
 - [Filament v5 Infolists](https://filamentphp.com/docs/5.x/infolists)
 - [Laravel 13 Documentation](https://laravel.com/docs/13.x)
 - [Spatie Laravel Permission](https://spatie.be/docs/laravel-permission/v6/)
+- [Filament Hub (Plugin Repository)](https://filament-hub.com/features/4.x)
