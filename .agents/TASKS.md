@@ -94,8 +94,18 @@
 - [x] Download action: increment counter + Storage::download
 - [x] Role access: Admin CRUD, all roles view + download
 - [x] Format file auto-fix (pathinfo di action, bukan afterStateUpdated)
+- [x] Edit modal: Width::Full, format_file auto re-extract, using() callback
+- [x] FileUpload hanya required saat Create (bukan Edit)
 
-## Fase 10: Polish & Fixes ⏳
+## Fase 10: Bug Fixes & Polish ✅
+
+- [x] Status `draft` ditambahkan (enum + form + grid badge gray)
+- [x] `jumlah_kolian` dijadikan nullable (draft bisa simpan tanpa kolian)
+- [x] TaskTerimaSupplier deleted → status truck jadi null (bukan PROSES)
+- [x] Cegah double select mobil datang (whereNotIn excluded IDs)
+- [x] Pusat Dokumen Edit modal konsisten (Width::Full + form eksplisit)
+
+## Fase 11: Polish & Fixes ⏳
 
 - [ ] Export semua master data (Ekspedisi, Kendaraan, Sopir, Toko)
 - [ ] Import master data (Ekspedisi, Kendaraan, Sopir, Toko)

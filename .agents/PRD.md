@@ -1,6 +1,6 @@
 # PRD — Jobdesk Gudang AP
 
-**Versi:** 1.5 | **Tanggal:** 19 Juli 2026
+**Versi:** 1.6 | **Tanggal:** 20 Juli 2026
 
 ---
 

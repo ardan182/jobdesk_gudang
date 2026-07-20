@@ -25,8 +25,14 @@ class TaskTerimaSupplierForm
                         ->label('Pilih Mobil Datang Supplier')
                         ->options(function ($component) {
                             $record = $component->getRecord();
+
+                            $takenIds = \App\Models\TaskTerimaSupplier::whereNotNull('arrival_supplier_truck_id')
+                                ->pluck('arrival_supplier_truck_id')
+                                ->toArray();
+
                             $query = ArrivalSupplierTruck::where('status', 'PROSES')
-                                ->whereIn('jenis_kiriman', ['DATANG', 'DATANG & RETUR']);
+                                ->whereIn('jenis_kiriman', ['DATANG', 'DATANG & RETUR'])
+                                ->whereNotIn('id', $takenIds);
 
                             if ($record && $record->arrival_supplier_truck_id) {
                                 $query->orWhere('id', $record->arrival_supplier_truck_id);
@@ -89,7 +95,6 @@ class TaskTerimaSupplierForm
                         ->prefixIcon('heroicon-m-cube')
                         ->placeholder('0')
                         ->helperText('Total barang/koli diterima')
-                        ->required()
                         ->numeric(),
                     TimePicker::make('jam_bongkar')
                         ->label('Jam Bongkar')
@@ -109,23 +114,18 @@ class TaskTerimaSupplierForm
                     TextInput::make('lembar_sj')
                         ->label('Lembar SJ')
                         ->prefixIcon('heroicon-m-document-duplicate')
-                        ->placeholder('1')
+                        ->placeholder('0')
                         ->helperText('Jumlah lembar surat jalan')
-                        ->numeric()
-                        ->default(1),
-                    TextInput::make('nama_sopir')
-                        ->label('Nama Sopir')
-                        ->prefixIcon('heroicon-m-user')
-                        ->placeholder('Terisi otomatis')
-                        ->disabled()
-                        ->dehydrated(true),
+                        ->numeric(),
                     Select::make('status')
                         ->label('Status Bongkar')
                         ->prefixIcon('heroicon-m-check-badge')
                         ->options([
+                            'draft' => 'Draft',
                             'selesai_tanpa_retur' => 'Selesai Tanpa Retur',
                             'selesai_ada_retur' => 'Selesai Ada Retur',
                         ])
+                        ->default('draft')
                         ->helperText('Pilih status hasil bongkar')
                         ->nullable()
                         ->placeholder('Pilih status...'),

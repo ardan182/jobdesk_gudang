@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\WarehouseDocument\Tables;
 
+use App\Filament\Resources\WarehouseDocument\Schemas\WarehouseDocumentForm;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -9,6 +10,7 @@ use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Section;
+use Filament\Support\Enums\Width;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Storage;
@@ -101,7 +103,16 @@ class WarehouseDocumentsTable
                 EditAction::make()
                     ->iconButton()
                     ->tooltip('Ubah Data')
-                    ->color('warning'),
+                    ->color('warning')
+                    ->modalWidth(Width::Full)
+                    ->form(WarehouseDocumentForm::getFormFields())
+                    ->using(function ($record, array $data) {
+                        if (!empty($data['file_path']) && is_string($data['file_path'])) {
+                            $data['format_file'] = strtolower(pathinfo($data['file_path'], PATHINFO_EXTENSION));
+                        }
+                        $record->update($data);
+                    })
+                    ->successNotificationTitle('Dokumen berhasil diperbarui'),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

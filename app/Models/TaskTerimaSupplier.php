@@ -83,7 +83,7 @@ class TaskTerimaSupplier extends Model
                 $truck = ArrivalSupplierTruck::find($model->arrival_supplier_truck_id);
                 if ($truck) {
                     $truck->update([
-                        'status' => 'PROSES',
+                        'status' => null,
                         'jam_selesai' => null,
                     ]);
                 }

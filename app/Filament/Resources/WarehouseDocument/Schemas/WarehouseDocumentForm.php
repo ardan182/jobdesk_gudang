@@ -63,7 +63,7 @@ class WarehouseDocumentForm
                             'image/png',
                         ])
                         ->maxSize(10240)
-                        ->required()
+                        ->required(fn ($component) => $component->getRecord() === null)
                         ->columnSpanFull(),
                     Textarea::make('deskripsi')
                         ->label('Deskripsi')

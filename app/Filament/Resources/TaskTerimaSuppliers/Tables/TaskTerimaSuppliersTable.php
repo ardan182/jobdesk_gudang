@@ -77,11 +77,13 @@ class TaskTerimaSuppliersTable
                     ->label('Status')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
+                        'draft' => 'gray',
                         'selesai_tanpa_retur' => 'success',
                         'selesai_ada_retur' => 'warning',
                         default => 'gray',
                     })
                     ->formatStateUsing(fn (string $state): string => match ($state) {
+                        'draft' => 'Draft',
                         'selesai_tanpa_retur' => 'Selesai',
                         'selesai_ada_retur' => 'Selesai Ada Retur',
                         default => $state,
@@ -167,11 +169,13 @@ class TaskTerimaSuppliersTable
                                 TextEntry::make('status')->label('Status')
                                     ->badge()
                                     ->color(fn (string $state): string => match ($state) {
+                                        'draft' => 'gray',
                                         'selesai_tanpa_retur' => 'success',
                                         'selesai_ada_retur' => 'warning',
                                         default => 'gray',
                                     })
                                     ->formatStateUsing(fn (string $state): string => match ($state) {
+                                        'draft' => 'Draft',
                                         'selesai_tanpa_retur' => 'Selesai',
                                         'selesai_ada_retur' => 'Selesai Ada Retur',
                                         default => $state,
