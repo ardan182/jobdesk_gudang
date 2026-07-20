@@ -27,6 +27,11 @@ class TaskReturSuppliersTable
                     ->searchable()
                     ->sortable()
                     ->grow(false),
+                TextColumn::make('arrivalSupplierTruck.no_plat_mobil')
+                    ->label('Plat Mobil')
+                    ->searchable()
+                    ->toggleable()
+                    ->grow(false),
                 TextColumn::make('nama_supplier_ekspedisi')
                     ->label('Supplier / Ekspedisi')
                     ->searchable()
@@ -116,6 +121,8 @@ class TaskReturSuppliersTable
                             ->columns(2)
                             ->schema([
                                 TextEntry::make('id_task')->label('ID Task'),
+                                TextEntry::make('arrivalSupplierTruck.no_plat_mobil')->label('Plat Mobil'),
+                                TextEntry::make('arrivalSupplierTruck.supplier.nama_supplier')->label('Supplier'),
                                 TextEntry::make('nama_supplier_ekspedisi')->label('Supplier / Ekspedisi'),
                                 TextEntry::make('no_plat_mobil')->label('No Plat'),
                                 TextEntry::make('nama_sopir')->label('Sopir'),

@@ -10,6 +10,7 @@ class TaskReturSupplier extends Model
 {
     protected $fillable = [
         'id_task',
+        'arrival_supplier_truck_id',
         'nama_supplier_ekspedisi',
         'no_plat_mobil',
         'nama_sopir',
@@ -45,6 +46,11 @@ class TaskReturSupplier extends Model
                 'reference' => $model->no_plat_mobil,
                 'action' => 'create',
             ]);
+
+            if ($model->arrival_supplier_truck_id) {
+                $truck = ArrivalSupplierTruck::find($model->arrival_supplier_truck_id);
+                $truck?->syncStatus();
+            }
         });
 
         static::updated(function ($model) {
@@ -69,11 +75,28 @@ class TaskReturSupplier extends Model
                 'reference' => $model->no_plat_mobil,
                 'action' => 'update',
             ]);
+
+            if ($model->arrival_supplier_truck_id) {
+                $truck = ArrivalSupplierTruck::find($model->arrival_supplier_truck_id);
+                $truck?->syncStatus();
+            }
+        });
+
+        static::deleted(function ($model) {
+            if ($model->arrival_supplier_truck_id) {
+                $truck = ArrivalSupplierTruck::find($model->arrival_supplier_truck_id);
+                $truck?->syncStatus();
+            }
         });
     }
 
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function arrivalSupplierTruck(): BelongsTo
+    {
+        return $this->belongsTo(ArrivalSupplierTruck::class);
     }
 }

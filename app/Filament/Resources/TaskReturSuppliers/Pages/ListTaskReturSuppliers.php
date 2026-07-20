@@ -30,6 +30,7 @@ class ListTaskReturSuppliers extends ListRecords
                     Repeater::make('tasks')
                         ->schema(TaskReturSupplierForm::getFormFields())
                         ->table([
+                            TableColumn::make('Mobil Datang'),
                             TableColumn::make('Supplier / Ekspedisi'),
                             TableColumn::make('No Plat'),
                             TableColumn::make('Sopir'),

@@ -30,7 +30,7 @@ class TaskTerimaSupplierForm
                                 ->pluck('arrival_supplier_truck_id')
                                 ->toArray();
 
-                            $query = ArrivalSupplierTruck::where('status', 'PROSES')
+                            $query = ArrivalSupplierTruck::whereIn('status', ['MENGANTRI', 'PROSES'])
                                 ->whereIn('jenis_kiriman', ['DATANG', 'DATANG & RETUR'])
                                 ->whereNotIn('id', $takenIds);
 
@@ -121,11 +121,10 @@ class TaskTerimaSupplierForm
                         ->label('Status Bongkar')
                         ->prefixIcon('heroicon-m-check-badge')
                         ->options([
-                            'draft' => 'Draft',
-                            'selesai_tanpa_retur' => 'Selesai Tanpa Retur',
-                            'selesai_ada_retur' => 'Selesai Ada Retur',
+                            'DRAFT' => 'Draft',
+                            'SELESAI' => 'Selesai',
                         ])
-                        ->default('draft')
+                        ->default('DRAFT')
                         ->helperText('Pilih status hasil bongkar')
                         ->nullable()
                         ->placeholder('Pilih status...'),

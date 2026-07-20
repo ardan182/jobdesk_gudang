@@ -101,11 +101,24 @@
 
 - [x] Status `draft` ditambahkan (enum + form + grid badge gray)
 - [x] `jumlah_kolian` dijadikan nullable (draft bisa simpan tanpa kolian)
-- [x] TaskTerimaSupplier deleted → status truck jadi null (bukan PROSES)
+- [x] TaskTerimaSupplier deleted → status truck sync otomatis
 - [x] Cegah double select mobil datang (whereNotIn excluded IDs)
 - [x] Pusat Dokumen Edit modal konsisten (Width::Full + form eksplisit)
 
-## Fase 11: Polish & Fixes ⏳
+## Fase 11: Integrasi & 3-Level Status ✅
+
+- [x] ArrivalSupplierTruck: status `MENGANTRI` → `PROSES` → `SELESAI` (ENUM)
+- [x] syncStatus(): auto-detect berdasarkan TaskTerima & TaskRetur
+- [x] TaskTerimaSupplier: created/updated/deleted → trigger syncStatus
+- [x] TaskReturSupplier: created/updated/deleted → trigger syncStatus
+- [x] Badge: MENGANTRI(gray), PROSES(warning), SELESAI(success)
+- [x] Filter dropdown Terima & Retur → MENGANTRI / PROSES
+- [x] Retur Supplier: FK arrival_supplier_truck_id + autofill
+- [x] Retur Supplier: filter RETUR & DATANG & RETUR (PROSES + SELESAI)
+- [x] Status TaskTerimaSupplier: disederhanakan ke DRAFT / SELESAI
+- [x] Retur Supplier trigger completion untuk DATANG & RETUR
+
+## Fase 12: Polish & Fixes ⏳
 
 - [ ] Export semua master data (Ekspedisi, Kendaraan, Sopir, Toko)
 - [ ] Import master data (Ekspedisi, Kendaraan, Sopir, Toko)

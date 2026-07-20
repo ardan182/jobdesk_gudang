@@ -82,6 +82,7 @@ class TaskDatangMobilSuppliersTable
                     ->label('Status')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
+                        'MENGANTRI' => 'gray',
                         'PROSES' => 'warning',
                         'SELESAI' => 'success',
                         default => 'gray',
@@ -124,6 +125,7 @@ class TaskDatangMobilSuppliersTable
                                 TextEntry::make('status')->label('Status')
                                     ->badge()
                                     ->color(fn (string $state): string => match ($state) {
+                                        'MENGANTRI' => 'gray',
                                         'PROSES' => 'warning',
                                         'SELESAI' => 'success',
                                         default => 'gray',

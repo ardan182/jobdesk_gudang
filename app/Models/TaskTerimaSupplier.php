@@ -52,6 +52,11 @@ class TaskTerimaSupplier extends Model
                 'reference' => $model->no_po_referensi,
                 'action' => 'create',
             ]);
+
+            if ($model->arrival_supplier_truck_id) {
+                $truck = ArrivalSupplierTruck::find($model->arrival_supplier_truck_id);
+                $truck?->syncStatus();
+            }
         });
 
         static::updated(function ($model) {
@@ -76,17 +81,17 @@ class TaskTerimaSupplier extends Model
                 'reference' => $model->no_po_referensi,
                 'action' => 'update',
             ]);
+
+            if ($model->arrival_supplier_truck_id) {
+                $truck = ArrivalSupplierTruck::find($model->arrival_supplier_truck_id);
+                $truck?->syncStatus();
+            }
         });
 
         static::deleted(function ($model) {
             if ($model->arrival_supplier_truck_id) {
                 $truck = ArrivalSupplierTruck::find($model->arrival_supplier_truck_id);
-                if ($truck) {
-                    $truck->update([
-                        'status' => null,
-                        'jam_selesai' => null,
-                    ]);
-                }
+                $truck?->syncStatus();
             }
         });
     }

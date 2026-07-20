@@ -50,7 +50,7 @@ class TaskDatangMobilSupplierForm
                         ->label('Nama Sopir')
                         ->prefixIcon('heroicon-m-user')
                         ->placeholder('Nama sopir')
-                        ->nullable(),
+                        ->required(),
                     TimePicker::make('jam_selesai')
                         ->label('Jam Selesai')
                         ->seconds(false)

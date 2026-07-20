@@ -270,13 +270,13 @@
     "semantic_hash": ""
   },
   "app/Filament/Resources/TaskTerimaSuppliers/Schemas/TaskTerimaSupplierForm.php": {
-    "mtime": 1784474907.0308404,
-    "ast_hash": "e3ee25abce245d1ff501329fd362bf37",
+    "mtime": 1784544884.1874883,
+    "ast_hash": "96a31541f41afca306ce680d6ce15049",
     "semantic_hash": ""
   },
   "app/Filament/Resources/TaskTerimaSuppliers/Tables/TaskTerimaSuppliersTable.php": {
-    "mtime": 1784472608.5539868,
-    "ast_hash": "e4d12bdb7b94c76ec3340399350dcb23",
+    "mtime": 1784543869.269304,
+    "ast_hash": "69189f8ce71039aa5b8ab85be7c5f998",
     "semantic_hash": ""
   },
   "app/Filament/Resources/TaskTerimaSuppliers/TaskTerimaSupplierResource.php": {
@@ -425,8 +425,8 @@
     "semantic_hash": "f9049aa0a87ca532828cc3268e3159e1"
   },
   "app/Models/TaskTerimaSupplier.php": {
-    "mtime": 1784468017.3441603,
-    "ast_hash": "5e77f5797a39d75438bb29b105dd9dcb",
+    "mtime": 1784546227.934045,
+    "ast_hash": "c6247b7f2d8b7f4f9a885c277d357c6c",
     "semantic_hash": ""
   },
   "app/Models/User.php": {
@@ -905,13 +905,13 @@
     "semantic_hash": ""
   },
   ".agents/PRD.md": {
-    "mtime": 1784542816.4981606,
-    "ast_hash": "43b87fe38f751fbe7aaea7611cb0749b",
+    "mtime": 1784550197.7401803,
+    "ast_hash": "e4dad9b6a73dcfdc06982ab1c37c0162",
     "semantic_hash": ""
   },
   ".agents/TASKS.md": {
-    "mtime": 1784480978.9558794,
-    "ast_hash": "f32d9f3e3d2d69debe46fdea258f8be0",
+    "mtime": 1784550188.6000736,
+    "ast_hash": "a49d25259100964e0926ffe122960ea7",
     "semantic_hash": ""
   },
   ".agents/TECH-SPEC.md": {
@@ -1105,13 +1105,13 @@
     "semantic_hash": ""
   },
   "app/Filament/Resources/WarehouseDocument/Schemas/WarehouseDocumentForm.php": {
-    "mtime": 1784480121.7533813,
-    "ast_hash": "46fd12345476b6d2c9624680180536cd",
+    "mtime": 1784548494.994318,
+    "ast_hash": "d1c8d39894b2b0182d31dd78115f3ab9",
     "semantic_hash": ""
   },
   "app/Filament/Resources/WarehouseDocument/Tables/WarehouseDocumentsTable.php": {
-    "mtime": 1784479883.5645921,
-    "ast_hash": "be33cd273fa565b6e7263552325750cf",
+    "mtime": 1784548726.7005866,
+    "ast_hash": "65280ac0b1db250cee6741ec19ef889b",
     "semantic_hash": ""
   },
   "app/Filament/Resources/WarehouseDocument/WarehouseDocumentResource.php": {
@@ -1127,6 +1127,16 @@
   "database/migrations/2026_07_19_235032_create_warehouse_documents_table.php": {
     "mtime": 1784479842.3902657,
     "ast_hash": "e5c57247c01ab0e9100a6e9e8a0ebe75",
+    "semantic_hash": ""
+  },
+  "database/migrations/2026_07_20_173703_add_draft_status_to_task_terima_suppliers.php": {
+    "mtime": 1784543833.7871385,
+    "ast_hash": "303abc04240c97b4c386ffc2f620b72d",
+    "semantic_hash": ""
+  },
+  "database/migrations/2026_07_20_182111_alter_jumlah_kolian_nullable_in_task_terima_suppliers.php": {
+    "mtime": 1784546481.9002638,
+    "ast_hash": "94a4ecb932b30c4ad640ea1be385571f",
     "semantic_hash": ""
   }
 }

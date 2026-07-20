@@ -1,6 +1,6 @@
 # Project Context: Jobdesk Gudang AP
 
-**Versi:** 1.1 | **Tanggal:** 19 Juli 2026
+**Versi:** 1.2 | **Tanggal:** 20 Juli 2026
 
 ---
 
@@ -302,10 +302,16 @@ PHP 8.5.8 incompatible with maatwebsite/excel and phpoffice/phpspreadsheet.
 
 ### Fields
 - `jenis_kiriman` (string: DATANG / RETUR / DATANG & RETUR)
-- `status` (string: PROSES / SELESAI, default PROSES)
+- `status` (ENUM: **MENGANTRI** ⬜ → **PROSES** 🟡 → **SELESAI** 🟢, default MENGANTRI)
 
-### Auto-Sync Logic
-Di `retrieved` event model ArrivalSupplierTruck: cari `TaskTerimaSupplier` dengan `nama_sopir` + tanggal sama. Jika `selesai_bongkar` terisi → `jam_selesai` diisi, `status = SELESAI`.
+### Auto-Sync Logic (`syncStatus()`)
+Di-trigger dari `created`/`updated`/`deleted` event pada TaskTerimaSupplier dan TaskReturSupplier.
+
+Logika:
+- Jika tidak ada TaskTerimaSupplier atau TaskReturSupplier → **MENGANTRI**
+- Jika ada aktivitas tapi belum selesai → **PROSES**
+- Jika Terima SELESAI + selesai_bongkar terisi DAN (Retur selesai jika jenis kiriman RETUR/DATANG & RETUR) → **SELESAI**
+- `jam_selesai` = max(selesai_bongkar, jam_muat_retur)
 
 ---
 

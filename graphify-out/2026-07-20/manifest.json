@@ -905,8 +905,8 @@
     "semantic_hash": ""
   },
   ".agents/PRD.md": {
-    "mtime": 1784481093.527195,
-    "ast_hash": "a2d446198c1b231ff3a681fcfc19a3a0",
+    "mtime": 1784542816.4981606,
+    "ast_hash": "43b87fe38f751fbe7aaea7611cb0749b",
     "semantic_hash": ""
   },
   ".agents/TASKS.md": {
@@ -915,8 +915,8 @@
     "semantic_hash": ""
   },
   ".agents/TECH-SPEC.md": {
-    "mtime": 1784481083.1071663,
-    "ast_hash": "32b7060fdd8a013798611c8c1eac6869",
+    "mtime": 1784542815.7581608,
+    "ast_hash": "94a3d7e95b6aa36327905b5a59185364",
     "semantic_hash": ""
   },
   ".opencode/skills/graphify/SKILL.md": {

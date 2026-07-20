@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Services\TaskIdGenerator;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Validation\ValidationException;
 
 class ArrivalSupplierTruck extends Model
@@ -34,7 +35,7 @@ class ArrivalSupplierTruck extends Model
 
     protected $attributes = [
         'jenis_kiriman' => 'DATANG',
-        'status' => 'PROSES',
+        'status' => 'MENGANTRI',
     ];
 
     protected static function booted(): void
@@ -59,21 +60,6 @@ class ArrivalSupplierTruck extends Model
             ]);
         });
 
-        static::retrieved(function ($model) {
-            if ($model->status === 'SELESAI') return;
-
-            $terima = TaskTerimaSupplier::where('nama_sopir', $model->nama_sopir)
-                ->whereDate('created_at', $model->created_at->toDateString())
-                ->whereNotNull('selesai_bongkar')
-                ->first();
-
-            if ($terima) {
-                $model->jam_selesai = $terima->selesai_bongkar;
-                $model->status = 'SELESAI';
-                $model->saveQuietly();
-            }
-        });
-
         static::deleting(function ($model) {
             if (TaskTerimaSupplier::where('arrival_supplier_truck_id', $model->id)->exists()) {
                 throw ValidationException::withMessages([
@@ -81,6 +67,54 @@ class ArrivalSupplierTruck extends Model
                 ]);
             }
         });
+    }
+
+    public function syncStatus(): void
+    {
+        $hasTerima = $this->taskTerimaSuppliers()->exists();
+        $hasRetur = $this->taskReturSuppliers()->exists();
+
+        if (!$hasTerima && !$hasRetur) {
+            $this->update(['status' => 'MENGANTRI', 'jam_selesai' => null]);
+            return;
+        }
+
+        $newStatus = 'PROSES';
+        $times = [];
+
+        $terima = $this->taskTerimaSuppliers()
+            ->where('status', 'SELESAI')
+            ->whereNotNull('selesai_bongkar')
+            ->first();
+
+        if ($terima) {
+            $times[] = $terima->selesai_bongkar->format('H:i');
+        }
+
+        if (in_array($this->jenis_kiriman, ['RETUR', 'DATANG & RETUR'])) {
+            $retur = $this->taskReturSuppliers()
+                ->whereNotNull('jam_muat')
+                ->first();
+            if ($retur) {
+                $times[] = $retur->jam_muat->format('H:i');
+            }
+        }
+
+        if ($terima) {
+            $needRetur = in_array($this->jenis_kiriman, ['RETUR', 'DATANG & RETUR']);
+            $returDone = $needRetur
+                ? $this->taskReturSuppliers()->whereNotNull('jam_muat')->exists()
+                : true;
+
+            if ($returDone) {
+                $newStatus = 'SELESAI';
+            }
+        }
+
+        sort($times);
+        $jamSelesai = !empty($times) ? end($times) : null;
+
+        $this->update(['status' => $newStatus, 'jam_selesai' => $jamSelesai]);
     }
 
     public function supplier(): BelongsTo
@@ -96,5 +130,15 @@ class ArrivalSupplierTruck extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function taskTerimaSuppliers(): HasMany
+    {
+        return $this->hasMany(TaskTerimaSupplier::class, 'arrival_supplier_truck_id');
+    }
+
+    public function taskReturSuppliers(): HasMany
+    {
+        return $this->hasMany(TaskReturSupplier::class, 'arrival_supplier_truck_id');
     }
 }

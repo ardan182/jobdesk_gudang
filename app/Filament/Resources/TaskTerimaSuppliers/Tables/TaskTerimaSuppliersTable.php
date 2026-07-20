@@ -77,15 +77,13 @@ class TaskTerimaSuppliersTable
                     ->label('Status')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
-                        'draft' => 'gray',
-                        'selesai_tanpa_retur' => 'success',
-                        'selesai_ada_retur' => 'warning',
+                        'DRAFT' => 'gray',
+                        'SELESAI' => 'success',
                         default => 'gray',
                     })
                     ->formatStateUsing(fn (string $state): string => match ($state) {
-                        'draft' => 'Draft',
-                        'selesai_tanpa_retur' => 'Selesai',
-                        'selesai_ada_retur' => 'Selesai Ada Retur',
+                        'DRAFT' => 'Draft',
+                        'SELESAI' => 'Selesai',
                         default => $state,
                     })
                     ->grow(false),
@@ -169,15 +167,13 @@ class TaskTerimaSuppliersTable
                                 TextEntry::make('status')->label('Status')
                                     ->badge()
                                     ->color(fn (string $state): string => match ($state) {
-                                        'draft' => 'gray',
-                                        'selesai_tanpa_retur' => 'success',
-                                        'selesai_ada_retur' => 'warning',
+                                        'DRAFT' => 'gray',
+                                        'SELESAI' => 'success',
                                         default => 'gray',
                                     })
                                     ->formatStateUsing(fn (string $state): string => match ($state) {
-                                        'draft' => 'Draft',
-                                        'selesai_tanpa_retur' => 'Selesai',
-                                        'selesai_ada_retur' => 'Selesai Ada Retur',
+                                        'DRAFT' => 'Draft',
+                                        'SELESAI' => 'Selesai',
                                         default => $state,
                                     }),
                                 TextEntry::make('helpers_list')

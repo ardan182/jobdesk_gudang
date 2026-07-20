@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\TaskReturSuppliers\Schemas;
 
+use App\Models\ArrivalSupplierTruck;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
@@ -13,6 +14,32 @@ class TaskReturSupplierForm
     public static function getFormFields(): array
     {
         return [
+            Select::make('arrival_supplier_truck_id')
+                ->label('Pilih Mobil Datang')
+                ->options(function () {
+                    return ArrivalSupplierTruck::where(function ($query) {
+                        $query->whereIn('status', ['MENGANTRI', 'PROSES'])
+                            ->whereIn('jenis_kiriman', ['RETUR', 'DATANG & RETUR']);
+                    })
+                    ->orWhere(function ($query) {
+                        $query->where('status', 'SELESAI')
+                            ->where('jenis_kiriman', 'DATANG & RETUR');
+                    })
+                    ->get()
+                    ->pluck('no_plat_mobil', 'id');
+                })
+                ->searchable()
+                ->placeholder('Pilih mobil datang...')
+                ->reactive()
+                ->afterStateUpdated(function ($state, $set, $get) {
+                    if (!$state) return;
+                    $truck = ArrivalSupplierTruck::with('supplier')->find($state);
+                    if (!$truck) return;
+
+                    $set('nama_supplier_ekspedisi', $truck->supplier?->nama_supplier ?? '');
+                    $set('no_plat_mobil', $truck->no_plat_mobil);
+                    $set('nama_sopir', $truck->nama_sopir ?? '');
+                }),
             TextInput::make('nama_supplier_ekspedisi')
                 ->label('Nama Supplier / Ekspedisi')
                 ->required(),
