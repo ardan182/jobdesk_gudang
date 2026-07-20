@@ -142,3 +142,15 @@ Semua modul menggunakan **tampilan seragam**:
 - Form dalam `Section` + `columns(3)` — rapi
 - Field disabled: autofill dari relasi (tidak bisa diubah)
 - Select: `->searchable()->preload()` untuk UX cepat
+
+---
+
+## 7. Referensi
+
+- [Filament v5 Documentation](https://filamentphp.com/docs/5.x/)
+- [Filament v5 Actions / Edit](https://filamentphp.com/docs/5.x/actions/edit)
+- [Filament v5 Tables](https://filamentphp.com/docs/5.x/tables)
+- [Filament v5 Forms](https://filamentphp.com/docs/5.x/forms)
+- [Filament v5 Infolists](https://filamentphp.com/docs/5.x/infolists)
+- [Laravel 13 Documentation](https://laravel.com/docs/13.x)
+- [Spatie Laravel Permission](https://spatie.be/docs/laravel-permission/v6/)

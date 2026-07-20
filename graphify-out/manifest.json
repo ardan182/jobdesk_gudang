@@ -905,18 +905,18 @@
     "semantic_hash": ""
   },
   ".agents/PRD.md": {
-    "mtime": 1784477551.9512453,
-    "ast_hash": "42fbb9a8480ee2fb1213e7742352ef8b",
+    "mtime": 1784481093.527195,
+    "ast_hash": "a2d446198c1b231ff3a681fcfc19a3a0",
     "semantic_hash": ""
   },
   ".agents/TASKS.md": {
-    "mtime": 1784477521.2774427,
-    "ast_hash": "ca3d8f26668b719f954db11d0924af59",
+    "mtime": 1784480978.9558794,
+    "ast_hash": "f32d9f3e3d2d69debe46fdea258f8be0",
     "semantic_hash": ""
   },
   ".agents/TECH-SPEC.md": {
-    "mtime": 1784477621.1041741,
-    "ast_hash": "d13995ef48ee80ab6993746dfccf2e9b",
+    "mtime": 1784481083.1071663,
+    "ast_hash": "32b7060fdd8a013798611c8c1eac6869",
     "semantic_hash": ""
   },
   ".opencode/skills/graphify/SKILL.md": {
@@ -1095,8 +1095,38 @@
     "semantic_hash": ""
   },
   ".agents/GEMINI_KNOWLEDGE.md": {
-    "mtime": 1784477593.2939196,
-    "ast_hash": "98983ee844c8b699044451b1e9869dd1",
+    "mtime": 1784481061.0211058,
+    "ast_hash": "d228900decfddfbab5cc8efbb773af39",
+    "semantic_hash": ""
+  },
+  "app/Filament/Resources/WarehouseDocument/Pages/ListWarehouseDocuments.php": {
+    "mtime": 1784480131.2074113,
+    "ast_hash": "00ad2bd7b7ec0f9624702a143e81d36e",
+    "semantic_hash": ""
+  },
+  "app/Filament/Resources/WarehouseDocument/Schemas/WarehouseDocumentForm.php": {
+    "mtime": 1784480121.7533813,
+    "ast_hash": "46fd12345476b6d2c9624680180536cd",
+    "semantic_hash": ""
+  },
+  "app/Filament/Resources/WarehouseDocument/Tables/WarehouseDocumentsTable.php": {
+    "mtime": 1784479883.5645921,
+    "ast_hash": "be33cd273fa565b6e7263552325750cf",
+    "semantic_hash": ""
+  },
+  "app/Filament/Resources/WarehouseDocument/WarehouseDocumentResource.php": {
+    "mtime": 1784479873.8765583,
+    "ast_hash": "4a054e031126d00b7036358d154ec93c",
+    "semantic_hash": ""
+  },
+  "app/Models/WarehouseDocument.php": {
+    "mtime": 1784479843.4934516,
+    "ast_hash": "fa6bee22d47c822adc68306cfd7c56be",
+    "semantic_hash": ""
+  },
+  "database/migrations/2026_07_19_235032_create_warehouse_documents_table.php": {
+    "mtime": 1784479842.3902657,
+    "ast_hash": "e5c57247c01ab0e9100a6e9e8a0ebe75",
     "semantic_hash": ""
   }
 }
