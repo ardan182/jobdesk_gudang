@@ -86,6 +86,22 @@ class TaskTerimaSupplier extends Model
                 $truck = ArrivalSupplierTruck::find($model->arrival_supplier_truck_id);
                 $truck?->syncStatus();
             }
+
+            if ($model->status === 'SELESAI') {
+                $alreadyExists = \App\Models\SupplierSj::where('keterangan', 'LIKE', '%' . $model->id_task . '%')->exists();
+                if (!$alreadyExists) {
+                    $arrivalTruck = $model->arrivalSupplierTruck;
+                    \App\Models\SupplierSj::create([
+                        'nama_supplier'      => $arrivalTruck?->supplier?->nama_supplier ?? $model->nama_supplier_ekspedisi,
+                        'tanggal_datang'     => $arrivalTruck?->tanggal_datang ?? now()->toDateString(),
+                        'nomor_po_referensi' => $model->no_po_referensi,
+                        'jumlah_koli'        => $model->jumlah_kolian,
+                        'jumlah_faktur'      => $model->lembar_sj ?? 1,
+                        'status_input'       => 'belum_di_cek',
+                        'keterangan'         => 'Auto dari Terima Supplier: ' . $model->id_task,
+                    ]);
+                }
+            }
         });
 
         static::deleted(function ($model) {

@@ -19,6 +19,11 @@ class SupplierSjsTable
             ->defaultSort('created_at', 'desc')
             ->recordAction('view')
             ->columns([
+                TextColumn::make('id_task')
+                    ->label('ID Task')
+                    ->searchable()
+                    ->sortable()
+                    ->grow(false),
                 TextColumn::make('nama_supplier')
                     ->label('Nama Supplier')
                     ->searchable()
@@ -33,17 +38,29 @@ class SupplierSjsTable
                     ->label('No PO')
                     ->searchable()
                     ->grow(false),
+                TextColumn::make('jumlah_koli')
+                    ->label('Koli')
+                    ->numeric()
+                    ->sortable()
+                    ->grow(false),
+                TextColumn::make('jumlah_faktur')
+                    ->label('Faktur')
+                    ->numeric()
+                    ->sortable()
+                    ->grow(false),
                 TextColumn::make('status_input')
                     ->label('Status')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
-                        'kosong' => 'gray',
-                        'sudah' => 'success',
+                        'belum_di_cek' => 'gray',
+                        'draft' => 'warning',
+                        'selesai' => 'success',
                         default => 'gray',
                     })
                     ->formatStateUsing(fn (string $state): string => match ($state) {
-                        'kosong' => 'Kosong',
-                        'sudah' => 'Sudah',
+                        'belum_di_cek' => 'Belum Di Cek',
+                        'draft' => 'Draft',
+                        'selesai' => 'Selesai',
                         default => $state,
                     })
                     ->grow(false),
@@ -72,14 +89,18 @@ class SupplierSjsTable
                     ->modalHeading('Detail Input SJ')
                     ->modalWidth('lg')
                     ->infolist([
+                        TextEntry::make('id_task')->label('ID Task'),
                         TextEntry::make('nama_supplier')->label('Nama Supplier'),
                         TextEntry::make('tanggal_datang')->label('Tgl Datang')->date('d/m/Y'),
                         TextEntry::make('nomor_po_referensi')->label('No PO Referensi'),
+                        TextEntry::make('jumlah_koli')->label('Jumlah Koli'),
+                        TextEntry::make('jumlah_faktur')->label('Jumlah Faktur'),
                         TextEntry::make('status_input')->label('Status')
                             ->badge()
                             ->color(fn (string $state): string => match ($state) {
-                                'kosong' => 'gray',
-                                'sudah' => 'success',
+                                'belum_di_cek' => 'gray',
+                                'draft' => 'warning',
+                                'selesai' => 'success',
                                 default => 'gray',
                             }),
                         TextEntry::make('tanggal_input')->label('Tgl Input')->date('d/m/Y'),

@@ -108,9 +108,10 @@ class TaskTerimaSupplierForm
                     TimePicker::make('selesai_bongkar')
                         ->label('Selesai Bongkar')
                         ->prefixIcon('heroicon-m-clock')
-                        ->helperText('Kosongkan jika belum selesai')
+                        ->helperText('Wajib diisi jika status Selesai')
                         ->seconds(false)
                         ->step(60)
+                        ->required(fn ($get) => $get('status') === 'SELESAI')
                         ->extraAttributes(['lang' => 'id-ID']),
                     TextInput::make('lembar_sj')
                         ->label('Lembar SJ')

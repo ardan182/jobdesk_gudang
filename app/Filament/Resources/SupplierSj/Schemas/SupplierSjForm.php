@@ -15,21 +15,37 @@ class SupplierSjForm
         return [
             TextInput::make('nama_supplier')
                 ->label('Nama Supplier')
-                ->placeholder('Masukkan nama supplier')
-                ->nullable(),
-            DatePicker::make('tanggal_datang')
+                ->placeholder('Terisi otomatis dari Terima Supplier')
+                ->disabled()
+                ->dehydrated(true),
+            TextInput::make('tanggal_datang')
                 ->label('Tanggal Datang')
-                ->nullable()
-                ->displayFormat('d/m/Y'),
+                ->placeholder('Terisi otomatis')
+                ->disabled()
+                ->dehydrated(true),
             TextInput::make('nomor_po_referensi')
-                ->label('Nomor PO Referensi')
-                ->placeholder('Contoh: PO-2026-0001')
-                ->nullable(),
+                ->label('No PO Referensi')
+                ->placeholder('Terisi otomatis')
+                ->disabled()
+                ->dehydrated(true),
+            TextInput::make('jumlah_koli')
+                ->label('Jumlah Koli')
+                ->prefixIcon('heroicon-m-cube')
+                ->placeholder('Terisi otomatis')
+                ->disabled()
+                ->dehydrated(true),
+            TextInput::make('jumlah_faktur')
+                ->label('Jumlah Faktur / Lembar SJ')
+                ->prefixIcon('heroicon-m-document-duplicate')
+                ->placeholder('Terisi otomatis')
+                ->disabled()
+                ->dehydrated(true),
             Select::make('status_input')
                 ->label('Status Input')
                 ->options([
-                    'kosong' => 'Kosong',
-                    'sudah' => 'Sudah',
+                    'belum_di_cek' => 'Belum Di Cek',
+                    'draft' => 'Draft',
+                    'selesai' => 'Selesai',
                 ])
                 ->nullable()
                 ->placeholder('Pilih Status'),

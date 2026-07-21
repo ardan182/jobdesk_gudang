@@ -79,42 +79,35 @@ class ArrivalSupplierTruck extends Model
             return;
         }
 
-        $newStatus = 'PROSES';
-        $times = [];
-
-        $terima = $this->taskTerimaSuppliers()
+        $terimaSelesai = $this->taskTerimaSuppliers()
             ->where('status', 'SELESAI')
             ->whereNotNull('selesai_bongkar')
             ->first();
 
-        if ($terima) {
-            $times[] = $terima->selesai_bongkar->format('H:i');
-        }
+        $needRetur = in_array($this->jenis_kiriman, ['RETUR', 'DATANG & RETUR']);
 
-        if (in_array($this->jenis_kiriman, ['RETUR', 'DATANG & RETUR'])) {
-            $retur = $this->taskReturSuppliers()
-                ->whereNotNull('jam_muat')
-                ->first();
-            if ($retur) {
-                $times[] = $retur->jam_muat->format('H:i');
+        if ($needRetur) {
+            $returDone = $this->taskReturSuppliers()->whereNotNull('jam_muat')->exists();
+
+            if ($terimaSelesai && $returDone) {
+                $times = [$terimaSelesai->selesai_bongkar->format('H:i')];
+                $retur = $this->taskReturSuppliers()->whereNotNull('jam_muat')->first();
+                if ($retur) $times[] = $retur->jam_muat->format('H:i');
+                sort($times);
+                $this->update(['status' => 'SELESAI', 'jam_selesai' => end($times)]);
+                return;
             }
+
+            $this->update(['status' => 'PROSES', 'jam_selesai' => null]);
+            return;
         }
 
-        if ($terima) {
-            $needRetur = in_array($this->jenis_kiriman, ['RETUR', 'DATANG & RETUR']);
-            $returDone = $needRetur
-                ? $this->taskReturSuppliers()->whereNotNull('jam_muat')->exists()
-                : true;
-
-            if ($returDone) {
-                $newStatus = 'SELESAI';
-            }
+        if ($terimaSelesai) {
+            $this->update(['status' => 'SELESAI', 'jam_selesai' => $terimaSelesai->selesai_bongkar->format('H:i')]);
+            return;
         }
 
-        sort($times);
-        $jamSelesai = !empty($times) ? end($times) : null;
-
-        $this->update(['status' => $newStatus, 'jam_selesai' => $jamSelesai]);
+        $this->update(['status' => 'PROSES', 'jam_selesai' => null]);
     }
 
     public function supplier(): BelongsTo
