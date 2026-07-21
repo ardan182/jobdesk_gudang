@@ -242,3 +242,54 @@ Action::make('download')
 - [Spatie Laravel Permission](https://spatie.be/docs/laravel-permission/v6/)
 - [Filament Hub (Plugin Repository)](https://filament-hub.com/features/4.x)
 
+---
+
+## 10. BranchShipment (Input Kirim Barang)
+
+### Migration
+```php
+Schema::create('branch_shipments', function (Blueprint $table) {
+    $table->id();
+    $table->string('id_task', 30)->nullable()->index();
+    $table->enum('pilih_kiriman', ['pembagian_po', 'stock_gudang']);
+    $table->string('cabang');
+    $table->string('nomor_sj', 100);
+    $table->integer('total_qty');
+    $table->string('no_po', 100)->nullable();
+    $table->date('tanggal_buat');
+    $table->enum('status', ['draft', 'selesai'])->default('draft');
+    $table->text('keterangan')->nullable();
+    $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+    $table->timestamps();
+});
+```
+
+### TaskIdGenerator Prefix
+`'branch_shipment' => 'KRM-BRG'` — format `KRM-BRG-00001`
+
+### Model Boot Event
+```php
+static::creating(function ($model) {
+    if (empty($model->id_task)) {
+        $model->id_task = TaskIdGenerator::generate('branch_shipment');
+    }
+    if (empty($model->user_id)) {
+        $model->user_id = auth()->id();
+    }
+});
+```
+
+### Form Fields
+- `pilih_kiriman` — Select: Pembagian dari PO / Stock Gudang
+- `cabang` — Select dari `MasterToko`
+- `nomor_sj` — TextInput, required
+- `total_qty` — TextInput numeric, required
+- `no_po` — TextInput, nullable
+- `tanggal_buat` — DatePicker, default now
+- `status` — Select: Draft / Selesai, default draft
+- `keterangan` — Textarea
+
+### UI Modal Standards
+- Create modal: `Width::Full` + Section 2 kolom
+- Edit modal: `Width::Full` + `->form(getFormFields())` — identik dengan Create
+- ViewAction: Section 2 kolom + tombol Tutup

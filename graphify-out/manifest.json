@@ -175,9 +175,9 @@
     "semantic_hash": "b382a3c2baa031d5834aa0bd0730d134"
   },
   "app/Filament/Resources/TaskKeluarBarangs/Tables/TaskKeluarBarangsTable.php": {
-    "mtime": 1784113994.8940916,
-    "ast_hash": "8c222b3cde344d0e46f74bc9b4c24374",
-    "semantic_hash": "8c222b3cde344d0e46f74bc9b4c24374"
+    "mtime": 1784630257.9969757,
+    "ast_hash": "79c866493019219125bbb45e9ff478a6",
+    "semantic_hash": ""
   },
   "app/Filament/Resources/TaskKeluarBarangs/TaskKeluarBarangResource.php": {
     "mtime": 1784292756.5624106,
@@ -200,9 +200,9 @@
     "semantic_hash": "2354e61ad00009c0f212328d7aa3f182"
   },
   "app/Filament/Resources/TaskKirimanMobils/Tables/TaskKirimanMobilsTable.php": {
-    "mtime": 1784113994.8943381,
-    "ast_hash": "73186b0012b6f81f578733663aa760e1",
-    "semantic_hash": "73186b0012b6f81f578733663aa760e1"
+    "mtime": 1784630258.85496,
+    "ast_hash": "1f6311d96dafd77b643a6796b43a3c63",
+    "semantic_hash": ""
   },
   "app/Filament/Resources/TaskKirimanMobils/TaskKirimanMobilResource.php": {
     "mtime": 1783957374.871224,
@@ -270,8 +270,8 @@
     "semantic_hash": ""
   },
   "app/Filament/Resources/TaskTerimaSuppliers/Schemas/TaskTerimaSupplierForm.php": {
-    "mtime": 1784561108.1750374,
-    "ast_hash": "b0d8b335a5c6719f940a206fb283f90d",
+    "mtime": 1784629951.9366665,
+    "ast_hash": "d565801d9eb5ebeaf359bdb0432ce8be",
     "semantic_hash": ""
   },
   "app/Filament/Resources/TaskTerimaSuppliers/Tables/TaskTerimaSuppliersTable.php": {
@@ -455,9 +455,9 @@
     "semantic_hash": ""
   },
   "app/Services/TaskIdGenerator.php": {
-    "mtime": 1784120160.3203619,
-    "ast_hash": "bcf90014951e98d48944b06ce2e52cb1",
-    "semantic_hash": "bcf90014951e98d48944b06ce2e52cb1"
+    "mtime": 1784630790.0595262,
+    "ast_hash": "006c9deee4732558f8fceba0b9a5d7fc",
+    "semantic_hash": ""
   },
   "artisan": {
     "mtime": 1783598924.0519936,
@@ -905,13 +905,13 @@
     "semantic_hash": ""
   },
   ".agents/PRD.md": {
-    "mtime": 1784563290.4370096,
-    "ast_hash": "b456e14f58b66c527114b2fa327b2e25",
+    "mtime": 1784633584.4787178,
+    "ast_hash": "814791da720969a3af940b7f384572e7",
     "semantic_hash": ""
   },
   ".agents/TASKS.md": {
-    "mtime": 1784563279.641777,
-    "ast_hash": "b4f23aca7f4416389fc2bb7d451d1d70",
+    "mtime": 1784633573.399297,
+    "ast_hash": "87dbc478f7da6ce0524106146ed7c125",
     "semantic_hash": ""
   },
   ".agents/TECH-SPEC.md": {
@@ -1095,8 +1095,8 @@
     "semantic_hash": ""
   },
   ".agents/GEMINI_KNOWLEDGE.md": {
-    "mtime": 1784563312.991493,
-    "ast_hash": "6e84b73e3ddc05ee87419e1d4d07f304",
+    "mtime": 1784633630.3884518,
+    "ast_hash": "927ec9a7c0b16491f40a4e871fc8a2de",
     "semantic_hash": ""
   },
   "app/Filament/Resources/WarehouseDocument/Pages/ListWarehouseDocuments.php": {
@@ -1152,6 +1152,41 @@
   "database/migrations/2026_07_20_222332_add_mengantri_status_to_arrival_supplier_trucks.php": {
     "mtime": 1784561023.0670562,
     "ast_hash": "ffd1a11c5aa36ae485aeffa78aac04a0",
+    "semantic_hash": ""
+  },
+  "app/Filament/Resources/BranchShipment/BranchShipmentResource.php": {
+    "mtime": 1784629951.9363759,
+    "ast_hash": "2af308944448becbd0a63e7226c817a9",
+    "semantic_hash": ""
+  },
+  "app/Filament/Resources/BranchShipment/Pages/ListBranchShipments.php": {
+    "mtime": 1784630464.679149,
+    "ast_hash": "88dd89338d59209ba16f804ff8b05024",
+    "semantic_hash": ""
+  },
+  "app/Filament/Resources/BranchShipment/Schemas/BranchShipmentForm.php": {
+    "mtime": 1784629951.9366665,
+    "ast_hash": "7536aef8cf42030cd530e858478ccb6f",
+    "semantic_hash": ""
+  },
+  "app/Filament/Resources/BranchShipment/Tables/BranchShipmentsTable.php": {
+    "mtime": 1784631351.1938715,
+    "ast_hash": "2130b7388b20e5dd0810f28bfdcb5dfb",
+    "semantic_hash": ""
+  },
+  "app/Models/BranchShipment.php": {
+    "mtime": 1784630822.3154945,
+    "ast_hash": "4e3f2e6abdb8e4f0fb83cc9d0d0dfc46",
+    "semantic_hash": ""
+  },
+  "database/migrations/2026_07_21_155016_create_branch_shipments_table.php": {
+    "mtime": 1784629951.9366665,
+    "ast_hash": "91a3b293b3ec42998db15de15bff328b",
+    "semantic_hash": ""
+  },
+  "database/migrations/2026_07_21_174640_add_id_task_to_branch_shipments.php": {
+    "mtime": 1784630811.0853298,
+    "ast_hash": "b3eb32883209ad5a9ad4e083455daae7",
     "semantic_hash": ""
   }
 }
