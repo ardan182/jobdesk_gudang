@@ -23,6 +23,7 @@ class TaskTerimaSupplierForm
                 ->schema([
                     Select::make('arrival_supplier_truck_id')
                         ->label('Pilih Mobil Datang Supplier')
+                        ->required()
                         ->options(function ($component) {
                             $record = $component->getRecord();
 
