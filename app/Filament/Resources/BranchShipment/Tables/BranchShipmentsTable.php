@@ -2,11 +2,15 @@
 
 namespace App\Filament\Resources\BranchShipment\Tables;
 
+use App\Filament\Resources\BranchShipment\Schemas\BranchShipmentForm;
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Infolists\Components\TextEntry;
+use Filament\Schemas\Components\Section;
+use Filament\Support\Enums\Width;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -19,6 +23,11 @@ class BranchShipmentsTable
             ->defaultSort('created_at', 'desc')
             ->striped()
             ->columns([
+                TextColumn::make('id_task')
+                    ->label('ID Task')
+                    ->searchable()
+                    ->sortable()
+                    ->grow(false),
                 TextColumn::make('pilih_kiriman')
                     ->label('Kiriman')
                     ->badge()
@@ -73,7 +82,7 @@ class BranchShipmentsTable
                     })
                     ->grow(false),
                 TextColumn::make('user.name')
-                    ->label('Checker')
+                    ->label('Dibuat')
                     ->searchable()
                     ->sortable()
                     ->visible(fn () => auth()->user()?->hasRole('Admin') ?? false)
@@ -96,29 +105,35 @@ class BranchShipmentsTable
                     ->tooltip('Lihat Detail')
                     ->color('info')
                     ->modalHeading('Detail Kirim Barang')
-                    ->modalWidth('lg')
-                    ->infolist([
-                        TextEntry::make('pilih_kiriman')
-                            ->label('Kiriman')
-                            ->formatStateUsing(fn (string $state): string => match ($state) {
-                                'pembagian_po' => 'Pembagian dari PO',
-                                'stock_gudang' => 'Stock Gudang',
-                                default => $state,
-                            }),
-                        TextEntry::make('cabang')->label('Cabang'),
-                        TextEntry::make('nomor_sj')->label('No SJ'),
-                        TextEntry::make('total_qty')->label('Total Qty'),
-                        TextEntry::make('no_po')->label('No PO'),
-                        TextEntry::make('tanggal_buat')->label('Tgl Buat')->date('d/m/Y'),
-                        TextEntry::make('status')->label('Status')->badge(),
-                        TextEntry::make('keterangan')->label('Keterangan'),
+                    ->modalSubmitAction(false)
+                    ->modalCancelAction(fn (Action $action) => $action->label('Tutup'))
+                    ->schema([
+                        Section::make('Informasi Kirim Barang')
+                            ->columns(2)
+                            ->schema([
+                                TextEntry::make('pilih_kiriman')
+                                    ->label('Kiriman')
+                                    ->formatStateUsing(fn (string $state): string => match ($state) {
+                                        'pembagian_po' => 'Pembagian dari PO',
+                                        'stock_gudang' => 'Stock Gudang',
+                                        default => $state,
+                                    }),
+                                TextEntry::make('cabang')->label('Cabang'),
+                                TextEntry::make('nomor_sj')->label('No SJ'),
+                                TextEntry::make('total_qty')->label('Total Qty'),
+                                TextEntry::make('no_po')->label('No PO'),
+                                TextEntry::make('tanggal_buat')->label('Tgl Buat')->date('d/m/Y'),
+                                TextEntry::make('status')->label('Status')->badge(),
+                                TextEntry::make('keterangan')->label('Keterangan'),
+                            ]),
                     ]),
                 EditAction::make()
                     ->iconButton()
                     ->tooltip('Ubah Data')
                     ->color('warning')
                     ->modalHeading('Edit Kirim Barang')
-                    ->modalWidth('lg'),
+                    ->modalWidth(Width::Full)
+                    ->form(BranchShipmentForm::getFormFields()),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

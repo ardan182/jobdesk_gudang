@@ -114,7 +114,8 @@ class TaskKirimanMobilsTable
                 EditAction::make()
                     ->iconButton()
                     ->tooltip('Ubah Data')
-                    ->color('warning'),
+                    ->color('warning')
+                    ->modalWidth(Width::Full),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

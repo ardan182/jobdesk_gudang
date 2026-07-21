@@ -118,7 +118,18 @@
 - [x] Status TaskTerimaSupplier: disederhanakan ke DRAFT / SELESAI
 - [x] Retur Supplier trigger completion untuk DATANG & RETUR
 
-## Fase 12: Polish & Fixes ⏳
+## Fase 12: BranchShipment (Input Kirim Barang) ✅
+
+- [x] Modul BranchShipment — grup Pengiriman, icon paper-airplane
+- [x] Form: Section 2 kolom + pilih_kiriman + cabang + SJ + qty + tanggal + status
+- [x] Modal width Full + ViewAction Section 2 kolom (seragam dengan modul lain)
+- [x] TaskIdGenerator: prefix `KRM-BRG` + auto-generate id_task
+- [x] Model: fillable + creating event (id_task + user_id)
+- [x] Grid: id_task + badge warna + label Dibuat
+- [x] Edit modal: form sama dengan Tambah
+- [x] Fix: user_id auto-set di model (error default value)
+
+## Fase 13: Polish & Fixes ⏳
 
 - [ ] Export semua master data (Ekspedisi, Kendaraan, Sopir, Toko)
 - [ ] Import master data (Ekspedisi, Kendaraan, Sopir, Toko)

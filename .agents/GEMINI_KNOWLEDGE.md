@@ -377,6 +377,19 @@ Logika:
 - **Download Action:** Increment `download_count` + `Storage::disk('local')->download($record->file_path)`
 - **Edit modal:** `->disabled()` untuk format_file (auto)
 
+---
+
+## 21. BranchShipment (Input Kirim Barang)
+
+- Model `BranchShipment` — table `branch_shipments`
+- Kolom: `id_task, pilih_kiriman (pembagian_po/stock_gudang), cabang, nomor_sj, total_qty, no_po, tanggal_buat, status (draft/selesai), keterangan, user_id`
+- **ID Task:** Prefix `KRM-BRG` — auto `KRM-BRG-00001` via `TaskIdGenerator`
+- Navigation: Grup **Pengiriman**, ikon `PaperAirplane`, label 'Input Kirim Barang'
+- **Role Access:** Admin + Checker Keluar (sama seperti Keluar Barang)
+- **Form:** Section 2 kolom, create/edit modal full width
+- **ViewAction:** Section 2 kolom, tombol Tutup (seragam dengan modul lain)
+- **Grid:** Striped, badge pilih_kiriman (info/warning) + status (warning/success) + id_task
+
 ## 19. UI Modal Standards
 
 ### ViewAction (Detail)
