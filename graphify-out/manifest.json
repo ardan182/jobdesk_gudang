@@ -270,8 +270,8 @@
     "semantic_hash": ""
   },
   "app/Filament/Resources/TaskTerimaSuppliers/Schemas/TaskTerimaSupplierForm.php": {
-    "mtime": 1784629951.9366665,
-    "ast_hash": "d565801d9eb5ebeaf359bdb0432ce8be",
+    "mtime": 1784639599.9763813,
+    "ast_hash": "76282cca6f6b37f6d3675878bb86e32e",
     "semantic_hash": ""
   },
   "app/Filament/Resources/TaskTerimaSuppliers/Tables/TaskTerimaSuppliersTable.php": {
@@ -370,8 +370,8 @@
     "semantic_hash": "3a4f79ec18ebb4532e71643f0571deba"
   },
   "app/Models/ArrivalSupplierTruck.php": {
-    "mtime": 1784561029.4661295,
-    "ast_hash": "0bcd4c7e53fd1b7b15d93e8811f7bd63",
+    "mtime": 1784639176.1796367,
+    "ast_hash": "162b73cc4a6ce542dac9624fd319f0fd",
     "semantic_hash": ""
   },
   "app/Models/Division.php": {
@@ -425,8 +425,8 @@
     "semantic_hash": ""
   },
   "app/Models/TaskTerimaSupplier.php": {
-    "mtime": 1784561061.098493,
-    "ast_hash": "44113212d7414458d5510ba9015d97a9",
+    "mtime": 1784638008.7998617,
+    "ast_hash": "6373dcf0baa2922d4bf2a41b87371e62",
     "semantic_hash": ""
   },
   "app/Models/User.php": {
@@ -455,8 +455,8 @@
     "semantic_hash": ""
   },
   "app/Services/TaskIdGenerator.php": {
-    "mtime": 1784630790.0595262,
-    "ast_hash": "006c9deee4732558f8fceba0b9a5d7fc",
+    "mtime": 1784635082.874149,
+    "ast_hash": "1c1112e4fd38b613d72a533e6a316a74",
     "semantic_hash": ""
   },
   "artisan": {
@@ -990,8 +990,8 @@
     "semantic_hash": ""
   },
   "app/Filament/Resources/SupplierSj/Schemas/SupplierSjForm.php": {
-    "mtime": 1784294459.2927651,
-    "ast_hash": "abb82dc931aac14b7ad5ff056f3da884",
+    "mtime": 1784637310.1017663,
+    "ast_hash": "a29a699ab416fdadc8a43c0ca1bbcf55",
     "semantic_hash": ""
   },
   "app/Filament/Resources/SupplierSj/SupplierSjResource.php": {
@@ -1000,13 +1000,13 @@
     "semantic_hash": ""
   },
   "app/Filament/Resources/SupplierSj/Tables/SupplierSjsTable.php": {
-    "mtime": 1784294464.0278442,
-    "ast_hash": "bc699ccd81d71b34a45a9c4a6ed8d4a3",
+    "mtime": 1784637338.0557635,
+    "ast_hash": "b59283fe4141dbba2d9ac04625a52e78",
     "semantic_hash": ""
   },
   "app/Models/SupplierSj.php": {
-    "mtime": 1784294358.8411083,
-    "ast_hash": "6cabc28ef866abd53795b19f434a20dc",
+    "mtime": 1784637264.0947957,
+    "ast_hash": "1e8be9d92c77faa1672b18af08707970",
     "semantic_hash": ""
   },
   "database/migrations/2026_07_17_201902_create_supplier_sjs_table.php": {
@@ -1187,6 +1187,16 @@
   "database/migrations/2026_07_21_174640_add_id_task_to_branch_shipments.php": {
     "mtime": 1784630811.0853298,
     "ast_hash": "b3eb32883209ad5a9ad4e083455daae7",
+    "semantic_hash": ""
+  },
+  "database/migrations/2026_07_21_185813_add_id_task_to_supplier_sjs.php": {
+    "mtime": 1784635178.2026813,
+    "ast_hash": "857dd9e81690b7bbe82994d5a7dc4458",
+    "semantic_hash": ""
+  },
+  "database/migrations/2026_07_21_193411_add_jumlah_koli_faktur_to_supplier_sjs.php": {
+    "mtime": 1784637262.9317968,
+    "ast_hash": "159a592bffe7c9fb37a11f67aa8bd143",
     "semantic_hash": ""
   }
 }

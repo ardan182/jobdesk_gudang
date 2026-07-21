@@ -113,6 +113,20 @@ class TaskTerimaSupplierForm
                         ->step(60)
                         ->required(fn ($get) => $get('status') === 'SELESAI')
                         ->extraAttributes(['lang' => 'id-ID']),
+                    TextInput::make('lama_bongkar_tampil')
+                        ->label('Lama Bongkar')
+                        ->prefixIcon('heroicon-m-clock')
+                        ->disabled()
+                        ->dehydrated(false)
+                        ->afterStateHydrated(function ($component, $state) {
+                            $record = $component->getRecord();
+                            if ($record && $record->jam_bongkar && $record->selesai_bongkar) {
+                                $minutes = \Carbon\Carbon::parse($record->jam_bongkar)->diffInMinutes(\Carbon\Carbon::parse($record->selesai_bongkar));
+                                $h = intdiv($minutes, 60);
+                                $m = $minutes % 60;
+                                $component->state($h > 0 ? "{$h}j {$m}m" : "{$m}m");
+                            }
+                        }),
                     TextInput::make('lembar_sj')
                         ->label('Lembar SJ')
                         ->prefixIcon('heroicon-m-document-duplicate')

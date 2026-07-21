@@ -415,6 +415,53 @@ ViewAction::make()
 - Select: `->searchable()->preload()` untuk UX cepat
 - Modal width: `Width::Full` untuk 3-kolom form; default untuk detail
 
+---
+
+## 22. SupplierSj — Auto-Create & Fitur
+
+### Auto-Creation dari TaskTerimaSupplier
+Di `TaskTerimaSupplier` model (created + updated event):
+- Trigger: ketika `status === 'SELESAI'`
+- Data: `nama_supplier`, `tanggal_datang` dari ArrivalSupplierTruck
+- `no_po_referensi` dari `TaskTerimaSupplier.no_po_referensi`
+- `jumlah_koli` dari `jumlah_kolian`, `jumlah_faktur` dari `lembar_sj`
+- `status_input` default `'belum_di_cek'`
+- Cegah duplikat via `where('keterangan', 'LIKE', '%id_task%')`
+
+### Status Input (baru)
+| Value | Label | Badge |
+|-------|-------|-------|
+| `belum_di_cek` | Belum Di Cek | `gray` |
+| `draft` | Draft | `warning` |
+| `selesai` | Selesai | `success` |
+
+### Tempo (Virtual Column)
+- **Rumus:** `abs(hari_ini - tanggal_datang)`
+- **Badge:** merah (belum_di_cek/draft), hijau (selesai)
+- Format: `blm input X hr` / `input X hr`
+
+### Edit Form
+- Section "Informasi Dokumen" + Width::Full
+- Disabled fields: ID Task, Supplier, Tgl Datang, No PO, Koli, Faktur, Tempo, Ref Terima
+- Editable: Status Input, Tanggal Input, Keterangan
+- `tanggal_input` → `maxDate(now())` — tidak boleh tanggal maju
+
+---
+
+## 23. Lama Bongkar (Virtual Column — Checker Terima Supplier)
+
+### Perhitungan
+- **Rumus:** `selesai_bongkar - jam_bongkar` dalam menit
+- **Format:** `3j 30m` atau `45m` (grid), `3 jam 30 menit` (ViewAction)
+- Jika `selesai_bongkar` null → tampil `-`
+
+### 3 Lokasi
+| Lokasi | Tipe | Format |
+|--------|------|--------|
+| Grid kolom | `TextColumn` | `3j 30m` |
+| ViewAction | `TextEntry` | `3 jam 30 menit` |
+| Edit Form | `TextInput` disabled | `3j 30m` (icon jam) |
+
 ## 15. Graphify Knowledge Graph
 
 Project memiliki knowledge graph di `graphify-out/`:

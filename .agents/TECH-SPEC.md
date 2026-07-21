@@ -293,3 +293,68 @@ static::creating(function ($model) {
 - Create modal: `Width::Full` + Section 2 kolom
 - Edit modal: `Width::Full` + `->form(getFormFields())` — identik dengan Create
 - ViewAction: Section 2 kolom + tombol Tutup
+
+---
+
+## 11. Computed / Virtual Columns
+
+### Tempo (SupplierSj — Input SJ Supplier)
+```php
+TextColumn::make('tempo')->badge()->color(...)
+    ->getStateUsing(fn ($record) => {
+        $days = abs(now()->startOfDay()->diffInDays($record->tanggal_datang));
+        $prefix = in_array($record->status_input, ['belum_di_cek', 'draft']) ? 'blm input' : 'input';
+        return "{$prefix} {$days} hr";
+    }),
+```
+- **Rumus:** `abs(hari_ini - tanggal_datang)`
+- **Badge:** merah (belum_di_cek/draft), hijau (selesai)
+- **Tidak perlu kolom DB** — dihitung otomatis
+
+### Lama Bongkar (TaskTerimaSupplier — Checker Terima)
+```php
+TextColumn::make('lama_bongkar')
+    ->getStateUsing(fn ($record) => {
+        $minutes = Carbon::parse($record->jam_bongkar)->diffInMinutes(Carbon::parse($record->selesai_bongkar));
+        $h = intdiv($minutes, 60);
+        $m = $minutes % 60;
+        return $h > 0 ? "{$h}j {$m}m" : "{$m}m";
+    }),
+```
+- **Rumus:** `selesai_bongkar - jam_bongkar` (dalam menit → dikonversi ke jam:menit)
+- **3 lokasi:** Grid, ViewAction, Edit Form (disabled)
+- Jika `selesai_bongkar` null → tampil `-`
+
+---
+
+## 12. SupplierSj Auto-Creation (Integrasi)
+
+### Trigger
+Di `TaskTerimaSupplier` model — `created` + `updated` event:
+```php
+if ($model->status === 'SELESAI') {
+    \App\Models\SupplierSj::create([
+        'nama_supplier'      => $arrivalTruck?->supplier?->nama_supplier,
+        'tanggal_datang'     => $arrivalTruck?->tanggal_datang,
+        'nomor_po_referensi' => $model->no_po_referensi,
+        'jumlah_koli'        => $model->jumlah_kolian,
+        'jumlah_faktur'      => $model->lembar_sj ?? 1,
+        'status_input'       => 'belum_di_cek',
+        'keterangan'         => 'Auto dari Terima Supplier: ' . $model->id_task,
+    ]);
+}
+```
+
+### Flow
+| Skenario | SupplierSj terbuat? |
+|----------|---------------------|
+| Create langsung SELESAI | ✅ `created` event |
+| DRAFT → Edit jadi SELESAI | ✅ `updated` event |
+| DRAFT tetap | ❌ Tidak |
+
+### Status Input Options (baru)
+| Value | Label | Badge |
+|-------|-------|-------|
+| `belum_di_cek` | Belum Di Cek | `gray` |
+| `draft` | Draft | `warning` |
+| `selesai` | Selesai | `success` |

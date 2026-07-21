@@ -64,6 +64,16 @@ class TaskTerimaSuppliersTable
                     ->time('H:i')
                     ->sortable()
                     ->grow(false),
+                TextColumn::make('lama_bongkar')
+                    ->label('Lama Bkr')
+                    ->grow(false)
+                    ->getStateUsing(function ($record) {
+                        if (!$record->jam_bongkar || !$record->selesai_bongkar) return '-';
+                        $minutes = \Carbon\Carbon::parse($record->jam_bongkar)->diffInMinutes(\Carbon\Carbon::parse($record->selesai_bongkar));
+                        $h = intdiv($minutes, 60);
+                        $m = $minutes % 60;
+                        return $h > 0 ? "{$h}j {$m}m" : "{$m}m";
+                    }),
                 TextColumn::make('lembar_sj')
                     ->label('Lembar SJ')
                     ->numeric()
@@ -161,6 +171,15 @@ class TaskTerimaSuppliersTable
                                 TextEntry::make('jam_datang')->label('Jam Datang'),
                                 TextEntry::make('jumlah_kolian')->label('Kolian'),
                                 TextEntry::make('jam_bongkar')->label('Jam Bongkar'),
+                                TextEntry::make('lama_bongkar')
+                                    ->label('Lama Bongkar')
+                                    ->getStateUsing(function ($record) {
+                                        if (!$record->jam_bongkar || !$record->selesai_bongkar) return '-';
+                                        $minutes = \Carbon\Carbon::parse($record->jam_bongkar)->diffInMinutes(\Carbon\Carbon::parse($record->selesai_bongkar));
+                                        $h = intdiv($minutes, 60);
+                                        $m = $minutes % 60;
+                                        return $h > 0 ? "{$h} jam {$m} menit" : "{$m} menit";
+                                    }),
                                 TextEntry::make('selesai_bongkar')->label('Selesai Bongkar'),
                                 TextEntry::make('lembar_sj')->label('Lembar SJ'),
                                 TextEntry::make('nama_sopir')->label('Sopir'),

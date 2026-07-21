@@ -129,7 +129,22 @@
 - [x] Edit modal: form sama dengan Tambah
 - [x] Fix: user_id auto-set di model (error default value)
 
-## Fase 13: Polish & Fixes ⏳
+## Fase 13: Input SJ Supplier — Integrasi + Polish ✅
+
+- [x] Auto-create SupplierSj saat TaskTerimaSupplier status jadi SELESAI (created + updated event)
+- [x] Prefix `SJSUP` + id_task auto-generate
+- [x] Kolom `jumlah_koli`, `jumlah_faktur` di SupplierSj
+- [x] Status baru: `belum_di_cek` (gray), `draft` (warning), `selesai` (success)
+- [x] Kolom **Tempo** — `hari_ini - tanggal_datang` (badge merah/hijau)
+- [x] Kolom **Δ Hari** dihapus, ganti Tempo di grid + ViewAction
+- [x] **Ref Terima Supplier** — parse `TRM-SUP-xxxxx` dari keterangan
+- [x] **Lama Bongkar** — `selesai_bongkar - jam_bongkar` (jam:menit)
+- [x] Form Edit: Section seragam, Width::Full, disabled fields dengan prefixIcons
+- [x] `tanggal_input` → `->maxDate(now())` — proteksi tanggal maju
+- [x] `tanggal_datang` → DatePicker (fix tempo berubah tiap edit)
+- [x] Fix: SupplierSj auto-create saat create langsung SELESAI
+
+## Fase 14: Polish & Fixes ⏳
 
 - [ ] Export semua master data (Ekspedisi, Kendaraan, Sopir, Toko)
 - [ ] Import master data (Ekspedisi, Kendaraan, Sopir, Toko)
