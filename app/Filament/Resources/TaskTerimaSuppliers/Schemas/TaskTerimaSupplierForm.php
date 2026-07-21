@@ -87,7 +87,7 @@ class TaskTerimaSupplierForm
                     TextInput::make('no_po_referensi')
                         ->label('No PO Referensi')
                         ->prefixIcon('heroicon-m-document-text')
-                        ->placeholder('Contoh: PO-2026-XXXX')
+                        ->placeholder('Contoh: SRBXXXX')
                         ->helperText('Nomor PO pembelian')
                         ->required(),
                     TextInput::make('jumlah_kolian')
