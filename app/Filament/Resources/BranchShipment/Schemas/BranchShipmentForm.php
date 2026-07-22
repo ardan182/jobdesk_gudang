@@ -39,9 +39,9 @@ class BranchShipmentForm
                         ->label('Nomor SJ')
                         ->prefixIcon('heroicon-m-document-text')
                         ->placeholder('Masukkan nomor surat jalan')
-                        ->helperText('Nomor referensi surat jalan')
-                        ->maxLength(100)
-                        ->required(),
+                        ->helperText('Wajib jika status "Selesai"')
+                        ->requiredIf('status', 'selesai')
+                        ->maxLength(100),
                     TextInput::make('total_qty')
                         ->label('Total Qty')
                         ->prefixIcon('heroicon-m-cube')
@@ -63,6 +63,7 @@ class BranchShipmentForm
                         ->required(),
                     Select::make('status')
                         ->label('Status')
+                        ->live()
                         ->options([
                             'draft' => 'Draft',
                             'selesai' => 'Selesai',

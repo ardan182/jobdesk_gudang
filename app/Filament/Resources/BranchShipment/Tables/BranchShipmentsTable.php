@@ -133,7 +133,10 @@ class BranchShipmentsTable
                     ->color('warning')
                     ->modalHeading('Edit Kirim Barang')
                     ->modalWidth(Width::Full)
-                    ->form(BranchShipmentForm::getFormFields()),
+                    ->form(BranchShipmentForm::getFormFields())
+                    ->using(function ($record, array $data) {
+                        $record->update($data);
+                    }),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
