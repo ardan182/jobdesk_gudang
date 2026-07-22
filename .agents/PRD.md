@@ -107,7 +107,7 @@ Semua punya: `id_task` (indexed), `user_id` (FK).
 | Master (Admin) | Ekspedisi, Kendaraan, Sopir, Toko, Supplier, Employee Gudang |
 | Retur | Retur Masuk Cabang, Retur Keluar Supplier, Retur Masuk Supplier, Retur Keluar Cabang |
 | Penerimaan | Input SJ Supplier, Datang Mobil Supplier, Checker Terima Barang Supplier |
-| Pengiriman | Checker Keluar Barang, Kiriman Mobil |
+| Pengiriman | Input Kirim Barang, Checker Keluar Barang, Kiriman Mobil |
 | Administrasi (Admin) | Cuti & Absensi, **Pusat Dokumen** |
 | Pengaturan (Admin) | Users |
 

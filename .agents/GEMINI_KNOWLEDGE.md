@@ -476,6 +476,24 @@ Project memiliki knowledge graph di `graphify-out/`:
 
 ---
 
+## 16. Validasi Cross-Field di Filament v5
+
+### `->requiredIf('field', 'value')` — **Recommended**
+```php
+TextInput::make('nomor_sj')
+    ->requiredIf('status', 'selesai')
+```
+Reactive dengan `->live()` di field dependensi. Error muncul di field dengan border merah.
+
+### `->using()` di EditAction
+Gunakan `->using()` untuk custom save logic — validasi form tetap berjalan.
+Jangan gunakan `->action()` atau `->before()` + `throw ValidationException` (error tidak tampil di field).
+
+### `$get()` di `->rules()` ❌
+`$get('field')` di dalam closure `->rules()` tidak mengevaluasi nilai terkini di modal context. Gunakan `requiredIf` sebagai gantinya.
+
+---
+
 ## 16. File Structure (app/)
 
 ```
@@ -515,6 +533,10 @@ app/
 │   ├── ActivityLog.php
 │   ├── ArrivalSupplierTruck.php
 │   ├── BranchReturnOutbound.php
+│   ├── Division.php
+│   ├── Expedition.php
+│   ├── ArrivalSupplierTruck.php
+│   ├── BranchShipment.php
 │   ├── Division.php
 │   ├── Expedition.php
 │   ├── MasterKendaraan.php

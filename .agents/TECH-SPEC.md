@@ -358,3 +358,20 @@ if ($model->status === 'SELESAI') {
 | `belum_di_cek` | Belum Di Cek | `gray` |
 | `draft` | Draft | `warning` |
 | `selesai` | Selesai | `success` |
+
+### Validasi Cross-Field
+
+Metode validasi yang terbukti bekerja di Filament v5:
+
+| Metode | Keterangan | Status |
+|--------|-----------|--------|
+| `->requiredIf('field', 'value')` | Reactive, native Filament, jalan dengan `->live()` | ✅ **Recommended** |
+| `->rules(function ($get) { ... })` | `$get()` tidak evaluasi nilai terkini di modal context | ❌ Tidak bekerja |
+| `->before()` + `throw ValidationException` | Tidak menampilkan error di field | ❌ |
+| `mutateFormDataUsing` / `mutateFormDataBeforeSave` | Jalan hanya di CreateAction, tidak ada di EditAction | ⚠️ Sebagian |
+| `->using()` di EditAction | Custom save logic, validasi form tetap jalan | ✅ |
+| Default `CreateAction` (tanpa custom action) | Validasi form jalan sempurna | ✅ |
+
+### Activity Log — Description Length
+
+Kolom `description` diubah dari VARCHAR(255) → TEXT untuk menampung update log yang panjang (bisa berisi banyak field perubahan).

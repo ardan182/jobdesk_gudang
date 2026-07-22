@@ -144,7 +144,18 @@
 - [x] `tanggal_datang` → DatePicker (fix tempo berubah tiap edit)
 - [x] Fix: SupplierSj auto-create saat create langsung SELESAI
 
-## Fase 14: Polish & Fixes ⏳
+## Fase 14: Bug Fixes — Validasi PO, Description, SJ Required ⏳
+
+- [x] PO wajib jika status "Selesai" di SupplierSj — validasi di action + form
+- [x] Sync PO dua arah: SupplierSj ↔ TaskTerimaSupplier
+- [x] ActivityLog description: varchar(255) → TEXT, fix Carbon compare
+- [x] `no_po_referensi` di TaskTerimaSupplier → nullable (opsional)
+- [x] `nomor_sj` di BranchShipment → nullable (draft bisa kosong)
+- [x] `requiredIf('status', 'selesai')` — native Filament, reactive
+- [x] EditAction → `->using()` — validasi form tetap jalan
+- [x] CreateAction default — tanpa custom action
+
+## Fase 15: Polish & Fixes ⏳
 
 - [ ] Export semua master data (Ekspedisi, Kendaraan, Sopir, Toko)
 - [ ] Import master data (Ekspedisi, Kendaraan, Sopir, Toko)
