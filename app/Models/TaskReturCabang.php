@@ -52,8 +52,8 @@ class TaskReturCabang extends Model
             foreach ($tracked as $field) {
                 $old = $model->getOriginal($field);
                 $new = $model->$field;
-                $oldStr = $old ?? '-';
-                $newStr = $new ?? '-';
+                $oldStr = is_object($old) ? (string) $old : ($old ?? '-');
+                $newStr = is_object($new) ? (string) $new : ($new ?? '-');
                 if ($oldStr !== $newStr) {
                     $changes[] = "$field: $oldStr → $newStr";
                 }

@@ -81,8 +81,8 @@ class TaskTerimaSupplier extends Model
             foreach ($tracked as $field) {
                 $old = $model->getOriginal($field);
                 $new = $model->$field;
-                $oldStr = $old ?? '-';
-                $newStr = $new ?? '-';
+                $oldStr = is_object($old) ? (string) $old : ($old ?? '-');
+                $newStr = is_object($new) ? (string) $new : ($new ?? '-');
                 if ($oldStr !== $newStr) {
                     $changes[] = "$field: $oldStr → $newStr";
                 }
@@ -97,6 +97,17 @@ class TaskTerimaSupplier extends Model
                 'reference' => $model->no_po_referensi,
                 'action' => 'update',
             ]);
+
+            $existingSj = \App\Models\SupplierSj::where('keterangan', 'LIKE', '%' . $model->id_task . '%')->first();
+            if ($existingSj && $existingSj->nomor_po_referensi !== $model->no_po_referensi) {
+                $updateData = ['nomor_po_referensi' => $model->no_po_referensi];
+
+                if (blank($model->no_po_referensi) && $existingSj->status_input === 'selesai') {
+                    $updateData['status_input'] = 'draft';
+                }
+
+                $existingSj->update($updateData);
+            }
 
             if ($model->arrival_supplier_truck_id) {
                 $truck = ArrivalSupplierTruck::find($model->arrival_supplier_truck_id);

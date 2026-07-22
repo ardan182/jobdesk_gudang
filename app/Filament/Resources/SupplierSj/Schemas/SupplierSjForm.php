@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\SupplierSj\Schemas;
 
+use App\Models\TaskTerimaSupplier;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -35,7 +36,15 @@ class SupplierSjForm
                     TextInput::make('nomor_po_referensi')
                         ->label('No PO Referensi')
                         ->prefixIcon('heroicon-m-document-text')
-                        ->disabled()
+                        ->disabled(function ($record) {
+                            if (!$record) return true;
+                            preg_match('/\bTRM-SUP-\d+\b/', $record->keterangan ?? '', $m);
+                            if (!empty($m[0])) {
+                                $terima = TaskTerimaSupplier::where('id_task', $m[0])->first();
+                                return filled($terima?->no_po_referensi);
+                            }
+                            return false;
+                        })
                         ->dehydrated(true),
                     TextInput::make('jumlah_koli')
                         ->label('Jumlah Koli')
@@ -74,6 +83,7 @@ class SupplierSjForm
                         }),
                     Select::make('status_input')
                         ->label('Status Input')
+                        ->live()
                         ->options([
                             'belum_di_cek' => 'Belum Di Cek',
                             'draft' => 'Draft',

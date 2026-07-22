@@ -3,12 +3,14 @@
 namespace App\Filament\Resources\SupplierSj\Tables;
 
 use App\Filament\Resources\SupplierSj\Schemas\SupplierSjForm;
+use App\Filament\Resources\SupplierSj\Pages\ListSupplierSjs as ListSupplierSj;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Infolists\Components\TextEntry;
+use Filament\Notifications\Notification;
 use Filament\Schemas\Components\Section;
 use Filament\Support\Enums\Width;
 use Filament\Tables\Columns\TextColumn;
@@ -158,7 +160,21 @@ class SupplierSjsTable
                     ->tooltip('Ubah Data')
                     ->modalHeading('Edit Input SJ')
                     ->modalWidth(Width::Full)
-                    ->form(SupplierSjForm::getFormFields()),
+                    ->form(SupplierSjForm::getFormFields())
+                    ->action(function ($record, array $data) {
+                        if (($data['status_input'] ?? null) === 'selesai' && blank($data['nomor_po_referensi'] ?? null)) {
+                            Notification::make()
+                                ->title('Gagal menyimpan')
+                                ->body('No PO Referensi wajib diisi jika status "Selesai".')
+                                ->danger()
+                                ->send();
+                            return;
+                        }
+                        $record->update($data);
+                        if (filled($data['nomor_po_referensi'] ?? null)) {
+                            ListSupplierSj::syncPoToTerimaSupplier($record->fresh());
+                        }
+                    }),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
