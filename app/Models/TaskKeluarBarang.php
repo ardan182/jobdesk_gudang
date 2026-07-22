@@ -10,19 +10,27 @@ class TaskKeluarBarang extends Model
 {
     protected $fillable = [
         'id_task',
-        'toko_tujuan',
-        'supplier',
-        'no_referensi_sj',
-        'jumlah_kolian',
-        'jam_naik',
-        'nama_koordinator',
+        'branch_shipment_id',
+        'cabang',
+        'nomor_sj',
+        'total_qty',
+        'no_po',
+        'jam_disiapkan',
+        'diserahkan_kepada',
+        'helper',
         'status',
         'keterangan',
         'user_id',
     ];
 
     protected $casts = [
-        'jam_naik' => 'datetime:H:i',
+        'jam_disiapkan' => 'datetime:H:i',
+        'total_qty' => 'integer',
+        'helper' => 'array',
+    ];
+
+    protected $attributes = [
+        'status' => 'draft',
     ];
 
     protected static function booted(): void
@@ -41,15 +49,15 @@ class TaskKeluarBarang extends Model
                 'user_id' => $model->user_id,
                 'module' => 'Keluar Barang',
                 'id_task' => $model->id_task,
-                'description' => "Toko: {$model->toko_tujuan} → {$model->status}",
-                'reference' => $model->no_referensi_sj,
+                'description' => "Cabang: {$model->cabang} → {$model->status}",
+                'reference' => $model->nomor_sj,
                 'action' => 'create',
             ]);
         });
 
         static::updated(function ($model) {
             $changes = [];
-            $tracked = ['status', 'toko_tujuan', 'supplier', 'no_referensi_sj', 'jumlah_kolian', 'jam_naik', 'nama_koordinator', 'keterangan'];
+            $tracked = ['status', 'jam_disiapkan', 'diserahkan_kepada', 'helper', 'keterangan'];
             foreach ($tracked as $field) {
                 $old = $model->getOriginal($field);
                 $new = $model->$field;
@@ -65,15 +73,38 @@ class TaskKeluarBarang extends Model
                 'user_id' => auth()->id() ?? $model->user_id,
                 'module' => 'Keluar Barang',
                 'id_task' => $model->id_task,
-                'description' => "Toko: {$model->toko_tujuan} — " . implode('; ', $changes),
-                'reference' => $model->no_referensi_sj,
+                'description' => "Cabang: {$model->cabang} — " . implode('; ', $changes),
+                'reference' => $model->nomor_sj,
                 'action' => 'update',
             ]);
+        });
+
+        static::saved(function ($model) {
+            if ($model->wasChanged('status') && $model->status === 'selesai') {
+                if ($model->cabang && $model->cabang !== 'pusat') {
+                    $exists = TaskKirimanMobil::where('keluar_barang_id', $model->id)->exists();
+                    if (!$exists) {
+                        $kiriman = TaskKirimanMobil::create([
+                            'cabang' => $model->cabang,
+                            'keluar_barang_id' => $model->id,
+                            'keterangan' => 'Auto dari Checker Keluar Barang - ' . $model->id_task,
+                        ]);
+                        if ($model->branch_shipment_id) {
+                            $kiriman->branchShipments()->attach($model->branch_shipment_id);
+                        }
+                    }
+                }
+            }
         });
     }
 
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function branchShipment(): BelongsTo
+    {
+        return $this->belongsTo(BranchShipment::class);
     }
 }

@@ -107,7 +107,7 @@
 
 ## Fase 11: Integrasi & 3-Level Status ✅
 
-- [x] ArrivalSupplierTruck: status `MENGANTRI` → `PROSES` → `SELESAI` (ENUM)
+- [x] ArrivalSupplierTruck: status MENGANTRI → PROSES → SELESAI (ENUM)
 - [x] syncStatus(): auto-detect berdasarkan TaskTerima & TaskRetur
 - [x] TaskTerimaSupplier: created/updated/deleted → trigger syncStatus
 - [x] TaskReturSupplier: created/updated/deleted → trigger syncStatus
@@ -123,7 +123,7 @@
 - [x] Modul BranchShipment — grup Pengiriman, icon paper-airplane
 - [x] Form: Section 2 kolom + pilih_kiriman + cabang + SJ + qty + tanggal + status
 - [x] Modal width Full + ViewAction Section 2 kolom (seragam dengan modul lain)
-- [x] TaskIdGenerator: prefix `KRM-BRG` + auto-generate id_task
+- [x] TaskIdGenerator: prefix KRM-BRG + auto-generate id_task
 - [x] Model: fillable + creating event (id_task + user_id)
 - [x] Grid: id_task + badge warna + label Dibuat
 - [x] Edit modal: form sama dengan Tambah
@@ -131,31 +131,51 @@
 
 ## Fase 13: Input SJ Supplier — Integrasi + Polish ✅
 
-- [x] Auto-create SupplierSj saat TaskTerimaSupplier status jadi SELESAI (created + updated event)
-- [x] Prefix `SJSUP` + id_task auto-generate
-- [x] Kolom `jumlah_koli`, `jumlah_faktur` di SupplierSj
-- [x] Status baru: `belum_di_cek` (gray), `draft` (warning), `selesai` (success)
-- [x] Kolom **Tempo** — `hari_ini - tanggal_datang` (badge merah/hijau)
-- [x] Kolom **Δ Hari** dihapus, ganti Tempo di grid + ViewAction
-- [x] **Ref Terima Supplier** — parse `TRM-SUP-xxxxx` dari keterangan
-- [x] **Lama Bongkar** — `selesai_bongkar - jam_bongkar` (jam:menit)
-- [x] Form Edit: Section seragam, Width::Full, disabled fields dengan prefixIcons
-- [x] `tanggal_input` → `->maxDate(now())` — proteksi tanggal maju
-- [x] `tanggal_datang` → DatePicker (fix tempo berubah tiap edit)
-- [x] Fix: SupplierSj auto-create saat create langsung SELESAI
-
-## Fase 14: Bug Fixes — Validasi PO, Description, SJ Required ⏳
-
-- [x] PO wajib jika status "Selesai" di SupplierSj — validasi di action + form
+- [x] Auto-create SupplierSj saat TaskTerimaSupplier status jadi SELESAI
+- [x] Prefix SJSUP + id_task auto-generate
+- [x] Kolom jumlah_koli, jumlah_faktur di SupplierSj
+- [x] Status: belum_di_cek (gray), draft (warning), selesai (success)
+- [x] Kolom Tempo — selisih hari (badge merah/hijau, format: blm input / input X hr)
+- [x] Ref Terima Supplier — parse TRM-SUP-xxxxx dari keterangan
+- [x] Lama Bongkar — selesai_bongkar - jam_bongkar (jam:menit)
+- [x] tangal_input → maxDate(now()) — proteksi tanggal maju
+- [x] PO wajib jika status Selesai — validasi action + form
 - [x] Sync PO dua arah: SupplierSj ↔ TaskTerimaSupplier
-- [x] ActivityLog description: varchar(255) → TEXT, fix Carbon compare
-- [x] `no_po_referensi` di TaskTerimaSupplier → nullable (opsional)
-- [x] `nomor_sj` di BranchShipment → nullable (draft bisa kosong)
-- [x] `requiredIf('status', 'selesai')` — native Filament, reactive
-- [x] EditAction → `->using()` — validasi form tetap jalan
-- [x] CreateAction default — tanpa custom action
+- [x] ActivityLog description: varchar(255) → TEXT
+- [x] no_po_referensi → nullable
+- [x] nomor_sj di BranchShipment → nullable
+- [x] requiredIf status selesai
 
-## Fase 15: Polish & Fixes ⏳
+## Fase 14: Checker Keluar Barang — Refactor ✅
+
+- [x] Migration: tambah branch_shipment_id (FK) + jam_disiapkan + diserahkan_kepada + helper (JSON)
+- [x] Migration: drop kolom lama (toko_tujuan, supplier, no_referensi_sj, jumlah_kolian, jam_naik, nama_koordinator)
+- [x] Migration: ubah status ke enum('draft','siap kirim','selesai') default draft
+- [x] Migration: tambah cabang/nomor_sj/total_qty/no_po (copy dari BranchShipment)
+- [x] Form: Select BranchShipment (status=selesai, exclude already processed)
+- [x] Form: auto-fill cabang, nomor_sj, total_qty, no_po (disabled, dehydrated)
+- [x] Field baru: jam_disiapkan, status, diserahkan_kepada (textbox), helper (Select multiple)
+- [x] Single form modal (no Repeater)
+- [x] Edit mode: dropdown disabled + options include current record
+- [x] ViewAction: Section "Informasi Task" 2 kolom (seragam)
+- [x] Helper di View: badge + separator(', ') + tooltip nama lengkap
+- [x] Helper di Grid: max 2 + +N more badge + tooltip all names
+
+## Fase 15: Kiriman Mobil — Refactor ✅
+
+- [x] Migration: tambah jam_tiba + status (draft/dalam pengiriman/datang)
+- [x] Migration: pivot branch_shipment_kiriman_mobil (many-to-many)
+- [x] Migration: no_plat_mobil, jam_muat, jam_selesai, jam_berangkat, nama_supir → nullable
+- [x] FK keluar_barang_id → task_keluar_barangs (auto-create tracking)
+- [x] Form: Pilih SJ (Select multiple) filter by cabang + exclude already assigned
+- [x] Display-only: total SJ dipilih, sisa SJ kiriman, durasi kiriman
+- [x] Field jam_tiba + status (draft/dalam pengiriman/datang)
+- [x] Auto-create dari Checker Keluar Barang (status=selesai, cabang≠pusat)
+- [x] Auto-attach pivot BranchShipment
+- [x] EditAction: using() callback untuk sync pivot
+- [x] Single form modal (no Repeater)
+
+## Fase 16: Polish & Fixes ⏳
 
 - [ ] Export semua master data (Ekspedisi, Kendaraan, Sopir, Toko)
 - [ ] Import master data (Ekspedisi, Kendaraan, Sopir, Toko)

@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Services\TaskIdGenerator;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class TaskKirimanMobil extends Model
 {
@@ -15,8 +16,11 @@ class TaskKirimanMobil extends Model
         'jam_muat',
         'jam_selesai_muat',
         'jam_berangkat',
+        'jam_tiba',
+        'status',
         'nama_supir',
         'keterangan',
+        'keluar_barang_id',
         'user_id',
     ];
 
@@ -24,6 +28,11 @@ class TaskKirimanMobil extends Model
         'jam_muat' => 'datetime:H:i',
         'jam_selesai_muat' => 'datetime:H:i',
         'jam_berangkat' => 'datetime:H:i',
+        'jam_tiba' => 'datetime:H:i',
+    ];
+
+    protected $attributes = [
+        'status' => 'draft',
     ];
 
     protected static function booted(): void
@@ -42,15 +51,15 @@ class TaskKirimanMobil extends Model
                 'user_id' => $model->user_id,
                 'module' => 'Kiriman Mobil',
                 'id_task' => $model->id_task,
-                'description' => "Cabang: {$model->cabang} - Plat: {$model->no_plat_mobil}",
-                'reference' => $model->nama_supir,
+                'description' => "Cabang: {$model->cabang}" . ($model->no_plat_mobil ? " - Plat: {$model->no_plat_mobil}" : ''),
+                'reference' => $model->nama_supir ?? '-',
                 'action' => 'create',
             ]);
         });
 
         static::updated(function ($model) {
             $changes = [];
-            $tracked = ['cabang', 'no_plat_mobil', 'jam_muat', 'jam_selesai_muat', 'jam_berangkat', 'nama_supir', 'keterangan'];
+            $tracked = ['cabang', 'no_plat_mobil', 'jam_muat', 'jam_selesai_muat', 'jam_berangkat', 'jam_tiba', 'status', 'nama_supir', 'keterangan'];
             foreach ($tracked as $field) {
                 $old = $model->getOriginal($field);
                 $new = $model->$field;
@@ -67,7 +76,7 @@ class TaskKirimanMobil extends Model
                 'module' => 'Kiriman Mobil',
                 'id_task' => $model->id_task,
                 'description' => "Cabang: {$model->cabang} — " . implode('; ', $changes),
-                'reference' => $model->nama_supir,
+                'reference' => $model->nama_supir ?? '-',
                 'action' => 'update',
             ]);
         });
@@ -76,5 +85,15 @@ class TaskKirimanMobil extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function keluarBarang(): BelongsTo
+    {
+        return $this->belongsTo(TaskKeluarBarang::class);
+    }
+
+    public function branchShipments(): BelongsToMany
+    {
+        return $this->belongsToMany(BranchShipment::class, 'branch_shipment_kiriman_mobil');
     }
 }

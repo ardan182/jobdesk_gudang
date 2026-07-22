@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Services\TaskIdGenerator;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class BranchShipment extends Model
 {
@@ -40,5 +41,10 @@ class BranchShipment extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function keluarBarangs(): HasMany
+    {
+        return $this->hasMany(TaskKeluarBarang::class, 'branch_shipment_id');
     }
 }

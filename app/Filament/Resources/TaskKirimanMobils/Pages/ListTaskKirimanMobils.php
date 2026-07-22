@@ -6,12 +6,8 @@ use App\Filament\Resources\TaskKirimanMobils\Schemas\TaskKirimanMobilForm;
 use App\Filament\Resources\TaskKirimanMobils\TaskKirimanMobilResource;
 use App\Services\TaskIdGenerator;
 use Filament\Actions\Action;
-use Filament\Forms\Components\Repeater;
-use Filament\Forms\Components\Repeater\TableColumn;
 use Filament\Resources\Pages\ListRecords;
-use Filament\Support\Enums\Alignment;
 use Filament\Support\Enums\Width;
-use Illuminate\Support\Facades\DB;
 
 class ListTaskKirimanMobils extends ListRecords
 {
@@ -20,43 +16,27 @@ class ListTaskKirimanMobils extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Action::make('createTask')
+            Action::make('create')
                 ->label('Tambah')
                 ->color('primary')
                 ->icon('heroicon-m-plus')
-                ->modalHeading('Tambah Task Kiriman Mobil')
+                ->modalHeading('Tambah Kiriman Mobil')
                 ->modalWidth(Width::Full)
-                ->form([
-                    Repeater::make('tasks')
-                        ->schema(TaskKirimanMobilForm::getFormFields())
-                        ->table([
-                            TableColumn::make('Cabang'),
-                            TableColumn::make('No Plat'),
-                            TableColumn::make('Jam Muat'),
-                            TableColumn::make('Jam Selesai'),
-                            TableColumn::make('Jam Berangkat'),
-                            TableColumn::make('Supir'),
-                            TableColumn::make('Keterangan'),
-                        ])
-                        ->addActionAlignment(Alignment::End)
-                        ->label('Daftar Task')
-                        ->default([[]])
-                        ->reorderable(false)
-                        ->addActionLabel('Tambah Baris'),
-                ])
+                ->form(TaskKirimanMobilForm::getFormFields())
                 ->action(function (array $data) {
-                    $ids = [];
-                    foreach ($data['tasks'] as $i => $task) {
-                        $ids[$i] = TaskIdGenerator::generate('kiriman_mobil');
+                    $sjs = $data['branch_shipments'] ?? [];
+                    unset(
+                        $data['branch_shipments'],
+                        $data['total_sj_tampil'],
+                        $data['sisa_sj_tampil'],
+                        $data['durasi_tampil'],
+                    );
+                    $data['id_task'] = TaskIdGenerator::generate('kiriman_mobil');
+                    $data['user_id'] = auth()->id();
+                    $record = $this->getModel()::create($data);
+                    if (filled($sjs)) {
+                        $record->branchShipments()->sync($sjs);
                     }
-
-                    DB::transaction(function () use ($data, $ids) {
-                        foreach ($data['tasks'] as $i => $taskData) {
-                            $taskData['user_id'] = auth()->id();
-                            $taskData['id_task'] = $ids[$i];
-                            $this->getModel()::create($taskData);
-                        }
-                    });
                 }),
         ];
     }

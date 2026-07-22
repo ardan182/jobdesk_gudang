@@ -1,6 +1,6 @@
 # PRD — Jobdesk Gudang AP
 
-**Versi:** 1.9 | **Tanggal:** 21 Juli 2026
+**Versi:** 2.0 | **Tanggal:** 23 Juli 2026
 
 ---
 
@@ -35,34 +35,51 @@ Semua modul: **single form modal** (tanpa Repeater multi-row), **ID_TASK** auto 
 
 | Modul | Grup | Keterangan |
 |-------|------|------------|
-| Input SJ dari Supplier | Penerimaan | Input surat jalan, status kosong/sudah |
+| Input SJ dari Supplier | Penerimaan | Input surat jalan, status belum di cek/draft/selesai |
+| Input Kirim Barang | Pengiriman | BranchShipment — data source untuk Checker Keluar |
 | Retur Masuk dari Supplier | Retur | Log retur masuk dari supplier |
 | Retur Keluar untuk Cabang | Retur | Log retur keluar ke cabang |
 
 ### 2.4 Datang Mobil Supplier — Fitur Lengkap
 - **jenis_kiriman:** DATANG, RETUR, DATANG & RETUR
-- **status:** PROSES (default), SELESAI (auto saat matching Terima Supplier)
+- **status:** MENGANTRI → PROSES → SELESAI (auto-sync)
 - Auto-sync: saat `selesai_bongkar` terisi di Terima Supplier → `jam_selesai` + `status=SELESAI` di Datang Mobil
 
 ### 2.5 Checker Terima Supplier — Fitur Baru
 - **FK ke `arrival_supplier_trucks`:** Pilih mobil datang, autofill supplier/sopir/jam
 - **Helpers (pivot):** Multi-select karyawan pembantu via `task_terima_supplier_helpers`
-- **Status:** `selesai_tanpa_retur` (hijau) / `selesai_ada_retur` (kuning)
+- **Status:** DRAFT / SELESAI
 - **Filter dropdown:** Hanya mobil dengan status PROSES + jenis DATANG / DATANG & RETUR
 - **Tampilkan:** Jenis Kiriman, ID Task Mobil (info), Helpers (badge) di grid + modal detail
 
-### 2.6 Cuti & Absensi
+### 2.6 Checker Keluar Barang — Flow Integrasi
+- **Data diambil dari Input Kiriman Barang (BranchShipment):** Pilih BranchShipment status=selesai
+- **Auto-fill:** cabang, nomor_sj, total_qty, no_po — disimpan di tabel sendiri (dehydrated)
+- **Field baru:** jam_disiapkan, diserahkan_kepada (textbox), helper (JSON array WarehouseEmployee)
+- **Status:** draft → siap kirim → selesai
+- **Auto-create Kiriman Mobil:** Saat status=selesai DAN cabang≠pusat → auto-create TaskKirimanMobil + attach pivot BranchShipment
+- **Cabang pusat:** tidak perlu Kiriman Mobil, dianggap selesai
+
+### 2.7 Kiriman Mobil — Multi SJ + Status
+- **Relasi many-to-many dengan BranchShipment:** pivot `branch_shipment_kiriman_mobil`
+- **Pilih SJ:** Select multiple filter by cabang, tampilkan total & sisa SJ
+- **Field baru:** jam_tiba, status (draft/dalam pengiriman/datang)
+- **durasi_kiriman:** computed (jam_tiba - jam_berangkat), display-only
+- **Nullable fields:** no_plat_mobil, jam_muat, jam_selesai_muat, jam_berangkat, nama_supir (untuk auto-create)
+- **Auto-create:** Dari Checker Keluar Barang + attach pivot
+
+### 2.8 Cuti & Absensi
 - Halaman `ManageLeaves` di grup **Administrasi**
 - **Tabs:** Papan Absensi (matrix grid) + Atur Saldo Cuti (jatah cuti per karyawan)
 - **Filter:** Bulan, Tahun, Divisi, Hanya yang absen
 - **Validasi:** minDate (no backdate), no duplicate, max jatah_cuti/tahun
 - **Sisa Cuti:** `jatah_cuti - totalCutiDipakai` (warna merah jika 0)
 
-### 2.7 Dashboard
+### 2.9 Dashboard
 - **StatsOverviewWidget:** 5 card (Admin) atau sesuai role
 - **RecentActivityWidget:** 10 log terakhir, filter module, pagination
 
-### 2.8 Role & Access (Spatie Permission)
+### 2.10 Role & Access (Spatie Permission)
 
 | Role | Hak |
 |------|-----|
@@ -72,7 +89,7 @@ Semua modul: **single form modal** (tanpa Repeater multi-row), **ID_TASK** auto 
 | **Checker Keluar** | Keluar Barang — data sendiri |
 | **Checker Kiriman** | Kiriman Mobil — data sendiri |
 
-### 2.9 UI/UX
+### 2.11 UI/UX
 - **Primary color:** `#EA580C` (orange)
 - **Compact table:** `py-2px` cells, `striped` rows, table borders
 - **Sidebar:** collapsible, groups collapsed by default, persist via localStorage
@@ -87,15 +104,20 @@ Semua modul: **single form modal** (tanpa Repeater multi-row), **ID_TASK** auto 
 `task_retur_cabangs | task_retur_suppliers | arrival_supplier_trucks | task_terima_suppliers | task_keluar_barangs | task_kiriman_mobils`
 Semua punya: `id_task` (indexed), `user_id` (FK).
 
+**task_keluar_barangs:** `id_task, branch_shipment_id (FK), cabang, nomor_sj, total_qty, no_po, jam_disiapkan, diserahkan_kepada, helper (JSON), status (draft/siap kirim/selesai), keterangan, user_id`
+
+**task_kiriman_mobils:** `id_task, cabang, no_plat_mobil (nullable), jam_muat (nullable), jam_selesai_muat (nullable), jam_berangkat (nullable), jam_tiba (nullable), nama_supir (nullable), status (draft/dalam pengiriman/datang), keterangan, keluar_barang_id (FK nullable), user_id`
+
 ### 7 Master Tables
 `expeditions | master_kendaraans | master_sopirs | master_tokos | suppliers | warehouse_employees | divisions`
 
-### 5 Non-Task Tables
-`supplier_sjs | supplier_return_inbounds | branch_return_outbounds | warehouse_leaves | activity_logs`
+### 6 Non-Task Tables
+`supplier_sjs | branch_shipments | supplier_return_inbounds | branch_return_outbounds | warehouse_leaves | activity_logs`
 
 ### Support Tables
-`task_terima_supplier_helpers` (pivot: task_terima_suppliers ↔ warehouse_employees)
+`task_terima_supplier_helpers` (pivot)
 `task_id_counters` (global counter ID_TASK)
+`branch_shipment_kiriman_mobil` (pivot: task_kiriman_mobils ↔ branch_shipments)
 
 ---
 
@@ -121,11 +143,19 @@ Semua punya: `id_task` (indexed), `user_id` (FK).
 
 ### 5.2 Edit Mode Protection
 - `arrival_supplier_truck_id` dropdown di **disable** saat Edit — tidak bisa ganti mobil
+- `branch_shipment_id` dropdown di **disable** saat Edit — tidak bisa ganti kiriman
 - Dropdown options: include record yang sedang diedit (via `->options()` closure) agar validasi tidak gagal
 
 ### 5.3 Helpers Display
 - Grid helpers: max **2 nama** + `+N more` badge hijau
 - Tampil compact 1 baris (tidak melebar vertikal)
+- **Tooltip:** hover badge helper → muncul semua nama dipisah koma
+
+### 5.4 Auto-create Kiriman Mobil
+- Trigger: saat `TaskKeluarBarang.status` berubah jadi `selesai`
+- Hanya jika `cabang !== 'pusat'`
+- Guard: cek `TaskKirimanMobil::where('keluar_barang_id', $model->id)->exists()`
+- Attach pivot `branch_shipment_kiriman_mobil` otomatis
 
 ---
 
@@ -133,15 +163,20 @@ Semua punya: `id_task` (indexed), `user_id` (FK).
 
 ### ViewAction Detail Modal
 Semua modul menggunakan **tampilan seragam**:
-- `Section::make('Judul')->columns(2)` — layout 2 kolom rapi
+- `Section::make('Informasi Task')->columns(2)` — layout 2 kolom rapi
 - `->modalSubmitAction(false)` — hapus tombol submit
 - `->modalCancelAction(fn => label('Tutup'))` — tombol tutup
 - Badge warna untuk status dan jenis
 
 ### Edit/Create Modal
-- Form dalam `Section` + `columns(3)` — rapi
-- Field disabled: autofill dari relasi (tidak bisa diubah)
+- Form dalam `Section` + `columns(2)` untuk form auto-fill
+- Modal width: `Width::Full` untuk form kompleks
+- Field disabled: autofill dari relasi (disimpan ke DB via dehydrated)
 - Select: `->searchable()->preload()` untuk UX cepat
+- Helper: `->badge()->separator(', ')` dengan state return array
+
+### Single Form (No Repeater)
+Semua modul input **satu per satu** — tidak ada Repeater multi-row.
 
 ---
 

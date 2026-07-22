@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\TaskKeluarBarangs;
 
-use App\Filament\Resources\TaskKeluarBarangs\Pages\CreateTaskKeluarBarang;
 use App\Filament\Resources\TaskKeluarBarangs\Pages\ListTaskKeluarBarangs;
 use App\Filament\Resources\TaskKeluarBarangs\Schemas\TaskKeluarBarangForm;
 use App\Filament\Resources\TaskKeluarBarangs\Tables\TaskKeluarBarangsTable;
@@ -30,19 +29,6 @@ class TaskKeluarBarangResource extends Resource
 
     public static function form(Schema $schema): Schema
     {
-        $livewire = $schema->getLivewire();
-
-        if ($livewire instanceof CreateTaskKeluarBarang) {
-            return $schema->components([
-                \Filament\Forms\Components\Repeater::make('tasks')
-                    ->schema(TaskKeluarBarangForm::getFormFields())
-                    ->label('Daftar Task')
-                    ->default([[]])
-                    ->reorderable(false)
-                    ->addActionLabel('Tambah Baris'),
-            ]);
-        }
-
         return TaskKeluarBarangForm::configure($schema);
     }
 
@@ -83,7 +69,6 @@ class TaskKeluarBarangResource extends Resource
     {
         return [
             'index' => ListTaskKeluarBarangs::route('/'),
-            'create' => CreateTaskKeluarBarang::route('/create'),
         ];
     }
 }

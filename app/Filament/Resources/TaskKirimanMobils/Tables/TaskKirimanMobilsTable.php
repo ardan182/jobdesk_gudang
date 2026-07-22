@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\TaskKirimanMobils\Tables;
 
+use App\Filament\Resources\TaskKirimanMobils\Schemas\TaskKirimanMobilForm;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -9,10 +10,12 @@ use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Section;
+use Filament\Support\Enums\Width;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Tables\Filters\Filter;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Select;
 use Illuminate\Database\Eloquent\Builder;
 
 class TaskKirimanMobilsTable
@@ -30,7 +33,13 @@ class TaskKirimanMobilsTable
                 TextColumn::make('cabang')
                     ->label('Cabang')
                     ->searchable()
-                    ->width('140px')
+                    ->width('120px')
+                    ->grow(false),
+                TextColumn::make('branch_shipments_count')
+                    ->label('Jumlah SJ')
+                    ->counts('branchShipments')
+                    ->numeric()
+                    ->sortable()
                     ->grow(false),
                 TextColumn::make('no_plat_mobil')
                     ->label('No Plat')
@@ -48,9 +57,31 @@ class TaskKirimanMobilsTable
                     ->sortable()
                     ->grow(false),
                 TextColumn::make('jam_berangkat')
-                    ->label('Jam Berangkat')
+                    ->label('Brkt')
                     ->time('H:i')
                     ->sortable()
+                    ->grow(false),
+                TextColumn::make('jam_tiba')
+                    ->label('Tiba')
+                    ->time('H:i')
+                    ->sortable()
+                    ->toggleable()
+                    ->grow(false),
+                TextColumn::make('status')
+                    ->label('Status')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'draft' => 'gray',
+                        'dalam pengiriman' => 'warning',
+                        'datang' => 'success',
+                        default => 'gray',
+                    })
+                    ->formatStateUsing(fn (string $state): string => match ($state) {
+                        'draft' => 'Draft',
+                        'dalam pengiriman' => 'Dalam Pengiriman',
+                        'datang' => 'Datang',
+                        default => $state,
+                    })
                     ->grow(false),
                 TextColumn::make('nama_supir')
                     ->label('Supir')
@@ -69,6 +100,24 @@ class TaskKirimanMobilsTable
                     ->grow(false),
             ])
             ->filters([
+                Filter::make('status')
+                    ->label('Status')
+                    ->form([
+                        Select::make('status')
+                            ->label('Status')
+                            ->options([
+                                'draft' => 'Draft',
+                                'dalam pengiriman' => 'Dalam Pengiriman',
+                                'datang' => 'Datang',
+                            ])
+                            ->placeholder('Semua Status'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query->when(
+                            $data['status'] ?? null,
+                            fn (Builder $query, $status): Builder => $query->where('status', $status),
+                        );
+                    }),
                 Filter::make('created_at')
                     ->form([
                         DatePicker::make('created_from')
@@ -86,7 +135,7 @@ class TaskKirimanMobilsTable
                                 $data['created_until'],
                                 fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
                             );
-                    })
+                    }),
             ])
             ->recordAction('view')
             ->recordActions([
@@ -103,10 +152,21 @@ class TaskKirimanMobilsTable
                             ->schema([
                                 TextEntry::make('id_task')->label('ID Task'),
                                 TextEntry::make('cabang')->label('Cabang'),
+                                TextEntry::make('branch_shipments_count')
+                                    ->label('Jumlah SJ')
+                                    ->state(fn ($record) => $record->branchShipments->count()),
                                 TextEntry::make('no_plat_mobil')->label('No Plat'),
                                 TextEntry::make('jam_muat')->label('Jam Muat'),
                                 TextEntry::make('jam_selesai_muat')->label('Jam Selesai'),
                                 TextEntry::make('jam_berangkat')->label('Jam Berangkat'),
+                                TextEntry::make('jam_tiba')->label('Jam Tiba'),
+                                TextEntry::make('status')->label('Status')->badge()
+                                    ->color(fn (string $state): string => match ($state) {
+                                        'draft' => 'gray',
+                                        'dalam pengiriman' => 'warning',
+                                        'datang' => 'success',
+                                        default => 'gray',
+                                    }),
                                 TextEntry::make('nama_supir')->label('Supir'),
                                 TextEntry::make('keterangan')->label('Keterangan')->columnSpanFull(),
                             ]),
@@ -115,7 +175,19 @@ class TaskKirimanMobilsTable
                     ->iconButton()
                     ->tooltip('Ubah Data')
                     ->color('warning')
-                    ->modalWidth(Width::Full),
+                    ->modalWidth(Width::Full)
+                    ->form(TaskKirimanMobilForm::getFormFields())
+                    ->using(function ($record, array $data) {
+                        $sjs = $data['branch_shipments'] ?? [];
+                        unset(
+                            $data['branch_shipments'],
+                            $data['total_sj_tampil'],
+                            $data['sisa_sj_tampil'],
+                            $data['durasi_tampil'],
+                        );
+                        $record->update($data);
+                        $record->branchShipments()->sync(filled($sjs) ? $sjs : []);
+                    }),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\TaskKirimanMobils;
 
-use App\Filament\Resources\TaskKirimanMobils\Pages\CreateTaskKirimanMobil;
 use App\Filament\Resources\TaskKirimanMobils\Pages\ListTaskKirimanMobils;
 use App\Filament\Resources\TaskKirimanMobils\Schemas\TaskKirimanMobilForm;
 use App\Filament\Resources\TaskKirimanMobils\Tables\TaskKirimanMobilsTable;
@@ -30,19 +29,6 @@ class TaskKirimanMobilResource extends Resource
 
     public static function form(Schema $schema): Schema
     {
-        $livewire = $schema->getLivewire();
-
-        if ($livewire instanceof CreateTaskKirimanMobil) {
-            return $schema->components([
-                \Filament\Forms\Components\Repeater::make('tasks')
-                    ->schema(TaskKirimanMobilForm::getFormFields())
-                    ->label('Daftar Task')
-                    ->default([[]])
-                    ->reorderable(false)
-                    ->addActionLabel('Tambah Baris'),
-            ]);
-        }
-
         return TaskKirimanMobilForm::configure($schema);
     }
 
@@ -83,7 +69,6 @@ class TaskKirimanMobilResource extends Resource
     {
         return [
             'index' => ListTaskKirimanMobils::route('/'),
-            'create' => CreateTaskKirimanMobil::route('/create'),
         ];
     }
 }

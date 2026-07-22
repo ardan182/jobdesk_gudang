@@ -221,5 +221,12 @@
   "219": "2026_07_20_173703_add_draft_status_to_task_terima_suppliers.php",
   "220": "2026_07_20_182111_alter_jumlah_kolian_nullable_in_task_terima_suppliers.php",
   "221": "2026_07_21_185813_add_id_task_to_supplier_sjs.php",
-  "222": "2026_07_21_193411_add_jumlah_koli_faktur_to_supplier_sjs.php"
+  "222": "2026_07_21_193411_add_jumlah_koli_faktur_to_supplier_sjs.php",
+  "223": "SupplierSjResource.php",
+  "224": "selectOption",
+  "225": "renderOptions",
+  "226": "Ln",
+  "227": "St",
+  "228": "22. SupplierSj — Auto-Create & Fitur",
+  "229": "23. Lama Bongkar (Virtual Column — Checker Terima Supplier)"
 }
