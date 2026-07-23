@@ -97,12 +97,16 @@ class TaskKirimanMobilsTable
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
                         'tidak_ada_retur' => 'gray',
-                        'ada_retur' => 'warning',
+                        'ada_rb' => 'warning',
+                        'ada_rj' => 'info',
+                        'rb_dan_rj' => 'danger',
                         default => 'gray',
                     })
                     ->formatStateUsing(fn (string $state): string => match ($state) {
                         'tidak_ada_retur' => 'Tidak Ada Retur',
-                        'ada_retur' => 'Ada Retur',
+                        'ada_rb' => 'Ada RB',
+                        'ada_rj' => 'Ada RJ',
+                        'rb_dan_rj' => 'Retur RB dan RJ',
                         default => $state,
                     })
                     ->grow(false),
@@ -200,18 +204,22 @@ class TaskKirimanMobilsTable
                                          'selesai' => 'success',
                                          default => 'gray',
                                      }),
-                                 TextEntry::make('retur_option')->label('Retur')
-                                     ->badge()
-                                     ->color(fn (string $state): string => match ($state) {
-                                         'tidak_ada_retur' => 'gray',
-                                         'ada_retur' => 'warning',
-                                         default => 'gray',
-                                     })
-                                     ->formatStateUsing(fn (string $state): string => match ($state) {
-                                         'tidak_ada_retur' => 'Tidak Ada Retur',
-                                         'ada_retur' => 'Ada Retur',
-                                         default => $state,
-                                     }),
+                                TextEntry::make('retur_option')->label('Retur')
+                                    ->badge()
+                                    ->color(fn (string $state): string => match ($state) {
+                                        'tidak_ada_retur' => 'gray',
+                                        'ada_rb' => 'warning',
+                                        'ada_rj' => 'info',
+                                        'rb_dan_rj' => 'danger',
+                                        default => 'gray',
+                                    })
+                                    ->formatStateUsing(fn (string $state): string => match ($state) {
+                                        'tidak_ada_retur' => 'Tidak Ada Retur',
+                                        'ada_rb' => 'Ada RB',
+                                        'ada_rj' => 'Ada RJ',
+                                        'rb_dan_rj' => 'Retur RB dan RJ',
+                                        default => $state,
+                                    }),
                                  TextEntry::make('nama_supir')->label('Supir'),
                                 TextEntry::make('keterangan')->label('Keterangan')->columnSpanFull(),
                             ]),

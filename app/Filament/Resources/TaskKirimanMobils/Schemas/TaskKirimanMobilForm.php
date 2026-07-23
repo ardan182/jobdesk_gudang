@@ -92,11 +92,12 @@ class TaskKirimanMobilForm
                                 $tersedia += count($attached);
                             }
                               $set('total_sj_tampil', $selected);
-                              $set('sisa_sj_tampil', $tersedia - $selected);
+                              $set('sisa_sj_tampil', max(0, $tersedia - $selected));
                           })
-                          ->afterStateUpdated(function ($state, $set, $get) {
+                          ->afterStateUpdated(function ($component, $state, $set, $get) {
                               $cabang = $get('cabang');
                               $selected = count($state ?? []);
+                              $record = $component->getRecord();
                               $tersedia = $cabang
                                   ? BranchShipment::whereHas('keluarBarangs', fn ($q) => $q->where('status', 'selesai'))
                                       ->where('cabang', $cabang)
@@ -104,8 +105,12 @@ class TaskKirimanMobilForm
                                           $q->select('branch_shipment_id')->from('branch_shipment_kiriman_mobil'))
                                       ->count()
                                   : 0;
+                              if ($record && $record->exists) {
+                                  $attached = $record->branchShipments()->pluck('branch_shipments.id')->toArray();
+                                  $tersedia += count($attached);
+                              }
                               $set('total_sj_tampil', $selected);
-                              $set('sisa_sj_tampil', $tersedia - $selected);
+                              $set('sisa_sj_tampil', max(0, $tersedia - $selected));
                           }),
                     TextInput::make('total_sj_tampil')
                         ->label('Total SJ Dipilih')
@@ -195,7 +200,9 @@ class TaskKirimanMobilForm
                         ->prefixIcon('heroicon-m-arrow-uturn-left')
                         ->options([
                             'tidak_ada_retur' => 'Tidak Ada Retur',
-                            'ada_retur' => 'Ada Retur',
+                            'ada_rb' => 'Ada RB',
+                            'ada_rj' => 'Ada RJ',
+                            'rb_dan_rj' => 'Retur RB dan RJ',
                         ])
                         ->default('tidak_ada_retur')
                         ->visible(fn ($get) => $get('status') === 'selesai')

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\TaskReturCabangs\Tables;
 
+use App\Filament\Resources\TaskReturCabangs\Schemas\TaskReturCabangForm;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -9,10 +10,12 @@ use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Section;
+use Filament\Support\Enums\Width;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Tables\Filters\Filter;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Select;
 use Illuminate\Database\Eloquent\Builder;
 
 class TaskReturCabangsTable
@@ -30,7 +33,15 @@ class TaskReturCabangsTable
                 TextColumn::make('cabang')
                     ->label('Cabang')
                     ->searchable()
-                    ->width('140px')
+                    ->width('130px')
+                    ->grow(false),
+                TextColumn::make('no_plat_mobil')
+                    ->label('No Plat')
+                    ->width('120px')
+                    ->grow(false),
+                TextColumn::make('jam_tiba')
+                    ->label('Jam Tiba')
+                    ->time('H:i')
                     ->grow(false),
                 TextColumn::make('jenis_retur')
                     ->label('Jenis Retur')
@@ -46,14 +57,9 @@ class TaskReturCabangsTable
                         default => $state,
                     })
                     ->grow(false),
-                TextColumn::make('no_sj_retur')
-                    ->label('No SJ')
-                    ->searchable()
-                    ->width('140px')
-                    ->grow(false),
-                TextColumn::make('total_kolian')
-                    ->label('Total Kolian')
-                    ->numeric()
+                TextColumn::make('tanggal_bongkar')
+                    ->label('Tgl Bongkar')
+                    ->date('d/m/Y')
                     ->sortable()
                     ->grow(false),
                 TextColumn::make('jam_bongkar')
@@ -61,9 +67,39 @@ class TaskReturCabangsTable
                     ->time('H:i')
                     ->sortable()
                     ->grow(false),
+                TextColumn::make('no_sj_retur')
+                    ->label('No SJ')
+                    ->searchable()
+                    ->width('130px')
+                    ->grow(false),
+                TextColumn::make('total_qty')
+                    ->label('Total Qty')
+                    ->numeric()
+                    ->sortable()
+                    ->grow(false),
                 TextColumn::make('nama_sopir')
                     ->label('Sopir')
                     ->searchable()
+                    ->grow(false),
+                TextColumn::make('helpers_list')
+                    ->label('Helper')
+                    ->badge()
+                    ->color('info')
+                    ->getStateUsing(fn ($record) => $record->helpers->pluck('nama_karyawan')->toArray())
+                    ->grow(false),
+                TextColumn::make('status')
+                    ->label('Status')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'draft' => 'gray',
+                        'selesai' => 'success',
+                        default => 'gray',
+                    })
+                    ->formatStateUsing(fn (string $state): string => match ($state) {
+                        'draft' => 'Draft',
+                        'selesai' => 'Selesai',
+                        default => $state,
+                    })
                     ->grow(false),
                 TextColumn::make('user.name')
                     ->label('Checker')
@@ -78,6 +114,49 @@ class TaskReturCabangsTable
                     ->grow(false),
             ])
             ->filters([
+                Filter::make('cabang')
+                    ->label('Cabang')
+                    ->form([
+                        Select::make('cabang')
+                            ->label('Cabang')
+                            ->options(fn () => \App\Models\TaskKirimanMobil::whereIn('retur_option', ['ada_rb', 'rb_dan_rj'])
+                                ->pluck('cabang', 'cabang')->unique())
+                            ->placeholder('Semua Cabang'),
+                    ])
+                    ->query(fn (Builder $query, array $data): Builder => $query->when(
+                        $data['cabang'] ?? null,
+                        fn (Builder $query, $cabang): Builder => $query->where('cabang', $cabang),
+                    )),
+                Filter::make('jenis_retur')
+                    ->label('Jenis Retur')
+                    ->form([
+                        Select::make('jenis_retur')
+                            ->label('Jenis Retur')
+                            ->options([
+                                'retur_bagus' => 'Retur Bagus',
+                                'retur_jelek' => 'Retur Jelek',
+                            ])
+                            ->placeholder('Semua'),
+                    ])
+                    ->query(fn (Builder $query, array $data): Builder => $query->when(
+                        $data['jenis_retur'] ?? null,
+                        fn (Builder $query, $j): Builder => $query->where('jenis_retur', $j),
+                    )),
+                Filter::make('status')
+                    ->label('Status')
+                    ->form([
+                        Select::make('status')
+                            ->label('Status')
+                            ->options([
+                                'draft' => 'Draft',
+                                'selesai' => 'Selesai',
+                            ])
+                            ->placeholder('Semua Status'),
+                    ])
+                    ->query(fn (Builder $query, array $data): Builder => $query->when(
+                        $data['status'] ?? null,
+                        fn (Builder $query, $s): Builder => $query->where('status', $s),
+                    )),
                 Filter::make('created_at')
                     ->form([
                         DatePicker::make('created_from')
@@ -95,7 +174,7 @@ class TaskReturCabangsTable
                                 $data['created_until'],
                                 fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
                             );
-                    })
+                    }),
             ])
             ->recordAction('view')
             ->recordActions([
@@ -112,18 +191,35 @@ class TaskReturCabangsTable
                             ->schema([
                                 TextEntry::make('id_task')->label('ID Task'),
                                 TextEntry::make('cabang')->label('Cabang'),
+                                TextEntry::make('no_plat_mobil')->label('No Plat'),
+                                TextEntry::make('jam_tiba')->label('Jam Tiba'),
                                 TextEntry::make('jenis_retur')->label('Jenis Retur')->badge(),
-                                TextEntry::make('no_sj_retur')->label('No SJ'),
-                                TextEntry::make('total_kolian')->label('Total Kolian'),
+                                TextEntry::make('tanggal_bongkar')->label('Tanggal Bongkar'),
                                 TextEntry::make('jam_bongkar')->label('Jam Bongkar'),
+                                TextEntry::make('no_sj_retur')->label('No SJ'),
+                                TextEntry::make('total_qty')->label('Total Qty'),
                                 TextEntry::make('nama_sopir')->label('Sopir'),
+                                TextEntry::make('helpers_list')
+                                    ->label('Helper')
+                                    ->badge()
+                                    ->color('info')
+                                    ->state(fn ($record) => $record->helpers->pluck('nama_karyawan')->toArray()),
+                                TextEntry::make('status')->label('Status')->badge(),
                                 TextEntry::make('keterangan')->label('Keterangan')->columnSpanFull(),
                             ]),
                     ]),
                 EditAction::make()
                     ->iconButton()
                     ->tooltip('Ubah Data')
-                    ->color('warning'),
+                    ->color('warning')
+                    ->modalWidth(Width::Full)
+                    ->form(TaskReturCabangForm::getFormFields())
+                    ->using(function ($record, array $data) {
+                        $helpers = $data['helpers'] ?? [];
+                        unset($data['helpers'], $data['kiriman_mobil_id']);
+                        $record->update($data);
+                        $record->helpers()->sync(filled($helpers) ? $helpers : []);
+                    }),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

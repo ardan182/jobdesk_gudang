@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\TaskReturCabangs;
 
-use App\Filament\Resources\TaskReturCabangs\Pages\CreateTaskReturCabang;
 use App\Filament\Resources\TaskReturCabangs\Pages\ListTaskReturCabangs;
 use App\Filament\Resources\TaskReturCabangs\Schemas\TaskReturCabangForm;
 use App\Filament\Resources\TaskReturCabangs\Tables\TaskReturCabangsTable;
@@ -30,19 +29,6 @@ class TaskReturCabangResource extends Resource
 
     public static function form(Schema $schema): Schema
     {
-        $livewire = $schema->getLivewire();
-
-        if ($livewire instanceof CreateTaskReturCabang) {
-            return $schema->components([
-                \Filament\Forms\Components\Repeater::make('tasks')
-                    ->schema(TaskReturCabangForm::getFormFields())
-                    ->label('Daftar Task')
-                    ->default([[]])
-                    ->reorderable(false)
-                    ->addActionLabel('Tambah Baris'),
-            ]);
-        }
-
         return TaskReturCabangForm::configure($schema);
     }
 
@@ -83,7 +69,6 @@ class TaskReturCabangResource extends Resource
     {
         return [
             'index' => ListTaskReturCabangs::route('/'),
-            'create' => CreateTaskReturCabang::route('/create'),
         ];
     }
 }

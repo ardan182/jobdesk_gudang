@@ -5,23 +5,31 @@ namespace App\Models;
 use App\Services\TaskIdGenerator;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class TaskReturCabang extends Model
 {
     protected $fillable = [
         'id_task',
         'cabang',
+        'no_plat_mobil',
+        'jam_tiba',
         'jenis_retur',
+        'tanggal_bongkar',
         'no_sj_retur',
-        'total_kolian',
+        'total_qty',
         'jam_bongkar',
         'nama_sopir',
+        'helpers',
+        'status',
         'keterangan',
         'user_id',
     ];
 
     protected $casts = [
         'jam_bongkar' => 'datetime:H:i',
+        'jam_tiba' => 'datetime:H:i',
+        'tanggal_bongkar' => 'date:Y-m-d',
     ];
 
     protected static function booted(): void
@@ -48,7 +56,7 @@ class TaskReturCabang extends Model
 
         static::updated(function ($model) {
             $changes = [];
-            $tracked = ['cabang', 'jenis_retur', 'no_sj_retur', 'total_kolian', 'jam_bongkar', 'nama_sopir', 'keterangan'];
+            $tracked = ['cabang', 'no_plat_mobil', 'jam_tiba', 'jenis_retur', 'tanggal_bongkar', 'no_sj_retur', 'total_qty', 'jam_bongkar', 'nama_sopir', 'status', 'keterangan'];
             foreach ($tracked as $field) {
                 $old = $model->getOriginal($field);
                 $new = $model->$field;
@@ -74,5 +82,10 @@ class TaskReturCabang extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function helpers(): BelongsToMany
+    {
+        return $this->belongsToMany(WarehouseEmployee::class, 'task_retur_cabang_employee');
     }
 }
