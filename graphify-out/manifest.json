@@ -159,55 +159,45 @@
     "ast_hash": "149516e18f527a1f6cc5796dbe94512f",
     "semantic_hash": "149516e18f527a1f6cc5796dbe94512f"
   },
-  "app/Filament/Resources/TaskKeluarBarangs/Pages/CreateTaskKeluarBarang.php": {
-    "mtime": 1783959309.5971282,
-    "ast_hash": "ce598adedc622e4099f21ce59bc5f880",
-    "semantic_hash": "ce598adedc622e4099f21ce59bc5f880"
-  },
   "app/Filament/Resources/TaskKeluarBarangs/Pages/ListTaskKeluarBarangs.php": {
-    "mtime": 1784302023.0203853,
-    "ast_hash": "6d56316939f44e55144a4186a17326fe",
+    "mtime": 1784734708.2759485,
+    "ast_hash": "7da24eb2b89ad81225286e848123a2ee",
     "semantic_hash": ""
   },
   "app/Filament/Resources/TaskKeluarBarangs/Schemas/TaskKeluarBarangForm.php": {
-    "mtime": 1783943759.0445104,
-    "ast_hash": "b382a3c2baa031d5834aa0bd0730d134",
-    "semantic_hash": "b382a3c2baa031d5834aa0bd0730d134"
+    "mtime": 1784736173.3032432,
+    "ast_hash": "c9f8ee36dd7c7b9e718e3c718f41a5e2",
+    "semantic_hash": ""
   },
   "app/Filament/Resources/TaskKeluarBarangs/Tables/TaskKeluarBarangsTable.php": {
-    "mtime": 1784630257.9969757,
-    "ast_hash": "79c866493019219125bbb45e9ff478a6",
+    "mtime": 1784736691.3961725,
+    "ast_hash": "dc52223030d7a8960e4177b181950ea0",
     "semantic_hash": ""
   },
   "app/Filament/Resources/TaskKeluarBarangs/TaskKeluarBarangResource.php": {
-    "mtime": 1784292756.5624106,
-    "ast_hash": "bad85d4cc68449464cda64829e9661ce",
+    "mtime": 1784733837.2423944,
+    "ast_hash": "81927c644922a0fd4b124607215b7d06",
     "semantic_hash": ""
   },
-  "app/Filament/Resources/TaskKirimanMobils/Pages/CreateTaskKirimanMobil.php": {
-    "mtime": 1783959311.720249,
-    "ast_hash": "c25649d856a4ce7e2b813f9e2b498e21",
-    "semantic_hash": "c25649d856a4ce7e2b813f9e2b498e21"
-  },
   "app/Filament/Resources/TaskKirimanMobils/Pages/ListTaskKirimanMobils.php": {
-    "mtime": 1784302024.4924138,
-    "ast_hash": "ccab9c14c3284f9296ec4b300f5aa47a",
+    "mtime": 1784740284.0366442,
+    "ast_hash": "456b52118e4863eccdf37ee609820584",
     "semantic_hash": ""
   },
   "app/Filament/Resources/TaskKirimanMobils/Schemas/TaskKirimanMobilForm.php": {
-    "mtime": 1784029616.3045094,
-    "ast_hash": "2354e61ad00009c0f212328d7aa3f182",
-    "semantic_hash": "2354e61ad00009c0f212328d7aa3f182"
+    "mtime": 1784740255.6423848,
+    "ast_hash": "cd61f4f72f92578b64bb984311a2dd24",
+    "semantic_hash": ""
   },
   "app/Filament/Resources/TaskKirimanMobils/Tables/TaskKirimanMobilsTable.php": {
-    "mtime": 1784630258.85496,
-    "ast_hash": "1f6311d96dafd77b643a6796b43a3c63",
+    "mtime": 1784740272.1675355,
+    "ast_hash": "6f85952e1ceefb7b8df4b295f4c68b5b",
     "semantic_hash": ""
   },
   "app/Filament/Resources/TaskKirimanMobils/TaskKirimanMobilResource.php": {
-    "mtime": 1783957374.871224,
-    "ast_hash": "d53442cf8bf26d29530928960ac3d54b",
-    "semantic_hash": "d53442cf8bf26d29530928960ac3d54b"
+    "mtime": 1784740278.4015927,
+    "ast_hash": "c2fc416b1d4fd80a432283abeb662d72",
+    "semantic_hash": ""
   },
   "app/Filament/Resources/TaskReturCabangs/Pages/CreateTaskReturCabang.php": {
     "mtime": 1783959305.4648921,
@@ -270,8 +260,8 @@
     "semantic_hash": ""
   },
   "app/Filament/Resources/TaskTerimaSuppliers/Schemas/TaskTerimaSupplierForm.php": {
-    "mtime": 1784651389.2410448,
-    "ast_hash": "c10ded61aa48651ebc47ae0056ed0cae",
+    "mtime": 1784721707.9943867,
+    "ast_hash": "c1365b0297c14483197b3cfa07817c50",
     "semantic_hash": ""
   },
   "app/Filament/Resources/TaskTerimaSuppliers/Tables/TaskTerimaSuppliersTable.php": {
@@ -405,28 +395,28 @@
     "semantic_hash": "704585458d6f00d46ee34529b3f4d8bc"
   },
   "app/Models/TaskKeluarBarang.php": {
-    "mtime": 1784113994.896189,
-    "ast_hash": "07e5a065855127daa427bce70bb66104",
-    "semantic_hash": "07e5a065855127daa427bce70bb66104"
+    "mtime": 1784740303.0618181,
+    "ast_hash": "c4c6f0d7f07a414e5f8c0139090225dd",
+    "semantic_hash": ""
   },
   "app/Models/TaskKirimanMobil.php": {
-    "mtime": 1784113994.8963065,
-    "ast_hash": "867d44fa420c8c2a01d891a29618466d",
-    "semantic_hash": "867d44fa420c8c2a01d891a29618466d"
+    "mtime": 1784740210.1589692,
+    "ast_hash": "c01c5baf22b3b238602818df6dda49b2",
+    "semantic_hash": ""
   },
   "app/Models/TaskReturCabang.php": {
-    "mtime": 1784113994.8963065,
-    "ast_hash": "021195d05301745e61758d4575caee62",
-    "semantic_hash": "021195d05301745e61758d4575caee62"
+    "mtime": 1784721707.9946692,
+    "ast_hash": "a13df3767a6cb52854d7e4724f6954b0",
+    "semantic_hash": ""
   },
   "app/Models/TaskReturSupplier.php": {
-    "mtime": 1784561076.1576667,
-    "ast_hash": "48fc77be45c63c9ce5f4de386dd78ae1",
+    "mtime": 1784721707.9946692,
+    "ast_hash": "6f9d9968f8c50c4b4fb3837f72da2e6f",
     "semantic_hash": ""
   },
   "app/Models/TaskTerimaSupplier.php": {
-    "mtime": 1784649391.0297763,
-    "ast_hash": "1867fb3ee6e5771c6a983e0820db1b16",
+    "mtime": 1784721707.9946692,
+    "ast_hash": "2abb906e25226e548aa1a9fa8eff5366",
     "semantic_hash": ""
   },
   "app/Models/User.php": {
@@ -480,7 +470,7 @@
     "semantic_hash": "8eee0ea25c3cba90e76f4fe178089ac8"
   },
   "config/app.php": {
-    "mtime": 1783616795.6457338,
+    "mtime": 1784742481.237183,
     "ast_hash": "77faf93b98edb2319372539d2d9de119",
     "semantic_hash": "77faf93b98edb2319372539d2d9de119"
   },
@@ -870,7 +860,7 @@
     "semantic_hash": "3c6ce2e6d16444282b24a9aa63885563"
   },
   "routes/web.php": {
-    "mtime": 1784208965.5355945,
+    "mtime": 1784742476.1300287,
     "ast_hash": "29cb966b96d01d8ee3c69a74a97ab0bd",
     "semantic_hash": "29cb966b96d01d8ee3c69a74a97ab0bd"
   },
@@ -905,18 +895,18 @@
     "semantic_hash": ""
   },
   ".agents/PRD.md": {
-    "mtime": 1784651988.4612436,
-    "ast_hash": "e1e7f231a5933117029c6c12b630a8f0",
+    "mtime": 1784742634.3677237,
+    "ast_hash": "fd215b13a26dead54d2caaa5cc9c2bb8",
     "semantic_hash": ""
   },
   ".agents/TASKS.md": {
-    "mtime": 1784651976.129911,
-    "ast_hash": "7d482d259032fbd0ecabeaec99aa375a",
+    "mtime": 1784742659.1674445,
+    "ast_hash": "4bccf850f65e9ee350cf085f79fc7bc3",
     "semantic_hash": ""
   },
   ".agents/TECH-SPEC.md": {
-    "mtime": 1784652017.5030272,
-    "ast_hash": "ecb9c62d8d979dbe55b31d724a5a3b4d",
+    "mtime": 1784721707.992857,
+    "ast_hash": "8e76c495e0465c5d632224cddb53e8bf",
     "semantic_hash": ""
   },
   ".opencode/skills/graphify/SKILL.md": {
@@ -985,13 +975,13 @@
     "semantic_hash": ""
   },
   "app/Filament/Resources/SupplierSj/Pages/ListSupplierSjs.php": {
-    "mtime": 1784294659.1121697,
-    "ast_hash": "0d1d671d728f29068bd8614b99b123db",
+    "mtime": 1784721707.9936266,
+    "ast_hash": "71eabefa9fbe14bfeaadf69d37a51afb",
     "semantic_hash": ""
   },
   "app/Filament/Resources/SupplierSj/Schemas/SupplierSjForm.php": {
-    "mtime": 1784648356.0650291,
-    "ast_hash": "79e58318748cdb7a06ff8c90edeb9e60",
+    "mtime": 1784721707.9939501,
+    "ast_hash": "42c0942598645ea580f5c9af41f400dd",
     "semantic_hash": ""
   },
   "app/Filament/Resources/SupplierSj/SupplierSjResource.php": {
@@ -1000,8 +990,8 @@
     "semantic_hash": ""
   },
   "app/Filament/Resources/SupplierSj/Tables/SupplierSjsTable.php": {
-    "mtime": 1784648636.4751096,
-    "ast_hash": "9db1437501e033376735895918f957a9",
+    "mtime": 1784721707.9941804,
+    "ast_hash": "b7ad4b61aa55ec51a8e1530c656aee29",
     "semantic_hash": ""
   },
   "app/Models/SupplierSj.php": {
@@ -1095,8 +1085,8 @@
     "semantic_hash": ""
   },
   ".agents/GEMINI_KNOWLEDGE.md": {
-    "mtime": 1784652055.9090633,
-    "ast_hash": "85c5583a2fa34c4fc42f74c0dfdf3988",
+    "mtime": 1784742690.0186324,
+    "ast_hash": "5fcd88b783561d37b46be7d98692d5ba",
     "semantic_hash": ""
   },
   "app/Filament/Resources/WarehouseDocument/Pages/ListWarehouseDocuments.php": {
@@ -1165,18 +1155,18 @@
     "semantic_hash": ""
   },
   "app/Filament/Resources/BranchShipment/Schemas/BranchShipmentForm.php": {
-    "mtime": 1784629951.9366665,
-    "ast_hash": "7536aef8cf42030cd530e858478ccb6f",
+    "mtime": 1784721707.9931357,
+    "ast_hash": "595aea52ccf3c7d3791645b698d4556e",
     "semantic_hash": ""
   },
   "app/Filament/Resources/BranchShipment/Tables/BranchShipmentsTable.php": {
-    "mtime": 1784631351.1938715,
-    "ast_hash": "2130b7388b20e5dd0810f28bfdcb5dfb",
+    "mtime": 1784721707.9933808,
+    "ast_hash": "e597b148d974531960778d8cfa1b0e52",
     "semantic_hash": ""
   },
   "app/Models/BranchShipment.php": {
-    "mtime": 1784630822.3154945,
-    "ast_hash": "4e3f2e6abdb8e4f0fb83cc9d0d0dfc46",
+    "mtime": 1784733845.7735233,
+    "ast_hash": "7ef9bfb3763e8295d46ab7f28773f4b6",
     "semantic_hash": ""
   },
   "database/migrations/2026_07_21_155016_create_branch_shipments_table.php": {
@@ -1197,6 +1187,46 @@
   "database/migrations/2026_07_21_193411_add_jumlah_koli_faktur_to_supplier_sjs.php": {
     "mtime": 1784637262.9317968,
     "ast_hash": "159a592bffe7c9fb37a11f67aa8bd143",
+    "semantic_hash": ""
+  },
+  "database/migrations/2026_07_22_090258_make_no_po_referensi_nullable_in_task_terima_suppliers.php": {
+    "mtime": 1784721707.9946692,
+    "ast_hash": "a86ad94a917b83b02c9437ba2fa20c84",
+    "semantic_hash": ""
+  },
+  "database/migrations/2026_07_22_094604_increase_description_length_in_activity_logs.php": {
+    "mtime": 1784721707.9946692,
+    "ast_hash": "6a0348ee6504cf09ccd1697bf9c78820",
+    "semantic_hash": ""
+  },
+  "database/migrations/2026_07_22_143803_make_nomor_sj_nullable_in_branch_shipments.php": {
+    "mtime": 1784721707.9946692,
+    "ast_hash": "5b57cfc7ac89a607ab22842c363e0194",
+    "semantic_hash": ""
+  },
+  "database/migrations/2026_07_22_222224_add_branch_shipment_ref_to_keluar_barang.php": {
+    "mtime": 1784733754.001166,
+    "ast_hash": "7de021c436612d1bb3fe1de86e623fb4",
+    "semantic_hash": ""
+  },
+  "database/migrations/2026_07_22_222224_add_keluar_barang_ref_and_nullable_to_kiriman_mobil.php": {
+    "mtime": 1784733759.3452435,
+    "ast_hash": "0a5032a48c17cc9191f81299ceb4c9cf",
+    "semantic_hash": ""
+  },
+  "database/migrations/2026_07_22_223718_add_branch_data_to_keluar_barangs.php": {
+    "mtime": 1784734648.4029243,
+    "ast_hash": "372d89c05aa0689dd289eb13406af508",
+    "semantic_hash": ""
+  },
+  "database/migrations/2026_07_23_000941_add_jam_tiba_and_status_to_kiriman_mobil.php": {
+    "mtime": 1784740190.9967942,
+    "ast_hash": "d37d3c0d18358c5d2cfd509c56f11e34",
+    "semantic_hash": ""
+  },
+  "database/migrations/2026_07_23_000942_create_branch_shipment_kiriman_mobil_pivot.php": {
+    "mtime": 1784740192.3308065,
+    "ast_hash": "884040dff072c50abe5696f4ad110ddb",
     "semantic_hash": ""
   }
 }

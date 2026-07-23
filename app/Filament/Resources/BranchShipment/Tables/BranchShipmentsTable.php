@@ -34,11 +34,13 @@ class BranchShipmentsTable
                     ->formatStateUsing(fn (string $state): string => match ($state) {
                         'pembagian_po' => 'Pembagian PO',
                         'stock_gudang' => 'Stock Gudang',
+                        'rb_pesanan' => 'RB / Pesanan',
                         default => $state,
                     })
                     ->color(fn (string $state): string => match ($state) {
                         'pembagian_po' => 'info',
                         'stock_gudang' => 'warning',
+                        'rb_pesanan' => 'danger',
                         default => 'gray',
                     })
                     ->grow(false),
@@ -52,15 +54,15 @@ class BranchShipmentsTable
                     ->searchable()
                     ->sortable()
                     ->grow(false),
+                TextColumn::make('no_po')
+                    ->label('No PO')
+                    ->searchable()
+                    ->toggleable()
+                    ->grow(false),
                 TextColumn::make('total_qty')
                     ->label('Qty')
                     ->numeric()
                     ->sortable()
-                    ->grow(false),
-                TextColumn::make('no_po')
-                    ->label('No PO')
-                    ->searchable()
-                    ->toggleable(isToggledHiddenByDefault: true)
                     ->grow(false),
                 TextColumn::make('tanggal_buat')
                     ->label('Tgl Buat')
@@ -116,6 +118,7 @@ class BranchShipmentsTable
                                     ->formatStateUsing(fn (string $state): string => match ($state) {
                                         'pembagian_po' => 'Pembagian dari PO',
                                         'stock_gudang' => 'Stock Gudang',
+                                        'rb_pesanan' => 'RB / Pesanan',
                                         default => $state,
                                     }),
                                 TextEntry::make('cabang')->label('Cabang'),

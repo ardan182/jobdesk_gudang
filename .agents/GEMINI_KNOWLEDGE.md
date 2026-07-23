@@ -297,6 +297,55 @@ ViewAction::make()
 
 ---
 
+## 15. Form Icons Standard
+
+Semua form menggunakan `->prefixIcon('heroicon-m-...')` untuk masing-masing field:
+
+| Modul | Field | Ikon |
+|-------|-------|------|
+| **Keluar Barang** | cabang | `building-storefront` |
+| | branch_shipment_id | `document-arrow-down` |
+| | nomor_sj | `document-text` |
+| | total_qty | `cube` |
+| | no_po | `receipt-percent` |
+| | jam_disiapkan | `clock` |
+| | status | `check-badge` |
+| | diserahkan_kepada | `user` |
+| | helper | `user-group` |
+| **Kiriman Mobil** | cabang | `building-storefront` |
+| | Pilih SJ | `document-text` |
+| | jam_muat / selesai / berangkat / tiba | `clock` |
+| | no_plat_mobil | `truck` |
+| | nama_supir | `user` |
+| | status | `check-badge` |
+| | retur_option | `arrow-uturn-left` |
+
+---
+
+## 16. BranchShipment — Pilih Kiriman Options
+
+| Value | Label | Badge |
+|-------|-------|-------|
+| `pembagian_po` | Pembagian PO | `info` |
+| `stock_gudang` | Stock Gudang | `warning` |
+| `rb_pesanan` | RB / Pesanan | `danger` |
+
+---
+
+## 17. Kiriman Mobil — SJ Column
+
+Grid menampilkan SJ (`nomor_sj`) dalam bentuk badge dengan tooltip:
+
+| Jumlah SJ | Tampilan |
+|-----------|----------|
+| 1 | `UBR16000014` |
+| 2 | `UBR16000014` `UBR16000015` |
+| 3+ | `UBR16000014` `UBR16000015` `+1 more` |
+
+Tooltip (hover) menampilkan daftar lengkap semua SJ.
+
+---
+
 ## 15. File Structure (app/)
 
 ```

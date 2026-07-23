@@ -169,13 +169,33 @@
 - [x] FK keluar_barang_id → task_keluar_barangs (auto-create tracking)
 - [x] Form: Pilih SJ (Select multiple) filter by cabang + exclude already assigned
 - [x] Display-only: total SJ dipilih, sisa SJ kiriman, durasi kiriman
-- [x] Field jam_tiba + status (draft/dalam pengiriman/datang)
-- [x] Auto-create dari Checker Keluar Barang (status=selesai, cabang≠pusat)
-- [x] Auto-attach pivot BranchShipment
+- [x] Field jam_tiba + durasi kiriman (auto-hitung dari berangkat→tiba)
+- [x] Status options: draft/dalam pengiriman/selesai (datang dihapus)
+- [x] Badge status: draft(gray), dalam pengiriman(warning), selesai(success)
 - [x] EditAction: using() callback untuk sync pivot
 - [x] Single form modal (no Repeater)
+- [x] Sisa SJ: hitung dari tersedia + attached record (real sisa)
+- [x] Options SJ: include record saat Edit (orWhere)
+- [x] afterStateHydrated: set state dari pivot table
+- [x] Cabang disabled di Edit mode
+- [x] Kolom SJ di grid: badge + tooltip, max 2 + +N more
+- [x] Retur_option: simpan ke DB (tidak auto-create retur)
 
-## Fase 16: Polish & Fixes ⏳
+## Fase 16: Polish & Fixes ✅
+
+- [x] Checker Keluar Barang: flow pilih cabang dulu → SJ filtered by cabang
+- [x] Checker Keluar Barang: disabled fields dehydrated(true) — data tersimpan
+- [x] Checker Keluar Barang: exclude already processed SJs (whereNotIn task_keluar_barangs)
+- [x] Checker Keluar Barang: options include record saat Edit
+- [x] Checker Keluar Barang: cabang disabled saat Edit
+- [x] Kiriman Mobil: status ENUM update (datang→selesai)
+- [x] Kiriman Mobil: icons di form (11 fields)
+- [x] Checker Keluar Barang: icons di form (10 fields)
+- [x] BranchShipment: opsi RB/Pesanan di Pilih Kiriman
+- [x] BranchShipment: No PO column visible di grid (pindah posisi)
+- [x] Rename Kiriman Mobil status badge (datang→selesai)
+
+## Fase 17: Export/Import ⏳
 
 - [ ] Export semua master data (Ekspedisi, Kendaraan, Sopir, Toko)
 - [ ] Import master data (Ekspedisi, Kendaraan, Sopir, Toko)

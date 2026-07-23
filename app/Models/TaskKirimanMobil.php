@@ -18,6 +18,7 @@ class TaskKirimanMobil extends Model
         'jam_berangkat',
         'jam_tiba',
         'status',
+        'retur_option',
         'nama_supir',
         'keterangan',
         'keluar_barang_id',

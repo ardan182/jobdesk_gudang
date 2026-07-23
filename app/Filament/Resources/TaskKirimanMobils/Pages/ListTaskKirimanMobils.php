@@ -34,6 +34,7 @@ class ListTaskKirimanMobils extends ListRecords
                     $data['id_task'] = TaskIdGenerator::generate('kiriman_mobil');
                     $data['user_id'] = auth()->id();
                     $record = $this->getModel()::create($data);
+
                     if (filled($sjs)) {
                         $record->branchShipments()->sync($sjs);
                     }

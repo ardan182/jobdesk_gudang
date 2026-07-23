@@ -27,6 +27,7 @@ class BranchShipmentForm
                         ->options([
                             'pembagian_po' => 'Pembagian dari PO',
                             'stock_gudang' => 'Stock Gudang',
+                            'rb_pesanan' => 'RB / Pesanan',
                         ])
                         ->required(),
                     Select::make('cabang')
@@ -34,6 +35,7 @@ class BranchShipmentForm
                         ->prefixIcon('heroicon-m-building-storefront')
                         ->options(MasterToko::pluck('nama_toko', 'nama_toko'))
                         ->searchable()
+                        ->disabled(fn ($component) => $component->getRecord() !== null)
                         ->required(),
                     TextInput::make('nomor_sj')
                         ->label('Nomor SJ')

@@ -24,6 +24,7 @@ class TaskKirimanMobilsTable
     {
         return $table
             ->defaultSort('created_at', 'desc')
+            ->modifyQueryUsing(fn ($query) => $query->with('branchShipments'))
             ->columns([
                 TextColumn::make('id_task')
                     ->label('ID Task')
@@ -35,11 +36,19 @@ class TaskKirimanMobilsTable
                     ->searchable()
                     ->width('120px')
                     ->grow(false),
-                TextColumn::make('branch_shipments_count')
-                    ->label('Jumlah SJ')
-                    ->counts('branchShipments')
-                    ->numeric()
-                    ->sortable()
+                TextColumn::make('branch_sj_list')
+                    ->label('SJ')
+                    ->badge()
+                    ->color('info')
+                    ->tooltip(fn ($record) => $record->branchShipments->pluck('nomor_sj')->implode(', '))
+                    ->getStateUsing(function ($record) {
+                        $sj = $record->branchShipments->pluck('nomor_sj');
+                        $result = $sj->take(2)->toArray();
+                        if ($sj->count() > 2) {
+                            $result[] = '+' . ($sj->count() - 2) . ' more';
+                        }
+                        return $result;
+                    })
                     ->grow(false),
                 TextColumn::make('no_plat_mobil')
                     ->label('No Plat')
@@ -73,13 +82,27 @@ class TaskKirimanMobilsTable
                     ->color(fn (string $state): string => match ($state) {
                         'draft' => 'gray',
                         'dalam pengiriman' => 'warning',
-                        'datang' => 'success',
+                        'selesai' => 'success',
                         default => 'gray',
                     })
                     ->formatStateUsing(fn (string $state): string => match ($state) {
                         'draft' => 'Draft',
                         'dalam pengiriman' => 'Dalam Pengiriman',
-                        'datang' => 'Datang',
+                        'selesai' => 'Selesai',
+                        default => $state,
+                    })
+                    ->grow(false),
+                TextColumn::make('retur_option')
+                    ->label('Retur')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'tidak_ada_retur' => 'gray',
+                        'ada_retur' => 'warning',
+                        default => 'gray',
+                    })
+                    ->formatStateUsing(fn (string $state): string => match ($state) {
+                        'tidak_ada_retur' => 'Tidak Ada Retur',
+                        'ada_retur' => 'Ada Retur',
                         default => $state,
                     })
                     ->grow(false),
@@ -152,22 +175,44 @@ class TaskKirimanMobilsTable
                             ->schema([
                                 TextEntry::make('id_task')->label('ID Task'),
                                 TextEntry::make('cabang')->label('Cabang'),
-                                TextEntry::make('branch_shipments_count')
-                                    ->label('Jumlah SJ')
-                                    ->state(fn ($record) => $record->branchShipments->count()),
+                                 TextEntry::make('branch_sj_list')
+                                     ->label('SJ')
+                                     ->badge()
+                                     ->color('info')
+                                     ->tooltip(fn ($record) => $record->branchShipments->pluck('nomor_sj')->implode(', '))
+                                     ->state(function ($record) {
+                                         $sj = $record->branchShipments->pluck('nomor_sj');
+                                         $result = $sj->take(2)->toArray();
+                                         if ($sj->count() > 2) {
+                                             $result[] = '+' . ($sj->count() - 2) . ' more';
+                                         }
+                                         return $result;
+                                     }),
                                 TextEntry::make('no_plat_mobil')->label('No Plat'),
                                 TextEntry::make('jam_muat')->label('Jam Muat'),
                                 TextEntry::make('jam_selesai_muat')->label('Jam Selesai'),
                                 TextEntry::make('jam_berangkat')->label('Jam Berangkat'),
                                 TextEntry::make('jam_tiba')->label('Jam Tiba'),
-                                TextEntry::make('status')->label('Status')->badge()
-                                    ->color(fn (string $state): string => match ($state) {
-                                        'draft' => 'gray',
-                                        'dalam pengiriman' => 'warning',
-                                        'datang' => 'success',
-                                        default => 'gray',
-                                    }),
-                                TextEntry::make('nama_supir')->label('Supir'),
+                                 TextEntry::make('status')->label('Status')->badge()
+                                     ->color(fn (string $state): string => match ($state) {
+                                         'draft' => 'gray',
+                                         'dalam pengiriman' => 'warning',
+                                         'selesai' => 'success',
+                                         default => 'gray',
+                                     }),
+                                 TextEntry::make('retur_option')->label('Retur')
+                                     ->badge()
+                                     ->color(fn (string $state): string => match ($state) {
+                                         'tidak_ada_retur' => 'gray',
+                                         'ada_retur' => 'warning',
+                                         default => 'gray',
+                                     })
+                                     ->formatStateUsing(fn (string $state): string => match ($state) {
+                                         'tidak_ada_retur' => 'Tidak Ada Retur',
+                                         'ada_retur' => 'Ada Retur',
+                                         default => $state,
+                                     }),
+                                 TextEntry::make('nama_supir')->label('Supir'),
                                 TextEntry::make('keterangan')->label('Keterangan')->columnSpanFull(),
                             ]),
                     ]),
