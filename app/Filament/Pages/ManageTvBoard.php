@@ -9,6 +9,7 @@ use Filament\Pages\Page;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\Actions;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -56,6 +57,22 @@ class ManageTvBoard extends Page
     {
         return $schema
             ->components([
+                Section::make('Link Board TV')
+                    ->schema([
+                        TextInput::make('tv_board_url')
+                            ->label('URL Board TV')
+                            ->default(url('/tv-board'))
+                            ->disabled()
+                            ->copyable()
+                            ->prefixIcon('heroicon-m-link'),
+                        Actions::make([
+                            Action::make('open')
+                                ->label('Buka Board TV di Tab Baru')
+                                ->icon('heroicon-m-arrow-top-right-on-square')
+                                ->color('info')
+                                ->url(url('/tv-board'), shouldOpenInNewTab: true),
+                        ]),
+                    ]),
                 Section::make('Tampilan & Refresh')
                     ->columns(2)
                     ->schema([
