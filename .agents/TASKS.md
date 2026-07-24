@@ -194,6 +194,14 @@
 - [x] BranchShipment: opsi RB/Pesanan di Pilih Kiriman
 - [x] BranchShipment: No PO column visible di grid (pindah posisi)
 - [x] Rename Kiriman Mobil status badge (datang→selesai)
+- [x] Hapus auto-create Kiriman Mobil — Checker Kiriman input manual
+- [x] Buat `.agents/alur-pengiriman.md` — dokumentasi alur ke user
+- [x] Dropdown no_plat_mobil: "no plat - merek & model"
+- [x] View modal no_plat_mobil: tampilkan "no plat - merek & model"
+- [x] Auto-set status ke "Dalam Pengiriman" saat jam_berangkat diisi
+- [x] Tambah field tanggal_kirim (nullable, no backdate)
+- [x] Semua kolom Kiriman Mobil toggleable
+- [x] Retur option disederhanakan: "Tidak Ada Retur" / "Ada Retur"
 
 ## Fase 17: Export/Import ⏳
 

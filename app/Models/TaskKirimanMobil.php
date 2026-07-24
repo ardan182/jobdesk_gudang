@@ -17,6 +17,7 @@ class TaskKirimanMobil extends Model
         'jam_selesai_muat',
         'jam_berangkat',
         'jam_tiba',
+        'tanggal_kirim',
         'status',
         'retur_option',
         'nama_supir',
@@ -30,6 +31,7 @@ class TaskKirimanMobil extends Model
         'jam_selesai_muat' => 'datetime:H:i',
         'jam_berangkat' => 'datetime:H:i',
         'jam_tiba' => 'datetime:H:i',
+        'tanggal_kirim' => 'date:Y-m-d',
     ];
 
     protected $attributes = [

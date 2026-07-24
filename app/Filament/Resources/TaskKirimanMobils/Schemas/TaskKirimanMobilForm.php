@@ -7,6 +7,7 @@ use App\Models\MasterKendaraan;
 use App\Models\MasterSopir;
 use App\Models\MasterToko;
 use Carbon\Carbon;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
@@ -120,6 +121,13 @@ class TaskKirimanMobilForm
                         ->label('Sisa SJ Kiriman')
                         ->disabled()
                         ->dehydrated(false),
+                    DatePicker::make('tanggal_kirim')
+                        ->label('Tanggal Kirim')
+                        ->prefixIcon('heroicon-m-calendar-days')
+                        ->minDate(today())
+                        ->native(false)
+                        ->displayFormat('d/m/Y')
+                        ->rules(['nullable', 'date', 'after_or_equal:today']),
                     TimePicker::make('jam_muat')
                         ->label('Jam Muat')
                         ->prefixIcon('heroicon-m-clock')
@@ -135,7 +143,9 @@ class TaskKirimanMobilForm
                     Select::make('no_plat_mobil')
                         ->label('No Plat Mobil')
                         ->prefixIcon('heroicon-m-truck')
-                        ->options(MasterKendaraan::pluck('nomor_polisi', 'nomor_polisi'))
+                        ->options(fn () => MasterKendaraan::all()->mapWithKeys(fn ($item) => [
+                            $item->nomor_polisi => $item->nomor_polisi . ' - ' . $item->merek_dan_model,
+                        ]))
                         ->searchable()
                         ->preload(),
                     Select::make('nama_supir')
@@ -160,6 +170,9 @@ class TaskKirimanMobilForm
                                 $set('durasi_tampil', $h > 0 ? "{$h}j {$m}m" : "{$m}m");
                             } else {
                                 $set('durasi_tampil', '-');
+                            }
+                            if ($state) {
+                                $set('status', 'dalam pengiriman');
                             }
                         }),
                     TimePicker::make('jam_tiba')
@@ -200,9 +213,7 @@ class TaskKirimanMobilForm
                         ->prefixIcon('heroicon-m-arrow-uturn-left')
                         ->options([
                             'tidak_ada_retur' => 'Tidak Ada Retur',
-                            'ada_rb' => 'Ada RB',
-                            'ada_rj' => 'Ada RJ',
-                            'rb_dan_rj' => 'Retur RB dan RJ',
+                            'ada_retur' => 'Ada Retur',
                         ])
                         ->default('tidak_ada_retur')
                         ->visible(fn ($get) => $get('status') === 'selesai')

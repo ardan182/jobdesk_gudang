@@ -30,11 +30,13 @@ class TaskKirimanMobilsTable
                     ->label('ID Task')
                     ->searchable()
                     ->sortable()
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('cabang')
                     ->label('Cabang')
                     ->searchable()
                     ->width('120px')
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('branch_sj_list')
                     ->label('SJ')
@@ -48,27 +50,38 @@ class TaskKirimanMobilsTable
                             $result[] = '+' . ($sj->count() - 2) . ' more';
                         }
                         return $result;
-                    })
+                        })
+                    ->toggleable()
+                    ->grow(false),
+                TextColumn::make('tanggal_kirim')
+                    ->label('Tgl Kirim')
+                    ->date('d/m/Y')
+                    ->sortable()
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('no_plat_mobil')
                     ->label('No Plat')
                     ->searchable()
                     ->width('130px')
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('jam_muat')
                     ->label('Jam Muat')
                     ->time('H:i')
                     ->sortable()
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('jam_selesai_muat')
                     ->label('Jam Selesai')
                     ->time('H:i')
                     ->sortable()
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('jam_berangkat')
                     ->label('Brkt')
                     ->time('H:i')
                     ->sortable()
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('jam_tiba')
                     ->label('Tiba')
@@ -91,39 +104,40 @@ class TaskKirimanMobilsTable
                         'selesai' => 'Selesai',
                         default => $state,
                     })
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('retur_option')
                     ->label('Retur')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
                         'tidak_ada_retur' => 'gray',
-                        'ada_rb' => 'warning',
-                        'ada_rj' => 'info',
-                        'rb_dan_rj' => 'danger',
+                        'ada_retur' => 'warning',
                         default => 'gray',
                     })
                     ->formatStateUsing(fn (string $state): string => match ($state) {
                         'tidak_ada_retur' => 'Tidak Ada Retur',
-                        'ada_rb' => 'Ada RB',
-                        'ada_rj' => 'Ada RJ',
-                        'rb_dan_rj' => 'Retur RB dan RJ',
+                        'ada_retur' => 'Ada Retur',
                         default => $state,
                     })
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('nama_supir')
                     ->label('Supir')
                     ->searchable()
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('user.name')
                     ->label('Checker')
                     ->searchable()
                     ->sortable()
                     ->visible(fn () => auth()->user()?->hasRole('Admin') ?? false)
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('created_at')
                     ->label('Tanggal')
                     ->date('d/m/Y')
                     ->sortable()
+                    ->toggleable()
                     ->grow(false),
             ])
             ->filters([
@@ -179,7 +193,8 @@ class TaskKirimanMobilsTable
                             ->schema([
                                 TextEntry::make('id_task')->label('ID Task'),
                                 TextEntry::make('cabang')->label('Cabang'),
-                                 TextEntry::make('branch_sj_list')
+                                TextEntry::make('tanggal_kirim')->label('Tgl Kirim')->date('d/m/Y'),
+                                TextEntry::make('branch_sj_list')
                                      ->label('SJ')
                                      ->badge()
                                      ->color('info')
@@ -192,7 +207,13 @@ class TaskKirimanMobilsTable
                                          }
                                          return $result;
                                      }),
-                                TextEntry::make('no_plat_mobil')->label('No Plat'),
+                                TextEntry::make('no_plat_mobil')
+                                    ->label('No Plat')
+                                    ->formatStateUsing(function ($state) {
+                                        if (!$state) return '-';
+                                        $kendaraan = \App\Models\MasterKendaraan::where('nomor_polisi', $state)->first();
+                                        return $kendaraan ? $state . ' - ' . $kendaraan->merek_dan_model : $state;
+                                    }),
                                 TextEntry::make('jam_muat')->label('Jam Muat'),
                                 TextEntry::make('jam_selesai_muat')->label('Jam Selesai'),
                                 TextEntry::make('jam_berangkat')->label('Jam Berangkat'),
@@ -208,16 +229,12 @@ class TaskKirimanMobilsTable
                                     ->badge()
                                     ->color(fn (string $state): string => match ($state) {
                                         'tidak_ada_retur' => 'gray',
-                                        'ada_rb' => 'warning',
-                                        'ada_rj' => 'info',
-                                        'rb_dan_rj' => 'danger',
+                                        'ada_retur' => 'warning',
                                         default => 'gray',
                                     })
                                     ->formatStateUsing(fn (string $state): string => match ($state) {
                                         'tidak_ada_retur' => 'Tidak Ada Retur',
-                                        'ada_rb' => 'Ada RB',
-                                        'ada_rj' => 'Ada RJ',
-                                        'rb_dan_rj' => 'Retur RB dan RJ',
+                                        'ada_retur' => 'Ada Retur',
                                         default => $state,
                                     }),
                                  TextEntry::make('nama_supir')->label('Supir'),

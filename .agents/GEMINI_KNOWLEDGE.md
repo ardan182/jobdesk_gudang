@@ -1,6 +1,6 @@
 # Project Context: Jobdesk Gudang AP
 
-**Versi:** 1.3 | **Tanggal:** 23 Juli 2026
+**Versi:** 1.4 | **Tanggal:** 24 Juli 2026
 
 ---
 
@@ -83,6 +83,7 @@ npm run build
 | **Administrasi** | Cuti & Absensi | CalendarDays | Admin |
 | | Pusat Dokumen | DocumentArrowDown | Admin (CRUD), all (view) |
 | **Pengaturan** | Users | RectangleStack | Admin |
+| | Pengaturan Board TV | tv | Admin |
 
 ---
 
@@ -124,7 +125,7 @@ shouldRegisterNavigation() → hasRole('Admin') || hasRole('Checker X')
 > Kolom lama (toko_tujuan, supplier, no_referensi_sj, jumlah_kolian, jam_naik, nama_koordinator) sudah dihapus.
 
 **Task Kiriman Mobil** (`task_kiriman_mobils`)
-`id_task, cabang, no_plat_mobil (nullable), jam_muat (nullable), jam_selesai_muat (nullable), jam_berangkat (nullable), jam_tiba (nullable), nama_supir (nullable), status (draft/dalam pengiriman/datang), keterangan (nullable), keluar_barang_id (FK, nullable), user_id`
+`id_task, cabang, no_plat_mobil (nullable), jam_muat (nullable), jam_selesai_muat (nullable), jam_berangkat (nullable), jam_tiba (nullable), tanggal_kirim (nullable), nama_supir (nullable), status (draft/dalam pengiriman/selesai), retur_option (tidak_ada_retur/ada_retur) (nullable), keterangan (nullable), keluar_barang_id (FK, nullable), user_id`
 
 **Arrival Supplier Trucks** (`arrival_supplier_trucks`)
 `id_task, supplier_id (FK), expedition_id (FK, nullable), nama_sopir, no_plat_mobil, jenis_kiriman (DATANG/RETUR/DATANG & RETUR), tanggal_datang, jam_datang, jam_selesai (nullable), status (MENGANTRI/PROSES/SELESAI), keterangan (nullable), user_id`
@@ -175,7 +176,6 @@ ArrivalSupplierTruck
 TaskKeluarBarang
 ├── belongsTo: User
 ├── belongsTo: BranchShipment
-└── saved hook → auto-create TaskKirimanMobil (if cabang≠pusat & status=selesai)
 
 TaskKirimanMobil
 ├── belongsTo: User
@@ -219,19 +219,12 @@ Input Kiriman Barang (BranchShipment)
   └── status=selesai
        └── Checker Keluar Barang (TaskKeluarBarang)
             ├── pilih BranchShipment → auto-fill cabang, nomor_sj, total_qty, no_po
-            ├── isi: jam_disiapkan, helper, status, diserahkan_kepada, keterangan
-            └── status → 'selesai' ?
-                 ├── cabang=pusat → selesai (stop)
-                 └── cabang≠pusat → auto-create TaskKirimanMobil
-                      ├── cabang, keluar_barang_id, keterangan
-                      └── attach pivot BranchShipment
-                           └── Checker Kiriman edit → isi plat, sopir, jam, status
-```
+            └── isi: jam_disiapkan, helper, status, diserahkan_kepada, keterangan
+                 └── status=selesai → proses Checker selesai
 
-### Auto-create Detail
-- **Trigger:** `TaskKeluarBarang.saved` hook → `$model->wasChanged('status') && $model->status === 'selesai'`
-- **Guard:** `TaskKirimanMobil::where('keluar_barang_id', $model->id)->exists()`
-- **Nullable fields di Kiriman Mobil:** no_plat_mobil, jam_muat, jam_selesai_muat, jam_berangkat, nama_supir — diisi manual oleh Checker Kiriman
+Checker Kiriman input manual di menu Kiriman Mobil
+└── Pilih cabang, SJ, isi plat, sopir, jam, status
+```
 
 ---
 
@@ -314,6 +307,7 @@ Semua form menggunakan `->prefixIcon('heroicon-m-...')` untuk masing-masing fiel
 | | helper | `user-group` |
 | **Kiriman Mobil** | cabang | `building-storefront` |
 | | Pilih SJ | `document-text` |
+| | tanggal_kirim | `calendar-days` |
 | | jam_muat / selesai / berangkat / tiba | `clock` |
 | | no_plat_mobil | `truck` |
 | | nama_supir | `user` |
@@ -343,6 +337,25 @@ Grid menampilkan SJ (`nomor_sj`) dalam bentuk badge dengan tooltip:
 | 3+ | `UBR16000014` `UBR16000015` `+1 more` |
 
 Tooltip (hover) menampilkan daftar lengkap semua SJ.
+
+---
+
+## 18. Kiriman Mobil — Dropdown & Fitur Lain
+
+### No Plat Mobil
+Dropdown menampilkan format `"D 8526 OE - SS BIRU"` (nomor_polisi - merek_dan_model).
+Grid table tetap menampilkan hanya nomor polisi. View modal menampilkan format lengkap.
+
+### Auto-set Status
+Saat `jam_berangkat` diisi, status otomatis berubah menjadi `Dalam Pengiriman`.
+Dropdown status tetap bisa diedit manual (tidak di-disabled).
+
+### Retur Option
+Hanya 2 opsi: `Tidak Ada Retur` (gray) / `Ada Retur` (warning).
+Hanya muncul jika status = Selesai.
+
+### Toggleable Columns
+Semua kolom tabel Kiriman Mobil bisa di-show/hide via tombol Columns di toolbar.
 
 ---
 

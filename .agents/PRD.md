@@ -1,6 +1,6 @@
 # PRD — Jobdesk Gudang AP
 
-**Versi:** 2.0 | **Tanggal:** 23 Juli 2026
+**Versi:** 2.1 | **Tanggal:** 24 Juli 2026
 
 ---
 
@@ -57,16 +57,18 @@ Semua modul: **single form modal** (tanpa Repeater multi-row), **ID_TASK** auto 
 - **Auto-fill:** cabang, nomor_sj, total_qty, no_po — disimpan di tabel sendiri (dehydrated)
 - **Field baru:** jam_disiapkan, diserahkan_kepada (textbox), helper (JSON array WarehouseEmployee)
 - **Status:** draft → siap kirim → selesai
-- **Auto-create Kiriman Mobil:** Saat status=selesai DAN cabang≠pusat → auto-create TaskKirimanMobil + attach pivot BranchShipment
-- **Cabang pusat:** tidak perlu Kiriman Mobil, dianggap selesai
+- **Kiriman Mobil dibuat manual** oleh Checker Kiriman (tidak auto-create)
 
 ### 2.7 Kiriman Mobil — Multi SJ + Status
 - **Relasi many-to-many dengan BranchShipment:** pivot `branch_shipment_kiriman_mobil`
 - **Pilih SJ:** Select multiple filter by cabang, tampilkan total & sisa SJ
-- **Field baru:** jam_tiba, status (draft/dalam pengiriman/datang)
+- **Field baru:** jam_tiba, tanggal_kirim (nullable, no backdate), status (draft/dalam pengiriman/selesai)
 - **durasi_kiriman:** computed (jam_tiba - jam_berangkat), display-only
-- **Nullable fields:** no_plat_mobil, jam_muat, jam_selesai_muat, jam_berangkat, nama_supir (untuk auto-create)
-- **Auto-create:** Dari Checker Keluar Barang + attach pivot
+- **Nullable fields:** no_plat_mobil, jam_muat, jam_selesai_muat, jam_berangkat, nama_supir
+- **Dropdown no_plat_mobil:** format "no plat - merek & model"
+- **Auto-set status:** saat jam_berangkat diisi → status otomatis "Dalam Pengiriman"
+- **Retur option:** 2 opsi — "Tidak Ada Retur" / "Ada Retur"
+- **Checker Kiriman input manual** (tidak auto-create dari Checker Keluar)
 
 ### 2.8 Cuti & Absensi
 - Halaman `ManageLeaves` di grup **Administrasi**
@@ -106,7 +108,7 @@ Semua punya: `id_task` (indexed), `user_id` (FK).
 
 **task_keluar_barangs:** `id_task, branch_shipment_id (FK), cabang, nomor_sj, total_qty, no_po, jam_disiapkan, diserahkan_kepada, helper (JSON), status (draft/siap kirim/selesai), keterangan, user_id`
 
-**task_kiriman_mobils:** `id_task, cabang, no_plat_mobil (nullable), jam_muat (nullable), jam_selesai_muat (nullable), jam_berangkat (nullable), jam_tiba (nullable), nama_supir (nullable), status (draft/dalam pengiriman/datang), keterangan, keluar_barang_id (FK nullable), user_id`
+**task_kiriman_mobils:** `id_task, cabang, no_plat_mobil (nullable), jam_muat (nullable), jam_selesai_muat (nullable), jam_berangkat (nullable), jam_tiba (nullable), tanggal_kirim (nullable), nama_supir (nullable), status (draft/dalam pengiriman/selesai), retur_option (tidak_ada_retur/ada_retur), keterangan, keluar_barang_id (FK nullable), user_id`
 
 ### 7 Master Tables
 `expeditions | master_kendaraans | master_sopirs | master_tokos | suppliers | warehouse_employees | divisions`
@@ -151,12 +153,6 @@ Semua punya: `id_task` (indexed), `user_id` (FK).
 - Tampil compact 1 baris (tidak melebar vertikal)
 - **Tooltip:** hover badge helper → muncul semua nama dipisah koma
 
-### 5.4 Auto-create Kiriman Mobil
-- Trigger: saat `TaskKeluarBarang.status` berubah jadi `selesai`
-- Hanya jika `cabang !== 'pusat'`
-- Guard: cek `TaskKirimanMobil::where('keluar_barang_id', $model->id)->exists()`
-- Attach pivot `branch_shipment_kiriman_mobil` otomatis
-
 ---
 
 ## 6. UI Modal Standards
@@ -174,6 +170,8 @@ Semua modul menggunakan **tampilan seragam**:
 - Field disabled: autofill dari relasi (disimpan ke DB via dehydrated)
 - Select: `->searchable()->preload()` untuk UX cepat
 - Helper: `->badge()->separator(', ')` dengan state return array
+- **Toggleable columns:** Semua kolom tabel bisa di-show/hide via tombol Columns
+- **Auto-set status:** jam_berangkat diisi → status otomatis "Dalam Pengiriman"
 
 ### Single Form (No Repeater)
 Semua modul input **satu per satu** — tidak ada Repeater multi-row.

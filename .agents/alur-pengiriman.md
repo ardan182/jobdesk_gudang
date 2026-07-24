@@ -119,9 +119,7 @@ Format: `KRM-XXXXX` (contoh: `KRM-00001`)
 | Opsi | Warna |
 |------|-------|
 | Tidak Ada Retur | ⚪ Abu-abu |
-| Ada RB | 🟡 Kuning |
-| Ada RJ | 🔵 Biru |
-| RB dan RJ | 🔴 Merah |
+| Ada Retur | 🟡 Kuning |
 
 ---
 
