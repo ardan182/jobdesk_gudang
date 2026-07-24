@@ -78,24 +78,6 @@ class TaskKeluarBarang extends Model
                 'action' => 'update',
             ]);
         });
-
-        static::saved(function ($model) {
-            if ($model->wasChanged('status') && $model->status === 'selesai') {
-                if ($model->cabang && $model->cabang !== 'pusat') {
-                    $exists = TaskKirimanMobil::where('keluar_barang_id', $model->id)->exists();
-                    if (!$exists) {
-                        $kiriman = TaskKirimanMobil::create([
-                            'cabang' => $model->cabang,
-                            'keluar_barang_id' => $model->id,
-                            'keterangan' => 'Auto dari Checker Keluar Barang - ' . $model->id_task,
-                        ]);
-                        if ($model->branch_shipment_id) {
-                            $kiriman->branchShipments()->attach($model->branch_shipment_id);
-                        }
-                    }
-                }
-            }
-        });
     }
 
     public function user(): BelongsTo
