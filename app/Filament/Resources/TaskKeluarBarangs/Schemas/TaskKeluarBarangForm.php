@@ -83,10 +83,15 @@ class TaskKeluarBarangForm
                         ->disabled()
                         ->dehydrated(true),
                     TextInput::make('total_qty')
-                        ->label('Total Qty')
+                        ->label('Qty Input')
                         ->prefixIcon('heroicon-m-cube')
                         ->disabled()
                         ->dehydrated(true),
+                    TextInput::make('qty_checker')
+                        ->label('Qty Checker')
+                        ->prefixIcon('heroicon-m-cube')
+                        ->numeric()
+                        ->nullable(),
                     TextInput::make('no_po')
                         ->label('No PO')
                         ->prefixIcon('heroicon-m-receipt-percent')

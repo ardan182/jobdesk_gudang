@@ -19,11 +19,11 @@ class TaskReturCabangResource extends Resource
 
     protected static string|\BackedEnum|null $navigationIcon = Heroicon::OutlinedArrowPath;
 
-    protected static ?string $navigationLabel = 'Retur Masuk dari Cabang';
+    protected static ?string $navigationLabel = 'Retur Masuk dari Toko';
 
-    protected static ?string $modelLabel = 'Retur Masuk dari Cabang';
+    protected static ?string $modelLabel = 'Retur Masuk dari Toko';
 
-    protected static ?string $pluralModelLabel = 'Retur Masuk dari Cabang';
+    protected static ?string $pluralModelLabel = 'Retur Masuk dari Toko';
 
     protected static string|\UnitEnum|null $navigationGroup = 'Retur';
 

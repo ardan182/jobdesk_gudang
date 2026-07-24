@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="id" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TV Board Clean - Jobdesk Gudang AP</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        navy: {
+                            DEFAULT: '#0D1282',
+                            50: '#f0f2ff',
+                            100: '#e0e4ff',
+                            700: '#0a0e66',
+                            800: '#0d1282',
+                            900: '#070a4a',
+                        },
+                        softgray: {
+                            DEFAULT: '#EEEDED',
+                            50: '#ffffff',
+                            100: '#f7f7f7',
+                            200: '#eeeded',
+                            300: '#dcdcdc',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'Arial', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'Consolas', 'monospace']
+                    },
+                    animation: {
+                        'marquee': 'marquee 30s linear infinite',
+                    },
+                    keyframes: {
+                        marquee: {
+                            '0%': { transform: 'translateX(100%)' },
+                            '100%': { transform: 'translateX(-100%)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Google Fonts & FontAwesome Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Alpine.js CDN -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <style>
+        html, body {
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden !important; /* Zero scroll for TV presentation */
+            font-family: 'Inter', Arial, sans-serif;
+            background-color: #F8FAFC;
+            color: #0F172A;
+            user-select: none;
+        }
+
+        /* Hide scrollbars completely */
+        ::-webkit-scrollbar {
+            display: none;
+        }
+        * {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* Clean Card Shadows & Subtle Borders */
+        .tv-card {
+            background-color: #FFFFFF;
+            border: 1px solid #E2E8F0;
+            box-shadow: 0 4px 12px -2px rgba(13, 18, 130, 0.05);
+        }
+
+        .marquee-container:hover .marquee-content {
+            animation-play-state: paused;
+        }
+    </style>
+</head>
+<body x-data="tvBoardApp()" x-init="initApp()" class="h-screen w-screen flex flex-col bg-slate-100 text-slate-800 overflow-hidden antialiased">
+
+    <!-- TOP HEADER BAR (#0D1282 Navy Blue) -->
+    <header class="h-20 bg-navy text-white px-8 flex items-center justify-between shrink-0 shadow-lg relative z-30">
+        <!-- Brand & Title -->
+        <div class="flex items-center gap-4">
+            <div class="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center text-white border border-white/20 shadow-inner">
+                <i class="fa-solid fa-desktop text-2xl"></i>
+            </div>
+            <div>
+                <div class="flex items-center gap-3">
+                    <h1 class="text-2xl font-black tracking-tight text-white uppercase">TV BOARD</h1>
+                    <span class="bg-white/15 text-white text-xs font-black px-3 py-1 rounded-lg border border-white/20 uppercase tracking-wider">
+                        Jobdesk Gudang AP
+                    </span>
+                </div>
+                <p class="text-xs font-medium text-slate-200 flex items-center gap-2 mt-0.5">
+                    <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
+                    <span>Monitoring Realtime Gudang • Mode Display TV Clean</span>
+                </p>
+            </div>
+        </div>
+
+        <!-- Right Side: Status Summary Pills & Digital Clock -->
+        <div class="flex items-center gap-6">
+            <!-- Top Summary Counters -->
+            <div class="hidden lg:flex items-center gap-3">
+                <div class="flex items-center gap-2 px-3.5 py-1.5 bg-white/10 rounded-xl border border-white/15">
+                    <i class="fa-solid fa-truck-moving text-amber-300 text-sm"></i>
+                    <span class="text-xs font-semibold text-slate-200">Datang:</span>
+                    <span class="text-base font-black text-white font-mono" x-text="supplierArrivals.length">0</span>
+                </div>
+                <div class="flex items-center gap-2 px-3.5 py-1.5 bg-white/10 rounded-xl border border-white/15">
+                    <i class="fa-solid fa-paper-plane text-blue-300 text-sm"></i>
+                    <span class="text-xs font-semibold text-slate-200">Kirim:</span>
+                    <span class="text-base font-black text-white font-mono" x-text="branchDeliveries.length">0</span>
+                </div>
+                <div class="flex items-center gap-2 px-3.5 py-1.5 bg-white/10 rounded-xl border border-white/15">
+                    <i class="fa-solid fa-file-invoice text-emerald-300 text-sm"></i>
+                    <span class="text-xs font-semibold text-slate-200">Input SJ:</span>
+                    <span class="text-base font-black text-white font-mono" x-text="supplierInvoices.length">0</span>
+                </div>
+            </div>
+
+            <!-- Digital Clock -->
+            <div class="bg-white/10 px-5 py-2 rounded-2xl border border-white/20 flex items-center gap-3">
+                <i class="fa-regular fa-clock text-amber-300 text-2xl"></i>
+                <div class="text-right">
+                    <div class="text-2xl font-black tracking-wider font-mono text-white leading-none" x-text="currentTime">09:30:00</div>
+                    <div class="text-[11px] font-bold text-slate-200 mt-1 uppercase tracking-wide leading-none" x-text="currentDate">Kamis, 23 Juli 2026</div>
+                </div>
+            </div>
+
+            <!-- Fullscreen Button -->
+            <button @click="toggleFullscreen()" title="Toggle Fullscreen"
+                    class="w-11 h-11 rounded-2xl bg-white/10 hover:bg-white/20 text-white border border-white/20 flex items-center justify-center transition-all active:scale-95">
+                <i class="fa-solid fa-expand text-lg"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- RUNNING TEXT MARQUEE BAR (#EEEDED soft gray background with navy text accent) -->
+    <div class="h-10 bg-softgray border-b border-softgray-300 text-slate-800 px-6 flex items-center shrink-0 relative z-20 overflow-hidden">
+        <div class="bg-navy text-white px-3 py-1 rounded-lg text-xs font-extrabold uppercase tracking-wider flex items-center gap-2 shrink-0 z-10 shadow-sm">
+            <i class="fa-solid fa-bullhorn text-amber-300 animate-pulse"></i>
+            <span>PENGUMUMAN</span>
+        </div>
+        <div class="overflow-hidden whitespace-nowrap w-full relative ml-4 marquee-container">
+            <div class="inline-block animate-marquee marquee-content font-bold text-xs text-navy tracking-wide" x-text="marqueeMessage">
+                ⚠️ Mobil PT. ABC (B 1234 CD) Prioritas Pintu 2 | 🚚 Total 12 Mobil Datang Hari Ini | 📢 Kiriman Toko Ujungberung Sudah Selesai Dimuat | 📝 Pastikan Checklist Input SJ Supplier Lengkap
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT GRID VIEWPORT (2x2 Clean Layout Fit Viewport) -->
+    <main class="flex-1 p-5 overflow-hidden">
+        <div class="h-full grid grid-cols-12 grid-rows-2 gap-5">
+
+            <!-- ==================================================================== -->
+            <!-- CARD 1: MOBIL SUPPLIER DATANG (Top Left - Col 6)                      -->
+            <!-- ==================================================================== -->
+            <section class="col-span-6 row-span-1 tv-card rounded-2xl overflow-hidden flex flex-col">
+                <!-- Section Header -->
+                <div class="px-5 py-3.5 bg-softgray border-b border-softgray-300 flex items-center justify-between shrink-0">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-navy text-white flex items-center justify-center font-bold shadow-sm">
+                            <i class="fa-solid fa-truck-moving text-sm"></i>
+                        </div>
+                        <div>
+                            <h2 class="font-extrabold text-navy text-base uppercase tracking-wide leading-none">🚚 Mobil Supplier Datang</h2>
+                            <span class="text-[11px] text-slate-500 font-semibold">Log kedatangan & antrian bongkar</span>
+                        </div>
+                    </div>
+                    <span class="bg-navy/10 text-navy font-extrabold text-xs px-3 py-1 rounded-full border border-navy/20" x-text="supplierArrivals.length + ' Mobil'">
+                        2 Mobil
+                    </span>
+                </div>
+
+                <!-- Table Content -->
+                <div class="p-4 flex-1 overflow-hidden flex flex-col justify-between bg-white">
+                    <table class="w-full text-left text-xs border-collapse">
+                        <thead>
+                            <tr class="border-b-2 border-slate-200 text-slate-500 uppercase font-extrabold text-[11px] tracking-wider">
+                                <th class="pb-2.5 px-2">Plat</th>
+                                <th class="pb-2.5 px-2">Supplier</th>
+                                <th class="pb-2.5 px-2">Sopir</th>
+                                <th class="pb-2.5 px-2">Jam Datang</th>
+                                <th class="pb-2.5 px-2 text-center">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100 font-semibold text-slate-700">
+                            <template x-for="item in supplierArrivals" :key="item.plat">
+                                <tr class="hover:bg-slate-50 transition-colors">
+                                    <td class="py-3 px-2 font-mono font-extrabold text-navy text-sm" x-text="item.plat">B 1234 CD</td>
+                                    <td class="py-3 px-2 font-bold text-slate-900 text-sm max-w-[150px] truncate" x-text="item.supplier">PT ABC</td>
+                                    <td class="py-3 px-2 text-slate-600 text-xs" x-text="item.sopir">Budi</td>
+                                    <td class="py-3 px-2 font-mono text-slate-500 text-xs" x-text="item.tgl">23/07 08:30</td>
+                                    <td class="py-3 px-2 text-center">
+                                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-black uppercase"
+                                              :class="{
+                                                'bg-amber-100 text-amber-800 border border-amber-300': item.statusCode === 'PROSES',
+                                                'bg-slate-100 text-slate-700 border border-slate-300': item.statusCode === 'MENGANTRI',
+                                                'bg-emerald-100 text-emerald-800 border border-emerald-300': item.statusCode === 'SELESAI'
+                                              }">
+                                            <span x-text="item.statusIcon">🔧</span>
+                                            <span x-text="item.statusText">Proses</span>
+                                        </span>
+                                    </td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+
+                    <div class="pt-2 border-t border-slate-100 flex justify-between items-center text-[11px] font-medium text-slate-400">
+                        <span>Status: 🔧 Proses | ⏳ Mengantri | ✅ Selesai</span>
+                        <span class="text-navy font-bold">Auto-sync Realtime</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==================================================================== -->
+            <!-- CARD 2: MOBIL KIRIM KE CABANG (Top Right - Col 6)                    -->
+            <!-- ==================================================================== -->
+            <section class="col-span-6 row-span-1 tv-card rounded-2xl overflow-hidden flex flex-col">
+                <!-- Section Header -->
+                <div class="px-5 py-3.5 bg-softgray border-b border-softgray-300 flex items-center justify-between shrink-0">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-navy text-white flex items-center justify-center font-bold shadow-sm">
+                            <i class="fa-solid fa-truck-fast text-sm"></i>
+                        </div>
+                        <div>
+                            <h2 class="font-extrabold text-navy text-base uppercase tracking-wide leading-none">🚛 Mobil Kirim ke Cabang</h2>
+                            <span class="text-[11px] text-slate-500 font-semibold">Status pengiriman armada toko</span>
+                        </div>
+                    </div>
+                    <span class="bg-navy/10 text-navy font-extrabold text-xs px-3 py-1 rounded-full border border-navy/20" x-text="branchDeliveries.length + ' Kiriman'">
+                        2 Kiriman
+                    </span>
+                </div>
+
+                <!-- Table Content -->
+                <div class="p-4 flex-1 overflow-hidden flex flex-col justify-between bg-white">
+                    <table class="w-full text-left text-xs border-collapse">
+                        <thead>
+                            <tr class="border-b-2 border-slate-200 text-slate-500 uppercase font-extrabold text-[11px] tracking-wider">
+                                <th class="pb-2.5 px-2">Cabang</th>
+                                <th class="pb-2.5 px-2">Plat</th>
+                                <th class="pb-2.5 px-2">Sopir</th>
+                                <th class="pb-2.5 px-2 text-center">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100 font-semibold text-slate-700">
+                            <template x-for="item in branchDeliveries" :key="item.plat">
+                                <tr class="hover:bg-slate-50 transition-colors">
+                                    <td class="py-3 px-2 font-black text-slate-900 text-sm" x-text="item.cabang">Ujungberung</td>
+                                    <td class="py-3 px-2 font-mono font-extrabold text-navy text-sm" x-text="item.plat">B 1111</td>
+                                    <td class="py-3 px-2 text-slate-600 text-xs" x-text="item.sopir">Bambang</td>
+                                    <td class="py-3 px-2 text-center">
+                                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-black uppercase"
+                                              :class="{
+                                                'bg-emerald-100 text-emerald-800 border border-emerald-300': item.statusCode === 'SELESAI',
+                                                'bg-blue-100 text-blue-800 border border-blue-300': item.statusCode === 'KIRIM'
+                                              }">
+                                            <span x-text="item.statusIcon">✅</span>
+                                            <span x-text="item.statusText">Selesai</span>
+                                        </span>
+                                    </td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+
+                    <div class="pt-2 border-t border-slate-100 flex justify-between items-center text-[11px] font-medium text-slate-400">
+                        <span>Status: 🚀 Dalam Pengiriman | ✅ Selesai Sampai</span>
+                        <span class="text-navy font-bold">Armada Gudang</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==================================================================== -->
+            <!-- CARD 3: SJ KIRIMAN (Bottom Left - Col 6)                             -->
+            <!-- ==================================================================== -->
+            <section class="col-span-6 row-span-1 tv-card rounded-2xl overflow-hidden flex flex-col">
+                <!-- Section Header -->
+                <div class="px-5 py-3.5 bg-softgray border-b border-softgray-300 flex items-center justify-between shrink-0">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-navy text-white flex items-center justify-center font-bold shadow-sm">
+                            <i class="fa-solid fa-file-circle-check text-sm"></i>
+                        </div>
+                        <div>
+                            <h2 class="font-extrabold text-navy text-base uppercase tracking-wide leading-none">📦 SJ Kiriman</h2>
+                            <span class="text-[11px] text-slate-500 font-semibold">Dokumen Surat Jalan Kirim Barang</span>
+                        </div>
+                    </div>
+                    <span class="bg-navy/10 text-navy font-extrabold text-xs px-3 py-1 rounded-full border border-navy/20" x-text="shipmentSj.length + ' Dokumen'">
+                        2 Dokumen
+                    </span>
+                </div>
+
+                <!-- Table Content -->
+                <div class="p-4 flex-1 overflow-hidden flex flex-col justify-between bg-white">
+                    <table class="w-full text-left text-xs border-collapse">
+                        <thead>
+                            <tr class="border-b-2 border-slate-200 text-slate-500 uppercase font-extrabold text-[11px] tracking-wider">
+                                <th class="pb-2.5 px-2">No SJ</th>
+                                <th class="pb-2.5 px-2">Cabang</th>
+                                <th class="pb-2.5 px-2">Qty</th>
+                                <th class="pb-2.5 px-2 text-center">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100 font-semibold text-slate-700">
+                            <template x-for="item in shipmentSj" :key="item.noSj">
+                                <tr class="hover:bg-slate-50 transition-colors">
+                                    <td class="py-3 px-2 font-mono font-extrabold text-navy text-sm" x-text="item.noSj">UBR-001</td>
+                                    <td class="py-3 px-2 font-bold text-slate-900 text-sm" x-text="item.cabang">Ujungberung</td>
+                                    <td class="py-3 px-2 font-mono font-bold text-slate-700 text-xs" x-text="item.qty + ' Koli'">50 Koli</td>
+                                    <td class="py-3 px-2 text-center">
+                                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-black uppercase"
+                                              :class="{
+                                                'bg-emerald-100 text-emerald-800 border border-emerald-300': item.statusCode === 'SELESAI',
+                                                'bg-slate-100 text-slate-700 border border-slate-300': item.statusCode === 'DRAFT'
+                                              }">
+                                            <span x-text="item.statusIcon">✅</span>
+                                            <span x-text="item.statusText">Selesai</span>
+                                        </span>
+                                    </td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+
+                    <div class="pt-2 border-t border-slate-100 flex justify-between items-center text-[11px] font-medium text-slate-400">
+                        <span>Prefix Task: KRM-BRG</span>
+                        <span class="text-navy font-bold">Verifikasi Checker</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==================================================================== -->
+            <!-- CARD 4: INPUT SJ SUPPLIER (Bottom Right - Col 6)                    -->
+            <!-- ==================================================================== -->
+            <section class="col-span-6 row-span-1 tv-card rounded-2xl overflow-hidden flex flex-col">
+                <!-- Section Header -->
+                <div class="px-5 py-3.5 bg-softgray border-b border-softgray-300 flex items-center justify-between shrink-0">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-navy text-white flex items-center justify-center font-bold shadow-sm">
+                            <i class="fa-solid fa-receipt text-sm"></i>
+                        </div>
+                        <div>
+                            <h2 class="font-extrabold text-navy text-base uppercase tracking-wide leading-none">📋 Input SJ Supplier</h2>
+                            <span class="text-[11px] text-slate-500 font-semibold">Monitoring checklist penerimaan SJ PO</span>
+                        </div>
+                    </div>
+                    <span class="bg-navy/10 text-navy font-extrabold text-xs px-3 py-1 rounded-full border border-navy/20" x-text="supplierInvoices.length + ' SJ PO'">
+                        2 SJ PO
+                    </span>
+                </div>
+
+                <!-- Table Content -->
+                <div class="p-4 flex-1 overflow-hidden flex flex-col justify-between bg-white">
+                    <table class="w-full text-left text-xs border-collapse">
+                        <thead>
+                            <tr class="border-b-2 border-slate-200 text-slate-500 uppercase font-extrabold text-[11px] tracking-wider">
+                                <th class="pb-2.5 px-2">Supplier</th>
+                                <th class="pb-2.5 px-2">No PO</th>
+                                <th class="pb-2.5 px-2">Koli</th>
+                                <th class="pb-2.5 px-2">Tempo</th>
+                                <th class="pb-2.5 px-2 text-center">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100 font-semibold text-slate-700">
+                            <template x-for="item in supplierInvoices" :key="item.noPo">
+                                <tr class="hover:bg-slate-50 transition-colors">
+                                    <td class="py-3 px-2 font-bold text-slate-900 text-sm max-w-[140px] truncate" x-text="item.supplier">PT ABC</td>
+                                    <td class="py-3 px-2 font-mono font-extrabold text-navy text-xs" x-text="item.noPo">PO-001</td>
+                                    <td class="py-3 px-2 font-mono font-bold text-slate-700 text-xs" x-text="item.koli + ' Koli'">100 Koli</td>
+                                    <td class="py-3 px-2 font-semibold text-rose-600 text-xs" x-text="item.tempo">3 hr</td>
+                                    <td class="py-3 px-2 text-center">
+                                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-black uppercase"
+                                              :class="{
+                                                'bg-rose-100 text-rose-800 border border-rose-300': item.statusCode === 'BELUM_CEK',
+                                                'bg-emerald-100 text-emerald-800 border border-emerald-300': item.statusCode === 'SELESAI'
+                                              }">
+                                            <span x-text="item.statusIcon">🔴</span>
+                                            <span x-text="item.statusText">Belum Di Cek</span>
+                                        </span>
+                                    </td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+
+                    <div class="pt-2 border-t border-slate-100 flex justify-between items-center text-[11px] font-medium text-slate-400">
+                        <span>Status: 🔴 Belum Di Cek | 🟢 Selesai</span>
+                        <span class="text-navy font-bold">Checker Penerimaan</span>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- ALPINE.JS APPLICATION LOGIC -->
+    <script>
+        function tvBoardApp() {
+            return {
+                currentTime: '',
+                currentDate: '',
+
+                marqueeMessage: '⚠️ PRIORITAS BONGKAR: Truk PT. ABC (B 1234 CD) di Pintu 2 | 🚚 Total 12 Kedatangan Mobil Dijadualkan Hari Ini | 🚀 Kiriman Toko Ujungberung Sudah Dalam Perjalanan | 📝 Tim Penerimaan Mohon Verifikasi SJ Supplier PO-001',
+
+                // Data 1: Mobil Supplier Datang
+                supplierArrivals: [
+                    { plat: 'B 1234 CD', supplier: 'PT ABC', sopir: 'Budi', tgl: '23/07 08:30', statusCode: 'PROSES', statusIcon: '🔧', statusText: 'Proses' },
+                    { plat: 'D 5678 EF', supplier: 'CV XYZ', sopir: 'Ali', tgl: '23/07 09:15', statusCode: 'MENGANTRI', statusIcon: '⏳', statusText: 'Mengantri' },
+                    { plat: 'B 9012 GH', supplier: 'PT Mayora Indah', sopir: 'Dedi', tgl: '23/07 07:45', statusCode: 'SELESAI', statusIcon: '✅', statusText: 'Selesai' }
+                ],
+
+                // Data 2: Mobil Kirim ke Cabang
+                branchDeliveries: [
+                    { cabang: 'Ujungberung', plat: 'B 1111', sopir: 'Bambang', statusCode: 'SELESAI', statusIcon: '✅', statusText: 'Selesai' },
+                    { cabang: 'Soreang', plat: 'D 2222', sopir: 'Rudi', statusCode: 'KIRIM', statusIcon: '🚀', statusText: 'Kirim' },
+                    { cabang: 'Cileunyi', plat: 'D 3333', sopir: 'Ahmad', statusCode: 'KIRIM', statusIcon: '🚀', statusText: 'Kirim' }
+                ],
+
+                // Data 3: SJ Kiriman
+                shipmentSj: [
+                    { noSj: 'UBR-001', cabang: 'Ujungberung', qty: 50, statusCode: 'SELESAI', statusIcon: '✅', statusText: 'Selesai' },
+                    { noSj: 'SRG-002', cabang: 'Soreang', qty: 30, statusCode: 'DRAFT', statusIcon: '📝', statusText: 'Draft' },
+                    { noSj: 'CLN-003', cabang: 'Cileunyi', qty: 45, statusCode: 'SELESAI', statusIcon: '✅', statusText: 'Selesai' }
+                ],
+
+                // Data 4: Input SJ Supplier
+                supplierInvoices: [
+                    { supplier: 'PT ABC', noPo: 'PO-001', koli: 100, tempo: '3 hr', statusCode: 'BELUM_CEK', statusIcon: '🔴', statusText: 'Belum Di Cek' },
+                    { supplier: 'CV XYZ', noPo: 'PO-002', koli: 50, tempo: '1 hr', statusCode: 'SELESAI', statusIcon: '🟢', statusText: 'Selesai' },
+                    { supplier: 'PT Indofood', noPo: 'PO-003', koli: 180, tempo: '2 hr', statusCode: 'BELUM_CEK', statusIcon: '🔴', statusText: 'Belum Di Cek' }
+                ],
+
+                initApp() {
+                    this.updateClock();
+                    setInterval(() => this.updateClock(), 1000);
+                },
+
+                updateClock() {
+                    const now = new Date();
+                    this.currentTime = now.toLocaleTimeString('id-ID', { hour12: false });
+                    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                    this.currentDate = now.toLocaleDateString('id-ID', options);
+                },
+
+                toggleFullscreen() {
+                    if (!document.fullscreenElement) {
+                        document.documentElement.requestFullscreen().catch(() => {});
+                    } else {
+                        if (document.exitFullscreen) document.exitFullscreen();
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+</html>

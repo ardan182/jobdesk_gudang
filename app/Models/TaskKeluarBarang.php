@@ -14,6 +14,7 @@ class TaskKeluarBarang extends Model
         'cabang',
         'nomor_sj',
         'total_qty',
+        'qty_checker',
         'no_po',
         'jam_disiapkan',
         'diserahkan_kepada',
@@ -26,6 +27,7 @@ class TaskKeluarBarang extends Model
     protected $casts = [
         'jam_disiapkan' => 'datetime:H:i',
         'total_qty' => 'integer',
+        'qty_checker' => 'integer',
         'helper' => 'array',
     ];
 
@@ -57,7 +59,7 @@ class TaskKeluarBarang extends Model
 
         static::updated(function ($model) {
             $changes = [];
-            $tracked = ['status', 'jam_disiapkan', 'diserahkan_kepada', 'helper', 'keterangan'];
+            $tracked = ['status', 'jam_disiapkan', 'diserahkan_kepada', 'helper', 'keterangan', 'qty_checker'];
             foreach ($tracked as $field) {
                 $old = $model->getOriginal($field);
                 $new = $model->$field;

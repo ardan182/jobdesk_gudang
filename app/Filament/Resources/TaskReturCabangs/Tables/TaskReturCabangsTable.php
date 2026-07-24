@@ -31,7 +31,7 @@ class TaskReturCabangsTable
                     ->sortable()
                     ->grow(false),
                 TextColumn::make('cabang')
-                    ->label('Cabang')
+                    ->label('Toko')
                     ->searchable()
                     ->width('130px')
                     ->grow(false),
@@ -49,11 +49,13 @@ class TaskReturCabangsTable
                     ->color(fn (string $state): string => match ($state) {
                         'retur_jelek' => 'danger',
                         'retur_bagus' => 'success',
+                        'rb_dan_rj' => 'warning',
                         default => 'gray',
                     })
                     ->formatStateUsing(fn (string $state): string => match ($state) {
                         'retur_jelek' => 'Retur Jelek',
                         'retur_bagus' => 'Retur Bagus',
+                        'rb_dan_rj' => 'RB dan RJ',
                         default => $state,
                     })
                     ->grow(false),
@@ -67,13 +69,8 @@ class TaskReturCabangsTable
                     ->time('H:i')
                     ->sortable()
                     ->grow(false),
-                TextColumn::make('no_sj_retur')
-                    ->label('No SJ')
-                    ->searchable()
-                    ->width('130px')
-                    ->grow(false),
-                TextColumn::make('total_qty')
-                    ->label('Total Qty')
+                TextColumn::make('jumlah_sj')
+                    ->label('Jumlah SJ')
                     ->numeric()
                     ->sortable()
                     ->grow(false),
@@ -115,13 +112,13 @@ class TaskReturCabangsTable
             ])
             ->filters([
                 Filter::make('cabang')
-                    ->label('Cabang')
+                    ->label('Toko')
                     ->form([
                         Select::make('cabang')
-                            ->label('Cabang')
-                            ->options(fn () => \App\Models\TaskKirimanMobil::whereIn('retur_option', ['ada_rb', 'rb_dan_rj'])
+                            ->label('Toko')
+                            ->options(fn () => \App\Models\TaskKirimanMobil::whereIn('retur_option', ['ada_retur'])
                                 ->pluck('cabang', 'cabang')->unique())
-                            ->placeholder('Semua Cabang'),
+                            ->placeholder('Semua Toko'),
                     ])
                     ->query(fn (Builder $query, array $data): Builder => $query->when(
                         $data['cabang'] ?? null,
@@ -190,14 +187,13 @@ class TaskReturCabangsTable
                             ->columns(2)
                             ->schema([
                                 TextEntry::make('id_task')->label('ID Task'),
-                                TextEntry::make('cabang')->label('Cabang'),
+                                TextEntry::make('cabang')->label('Toko'),
                                 TextEntry::make('no_plat_mobil')->label('No Plat'),
                                 TextEntry::make('jam_tiba')->label('Jam Tiba'),
                                 TextEntry::make('jenis_retur')->label('Jenis Retur')->badge(),
                                 TextEntry::make('tanggal_bongkar')->label('Tanggal Bongkar'),
                                 TextEntry::make('jam_bongkar')->label('Jam Bongkar'),
-                                TextEntry::make('no_sj_retur')->label('No SJ'),
-                                TextEntry::make('total_qty')->label('Total Qty'),
+                                TextEntry::make('jumlah_sj')->label('Jumlah SJ'),
                                 TextEntry::make('nama_sopir')->label('Sopir'),
                                 TextEntry::make('helpers_list')
                                     ->label('Helper')

@@ -42,7 +42,12 @@ class TaskKeluarBarangsTable
                     ->width('130px')
                     ->grow(false),
                 TextColumn::make('total_qty')
-                    ->label('Qty')
+                    ->label('Qty Input')
+                    ->numeric()
+                    ->sortable()
+                    ->grow(false),
+                TextColumn::make('qty_checker')
+                    ->label('Qty Checker')
                     ->numeric()
                     ->sortable()
                     ->grow(false),
@@ -161,7 +166,8 @@ class TaskKeluarBarangsTable
                                 TextEntry::make('id_task')->label('ID Task'),
                                 TextEntry::make('cabang')->label('Cabang'),
                                 TextEntry::make('nomor_sj')->label('No SJ'),
-                                TextEntry::make('total_qty')->label('Total Qty'),
+                                TextEntry::make('total_qty')->label('Qty Input'),
+                                TextEntry::make('qty_checker')->label('Qty Checker'),
                                 TextEntry::make('no_po')->label('No PO'),
                                 TextEntry::make('jam_disiapkan')->label('Jam Disiapkan'),
                                 TextEntry::make('status')->label('Status')->badge()

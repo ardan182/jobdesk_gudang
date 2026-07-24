@@ -29,7 +29,7 @@ class TaskReturCabangForm
                         ->live()
                         ->options(function () {
                             return TaskKirimanMobil::where('status', 'selesai')
-                                ->whereIn('retur_option', ['ada_rb', 'rb_dan_rj'])
+                                ->whereIn('retur_option', ['ada_retur'])
                                 ->get()
                                 ->mapWithKeys(fn ($k) => [
                                     $k->id => "{$k->cabang} - {$k->no_plat_mobil} - " . ($k->jam_tiba?->format('H:i') ?? '-'),
@@ -49,11 +49,11 @@ class TaskReturCabangForm
                         }),
 
                     Select::make('cabang')
-                        ->label('Cabang')
+                        ->label('Toko')
                         ->prefixIcon('heroicon-m-building-storefront')
                         ->disabled()
                         ->dehydrated()
-                        ->options(fn () => TaskKirimanMobil::whereIn('retur_option', ['ada_rb', 'rb_dan_rj'])
+                        ->options(fn () => TaskKirimanMobil::whereIn('retur_option', ['ada_retur'])
                             ->whereNotNull('cabang')
                             ->pluck('cabang', 'cabang')->unique()),
 
@@ -62,7 +62,7 @@ class TaskReturCabangForm
                         ->prefixIcon('heroicon-m-truck')
                         ->disabled()
                         ->dehydrated()
-                        ->options(fn () => TaskKirimanMobil::whereIn('retur_option', ['ada_rb', 'rb_dan_rj'])
+                        ->options(fn () => TaskKirimanMobil::whereIn('retur_option', ['ada_retur'])
                             ->whereNotNull('no_plat_mobil')
                             ->pluck('no_plat_mobil', 'no_plat_mobil')->unique()),
 
@@ -80,6 +80,7 @@ class TaskReturCabangForm
                         ->options([
                             'retur_bagus' => 'Retur Bagus',
                             'retur_jelek' => 'Retur Jelek',
+                            'rb_dan_rj' => 'RB dan RJ',
                         ])
                         ->required(),
 
@@ -96,14 +97,9 @@ class TaskReturCabangForm
                         ->step(60)
                         ->required(),
 
-                    TextInput::make('no_sj_retur')
-                        ->label('No SJ Retur')
+                    TextInput::make('jumlah_sj')
+                        ->label('Jumlah SJ Retur')
                         ->prefixIcon('heroicon-m-document-text')
-                        ->required(),
-
-                    TextInput::make('total_qty')
-                        ->label('Total Qty')
-                        ->prefixIcon('heroicon-m-cube')
                         ->numeric()
                         ->required(),
 
@@ -133,6 +129,7 @@ class TaskReturCabangForm
 
                     Textarea::make('keterangan')
                         ->label('Keterangan')
+                        ->required()
                         ->columnSpanFull(),
                 ]),
         ];
