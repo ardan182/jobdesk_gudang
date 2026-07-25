@@ -17,9 +17,8 @@ class TaskDatangMobilSupplierForm
     public static function getFormFields(): array
     {
         return [
-            Section::make('Informasi Kedatangan Mobil Supplier')
-                ->description('Masukkan data logistik armada supplier dengan teliti.')
-                ->icon('heroicon-o-truck')
+            Section::make('Data Mobil & Supplier')
+                ->description('Identitas kendaraan, supplier, dan sopir')
                 ->columns(2)
                 ->schema([
                     TextInput::make('no_plat_mobil')
@@ -41,29 +40,30 @@ class TaskDatangMobilSupplierForm
                         ->preload()
                         ->placeholder('Pilih ekspedisi (opsional)...')
                         ->nullable(),
-                    TimePicker::make('jam_datang')
-                        ->label('Jam Datang')
-                        ->seconds(false)
-                        ->default(now()->format('H:i'))
-                        ->required(),
                     TextInput::make('nama_sopir')
                         ->label('Nama Sopir')
                         ->prefixIcon('heroicon-m-user')
                         ->placeholder('Nama sopir')
+                        ->required(),
+                ]),
+            Section::make('Waktu Kedatangan')
+                ->description('Tanggal dan jam datang, jenis kiriman')
+                ->columns(3)
+                ->schema([
+                    DatePicker::make('tanggal_datang')
+                        ->label('Tanggal Datang')
+                        ->default(now()->format('Y-m-d'))
+                        ->required(),
+                    TimePicker::make('jam_datang')
+                        ->label('Jam Datang')
+                        ->seconds(false)
+                        ->default(now()->format('H:i'))
                         ->required(),
                     TimePicker::make('jam_selesai')
                         ->label('Jam Selesai')
                         ->seconds(false)
                         ->disabled()
                         ->nullable(),
-                    DatePicker::make('tanggal_datang')
-                        ->label('Tanggal Datang')
-                        ->default(now()->format('Y-m-d'))
-                        ->required(),
-                    TextInput::make('status')
-                        ->label('Status')
-                        ->default('PROSES')
-                        ->disabled(),
                     Select::make('jenis_kiriman')
                         ->label('Jenis Kiriman')
                         ->options([
@@ -73,9 +73,17 @@ class TaskDatangMobilSupplierForm
                         ])
                         ->default('DATANG')
                         ->required(),
+                    TextInput::make('status')
+                        ->label('Status')
+                        ->default('PROSES')
+                        ->disabled(),
+                ]),
+            Section::make('Catatan')
+                ->schema([
                     Textarea::make('keterangan')
                         ->label('Keterangan')
-                        ->placeholder('Catatan tambahan...'),
+                        ->placeholder('Catatan tambahan...')
+                        ->columnSpanFull(),
                 ]),
         ];
     }

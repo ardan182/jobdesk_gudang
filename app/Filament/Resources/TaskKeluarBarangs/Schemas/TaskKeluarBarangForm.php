@@ -17,7 +17,8 @@ class TaskKeluarBarangForm
     public static function getFormFields(): array
     {
         return [
-            Section::make('Informasi Task')
+            Section::make('Data SJ')
+                ->description('Pilih cabang dan Surat Jalan dari Kirim Barang')
                 ->columns(2)
                 ->schema([
                     Select::make('cabang')
@@ -81,7 +82,8 @@ class TaskKeluarBarangForm
                         ->label('Nomor SJ')
                         ->prefixIcon('heroicon-m-document-text')
                         ->disabled()
-                        ->dehydrated(true),
+                        ->dehydrated(true)
+                        ->columnSpanFull(),
                     TextInput::make('total_qty')
                         ->label('Qty Input')
                         ->prefixIcon('heroicon-m-cube')
@@ -104,17 +106,10 @@ class TaskKeluarBarangForm
                         ->step(60)
                         ->extraAttributes(['lang' => 'id-ID'])
                         ->required(),
-                    Select::make('status')
-                        ->label('Status')
-                        ->prefixIcon('heroicon-m-check-badge')
-                        ->options([
-                            'draft' => 'Draft',
-                            'siap kirim' => 'Siap Kirim',
-                            'selesai' => 'Selesai',
-                        ])
-                        ->default('draft')
-                        ->required()
-                        ->live(),
+                ]),
+            Section::make('Tim & Status')
+                ->columns(2)
+                ->schema([
                     TextInput::make('diserahkan_kepada')
                         ->label('Diserahkan Kepada')
                         ->prefixIcon('heroicon-m-user')
@@ -127,6 +122,17 @@ class TaskKeluarBarangForm
                         ->searchable()
                         ->preload()
                         ->placeholder('Pilih helper...'),
+                    Select::make('status')
+                        ->label('Status')
+                        ->prefixIcon('heroicon-m-check-badge')
+                        ->options([
+                            'draft' => 'Draft',
+                            'siap kirim' => 'Siap Kirim',
+                            'selesai' => 'Selesai',
+                        ])
+                        ->default('draft')
+                        ->required()
+                        ->live(),
                     Textarea::make('keterangan')
                         ->label('Keterangan')
                         ->columnSpanFull()

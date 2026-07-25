@@ -20,7 +20,8 @@ class TaskKirimanMobilForm
     public static function getFormFields(): array
     {
         return [
-            Section::make('Informasi Task')
+            Section::make('Data Kiriman')
+                ->description('Pilih cabang tujuan dan Surat Jalan')
                 ->columns(2)
                 ->schema([
                     Select::make('cabang')
@@ -41,6 +42,13 @@ class TaskKirimanMobilForm
                                 ->count();
                             $set('sisa_sj_tampil', $tersedia ?? 0);
                         }),
+                    DatePicker::make('tanggal_kirim')
+                        ->label('Tanggal Kirim')
+                        ->prefixIcon('heroicon-m-calendar-days')
+                        ->minDate(today())
+                        ->native(false)
+                        ->displayFormat('d/m/Y')
+                        ->rules(['nullable', 'date', 'after_or_equal:today']),
                     Select::make('branch_shipments')
                         ->label('Pilih SJ')
                         ->prefixIcon('heroicon-m-document-text')
@@ -48,6 +56,7 @@ class TaskKirimanMobilForm
                         ->searchable()
                         ->preload()
                         ->live()
+                        ->columnSpanFull()
                         ->options(function ($get, $record) {
                             $cabang = $get('cabang') ?? $record?->cabang;
                             if (!$cabang) return [];
@@ -121,13 +130,11 @@ class TaskKirimanMobilForm
                         ->label('Sisa SJ Kiriman')
                         ->disabled()
                         ->dehydrated(false),
-                    DatePicker::make('tanggal_kirim')
-                        ->label('Tanggal Kirim')
-                        ->prefixIcon('heroicon-m-calendar-days')
-                        ->minDate(today())
-                        ->native(false)
-                        ->displayFormat('d/m/Y')
-                        ->rules(['nullable', 'date', 'after_or_equal:today']),
+                ]),
+            Section::make('Waktu Perjalanan')
+                ->description('Jam muat, berangkat, dan tiba')
+                ->columns(3)
+                ->schema([
                     TimePicker::make('jam_muat')
                         ->label('Jam Muat')
                         ->prefixIcon('heroicon-m-clock')
@@ -140,20 +147,6 @@ class TaskKirimanMobilForm
                         ->seconds(false)
                         ->step(60)
                         ->extraAttributes(['lang' => 'id-ID']),
-                    Select::make('no_plat_mobil')
-                        ->label('No Plat Mobil')
-                        ->prefixIcon('heroicon-m-truck')
-                        ->options(fn () => MasterKendaraan::all()->mapWithKeys(fn ($item) => [
-                            $item->nomor_polisi => $item->nomor_polisi . ' - ' . $item->merek_dan_model,
-                        ]))
-                        ->searchable()
-                        ->preload(),
-                    Select::make('nama_supir')
-                        ->label('Sopir')
-                        ->prefixIcon('heroicon-m-user')
-                        ->options(MasterSopir::pluck('nama_sopir', 'nama_sopir'))
-                        ->searchable()
-                        ->preload(),
                     TimePicker::make('jam_berangkat')
                         ->label('Jam Berangkat')
                         ->prefixIcon('heroicon-m-clock')
@@ -197,6 +190,28 @@ class TaskKirimanMobilForm
                         ->label('Durasi Kiriman')
                         ->disabled()
                         ->dehydrated(false),
+                ]),
+            Section::make('Kendaraan & Sopir')
+                ->columns(2)
+                ->schema([
+                    Select::make('no_plat_mobil')
+                        ->label('No Plat Mobil')
+                        ->prefixIcon('heroicon-m-truck')
+                        ->options(fn () => MasterKendaraan::all()->mapWithKeys(fn ($item) => [
+                            $item->nomor_polisi => $item->nomor_polisi . ' - ' . $item->merek_dan_model,
+                        ]))
+                        ->searchable()
+                        ->preload(),
+                    Select::make('nama_supir')
+                        ->label('Sopir')
+                        ->prefixIcon('heroicon-m-user')
+                        ->options(MasterSopir::pluck('nama_sopir', 'nama_sopir'))
+                        ->searchable()
+                        ->preload(),
+                ]),
+            Section::make('Status & Catatan')
+                ->columns(2)
+                ->schema([
                     Select::make('status')
                         ->label('Status')
                         ->prefixIcon('heroicon-m-check-badge')

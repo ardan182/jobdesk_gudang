@@ -202,6 +202,13 @@
 - [x] Tambah field tanggal_kirim (nullable, no backdate)
 - [x] Semua kolom Kiriman Mobil toggleable
 - [x] Retur option disederhanakan: "Tidak Ada Retur" / "Ada Retur"
+- [x] UI/UX Restructure: Kiriman Mobil → 4 Section (Data Kiriman, Waktu 3-col, Kendaraan, Status)
+- [x] UI/UX Restructure: Input Kirim Barang → 2 Section (Data Kiriman, Status & Tanggal)
+- [x] UI/UX Restructure: Checker Keluar Barang → 3 Section (Data SJ, Tim & Status)
+- [x] UI/UX Restructure: Datang Mobil Supplier → 3 Section (Data Mobil, Waktu 3-col, Catatan)
+- [x] UI/UX Restructure: Input SJ Supplier → 2 Section (Data Dokumen, Status Input)
+- [x] TV Board: tambah link URL + copy + buka tab baru di halaman pengaturan
+- [x] Hapus tombol "Input SJ Baru" — auto-create only dari Terima Supplier
 
 ## Fase 17: Export/Import ⏳
 

@@ -15,9 +15,8 @@ class SupplierSjForm
     public static function getFormFields(): array
     {
         return [
-            Section::make('Informasi Dokumen')
-                ->description('Data SJ dari supplier — referensi dari Terima Supplier.')
-                ->icon('heroicon-o-document-text')
+            Section::make('Data Dokumen')
+                ->description('Referensi dari Terima Supplier')
                 ->columns(2)
                 ->schema([
                     TextInput::make('id_task')
@@ -81,6 +80,11 @@ class SupplierSjForm
                                 $component->state($m[0] ?? '-');
                             }
                         }),
+                ]),
+            Section::make('Status Input')
+                ->description('Update status pengecekan SJ')
+                ->columns(2)
+                ->schema([
                     Select::make('status_input')
                         ->label('Status Input')
                         ->live()

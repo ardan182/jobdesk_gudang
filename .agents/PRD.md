@@ -1,6 +1,6 @@
 # PRD — Jobdesk Gudang AP
 
-**Versi:** 2.1 | **Tanggal:** 24 Juli 2026
+**Versi:** 2.2 | **Tanggal:** 25 Juli 2026
 
 ---
 
@@ -165,7 +165,10 @@ Semua modul menggunakan **tampilan seragam**:
 - Badge warna untuk status dan jenis
 
 ### Edit/Create Modal
-- Form dalam `Section` + `columns(2)` untuk form auto-fill
+- Form dipisah jadi **beberapa Section logis** (2-4 Section per form)
+- Contoh: Kiriman Mobil → Data Kiriman, Waktu Perjalanan (3 kolom), Kendaraan & Sopir, Status & Catatan
+- `columns(2)` sebagai default, `columns(3)` untuk grup waktu/jadwal
+- `columnSpanFull()` untuk field penting (Pilih SJ, nomor_sj, keterangan)
 - Modal width: `Width::Full` untuk form kompleks
 - Field disabled: autofill dari relasi (disimpan ke DB via dehydrated)
 - Select: `->searchable()->preload()` untuk UX cepat
@@ -175,6 +178,15 @@ Semua modul menggunakan **tampilan seragam**:
 
 ### Single Form (No Repeater)
 Semua modul input **satu per satu** — tidak ada Repeater multi-row.
+
+### UI/UX Form Standards (v2.2)
+- Form tidak "pukul rata" — tiap Section punya kolom sendiri (2/3)
+- Field penting (Pilih SJ, nomor_sj, keterangan) pakai `columnSpanFull()`
+- Setiap Section punya judul + deskripsi kontekstual
+- Data referensi (auto-fill) dipisah dari input manual
+- Grup waktu/jadwal pakai `columns(3)` agar lebih rapat
+- Kolom tabel bisa toggle show/hide via tombol Columns
+- Tombol "Input SJ Baru" dihapus — SJ auto-create dari Terima Supplier
 
 ---
 

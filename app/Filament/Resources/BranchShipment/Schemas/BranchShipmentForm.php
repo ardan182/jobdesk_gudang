@@ -15,15 +15,14 @@ class BranchShipmentForm
     public static function getFormFields(): array
     {
         return [
-            Section::make('Informasi Kirim Barang')
-                ->description('Isi data pengiriman barang ke cabang.')
-                ->icon('heroicon-o-paper-airplane')
+            Section::make('Data Kiriman')
+                ->description('Pilih sumber, cabang tujuan, dan nomor surat jalan')
                 ->columns(2)
                 ->schema([
                     Select::make('pilih_kiriman')
                         ->label('Pilih Kiriman')
                         ->prefixIcon('heroicon-m-clipboard-document-list')
-                        ->helperText('Pilih sumber barang')
+                        ->helperText('Sumber barang')
                         ->options([
                             'pembagian_po' => 'Pembagian dari PO',
                             'stock_gudang' => 'Stock Gudang',
@@ -43,7 +42,8 @@ class BranchShipmentForm
                         ->placeholder('Masukkan nomor surat jalan')
                         ->helperText('Wajib jika status "Selesai"')
                         ->requiredIf('status', 'selesai')
-                        ->maxLength(100),
+                        ->maxLength(100)
+                        ->columnSpanFull(),
                     TextInput::make('total_qty')
                         ->label('Total Qty')
                         ->prefixIcon('heroicon-m-cube')
@@ -58,6 +58,10 @@ class BranchShipmentForm
                         ->placeholder('Kosongkan jika dari stock')
                         ->helperText('Nomor PO pembelian (opsional)')
                         ->maxLength(100),
+                ]),
+            Section::make('Status & Tanggal')
+                ->columns(2)
+                ->schema([
                     DatePicker::make('tanggal_buat')
                         ->label('Tanggal Buat')
                         ->prefixIcon('heroicon-m-calendar')

@@ -1,6 +1,6 @@
 # Project Context: Jobdesk Gudang AP
 
-**Versi:** 1.4 | **Tanggal:** 24 Juli 2026
+**Versi:** 2.0 | **Tanggal:** 25 Juli 2026
 
 ---
 
@@ -262,8 +262,11 @@ ViewAction::make()
 ```
 
 ### Edit/Create Modal
+- Form dipisah jadi **beberapa Section logis** (2-4 per form)
 - `->modalWidth(Width::Full)` atau `'xl'`
-- Form dalam `Section` + `columns(2)` atau `columns(4)`
+- Tiap Section punya judul + deskripsi: `Section::make('...')->description('...')`
+- `columns(2)` sebagai default, `columns(3)` untuk grup waktu/jadwal
+- `columnSpanFull()` untuk field penting (Pilih SJ, nomor_sj, keterangan)
 - Disabled auto-fill fields: `->disabled()->dehydrated(true)` (data disimpan)
 - Live fields: `->live()` + `afterStateUpdated` untuk auto-calc
 - Helper badges: `->badge()->separator(', ')` di view / `->getStateUsing()` max 2 + tooltip di grid
@@ -300,6 +303,7 @@ Semua form menggunakan `->prefixIcon('heroicon-m-...')` untuk masing-masing fiel
 | | branch_shipment_id | `document-arrow-down` |
 | | nomor_sj | `document-text` |
 | | total_qty | `cube` |
+| | qty_checker | `cube` |
 | | no_po | `receipt-percent` |
 | | jam_disiapkan | `clock` |
 | | status | `check-badge` |
@@ -359,7 +363,42 @@ Semua kolom tabel Kiriman Mobil bisa di-show/hide via tombol Columns di toolbar.
 
 ---
 
-## 15. File Structure (app/)
+## 19. Form UI/UX Layout Standards
+
+### Prinsip
+- Form tidak "pukul rata" — tiap Section punya kolom sendiri
+- Field penting (Pilih SJ, nomor_sj, keterangan) pakai `columnSpanFull()`
+- Data referensi (auto-fill) dipisah dari input manual
+- Grup waktu/jadwal pakai `columns(3)` agar lebih rapat
+
+### Pattern per Modul
+
+| Modul | Section | Layout |
+|-------|---------|--------|
+| **Kiriman Mobil** | Data Kiriman (2col), Waktu Perjalanan (3col), Kendaraan & Sopir (2col), Status & Catatan (2col) | 4 Section |
+| **Input Kirim Barang** | Data Kiriman (2col), Status & Tanggal (2col) | 2 Section |
+| **Checker Keluar Barang** | Data SJ (2col), Tim & Status (2col) | 2 Section |
+| **Datang Mobil Supplier** | Data Mobil & Supplier (2col), Waktu Kedatangan (3col), Catatan | 3 Section |
+| **Input SJ Supplier** | Data Dokumen (2col), Status Input (2col) | 2 Section |
+
+### Code Pattern
+```php
+Section::make('Nama Section')
+    ->description('Deskripsi kontekstual')
+    ->columns(2) // atau 3
+    ->schema([
+        // field 1 kolom
+        // field 1 kolom
+        TextInput::make('field_penting')
+            ->columnSpanFull(),  // full width
+        Textarea::make('keterangan')
+            ->columnSpanFull(),
+    ]),
+```
+
+---
+
+## 20. File Structure (app/)
 
 ```
 app/
