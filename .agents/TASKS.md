@@ -216,3 +216,28 @@
 - [ ] Import master data (Ekspedisi, Kendaraan, Sopir, Toko)
 - [ ] Test semua role checker — akses sesuai role
 - [ ] Ringkasan bulanan Cuti & Absensi (PDF/print)
+
+## Fase 18: Fine-Grained RBAC (Per-Menu & Per-Action) 🆕
+
+### Ringkasan
+Permission-based access control per-module & per-action, dikelola melalui UI Edit User. Admin bisa menentukan menu mana yang bisa diakses user berikut capability (view/create/update/delete) tanpa tergantung role.
+
+### Tasks
+
+- [ ] **Permission Seeder** — seed semua permission `{view|create|update|delete}_{module_key}` untuk semua modul task + master + non-task
+- [ ] **UI Edit User — Section "Akses Menu"** — checkbox tree (Group → Menu → Actions) dengan toggle per action
+  - Checkbox per menu (centang = view+create+update)
+  - Checkbox per action (view/create/update/delete) untuk fine-tuning
+  - Select All per group
+  - State: permission names tersimpan di Spatie `model_has_permissions`
+- [ ] **ListAkses User** — halaman grid/list permission yang sudah diset per user
+- [ ] **Update Semua Resource** — ganti hardcoded role check dengan `auth()->user()->can('{action}_{module}')`:
+  - `canViewAny()` → `can('view_*')`
+  - `canCreate()` → `can('create_*')`
+  - `canEdit()` → `can('update_*')`
+  - `canDelete()` → `can('delete_*')`
+  - `shouldRegisterNavigation()` → `can('view_*')`
+  - `getEloquentQuery()` → tetap filter own data untuk non-Admin (tapi Admin bisa lihat semua via permission)
+- [ ] **Default Role Permissions** — update RoleSeeder: setiap role punya permission default sesuai fungsinya
+- [ ] **Admin bypass** — Admin tetap punya semua permission implicit (Spatie `Super Admin` atau `*` wildcard)
+- [ ] **Test semua role + custom user** — verifikasi akses sesuai permission yang diset

@@ -89,6 +89,8 @@ npm run build
 
 ## 5. Roles & Access
 
+### 5.1 Default Role-Based Access
+
 | Role | Hak Akses |
 |------|-----------|
 | **Admin** | Full — semua menu, semua data semua user, CRUD user, delete all records |
@@ -97,12 +99,23 @@ npm run build
 | **Checker Keluar** | Keluar Barang — hanya data sendiri, tidak bisa delete |
 | **Checker Kiriman** | Kiriman Mobil — hanya data sendiri, tidak bisa delete |
 
-### Pattern Role Access
+### 5.2 Fine-Grained Permission (Per-Menu & Per-Action)
+
+Di atas role, Admin bisa kustomisasi akses per-user via UI Edit User:
+
+- Format permission: `{action}_{module_key}` — view/create/update/delete
+- Semua modul: task, master, non-task (Input SJ, BranchShipment, Retur, Pusat Dokumen, Cuti & Absensi, Users, TvBoard)
+- UI checkbox tree: Group → Menu → Actions (view/create/update/delete)
+- Select All per group
+- **Admin bypass:** Gate `before` return `true` untuk Admin
+
+### Pattern Authorization
 ```php
-canViewAny()           → hasRole('Admin') || hasRole('Checker X')
-canDelete()            → only Admin
-getEloquentQuery()     → where('user_id', auth()->id()) for non-Admin
-shouldRegisterNavigation() → hasRole('Admin') || hasRole('Checker X')
+canViewAny()     → auth()->user()->can('view_{module}')
+canCreate()      → auth()->user()->can('create_{module}')
+canEdit($record) → auth()->user()->can('update_{module}')
+canDelete($record)→ auth()->user()->can('delete_{module}')
+getEloquentQuery() → filter own data jika non-Admin
 ```
 
 ---

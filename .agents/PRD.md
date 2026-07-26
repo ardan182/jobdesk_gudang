@@ -81,7 +81,9 @@ Semua modul: **single form modal** (tanpa Repeater multi-row), **ID_TASK** auto 
 - **StatsOverviewWidget:** 5 card (Admin) atau sesuai role
 - **RecentActivityWidget:** 10 log terakhir, filter module, pagination
 
-### 2.10 Role & Access (Spatie Permission)
+### 2.10 Role, Access & Permission Management (Spatie Permission)
+
+#### 2.10.1 Default Role-Based Access
 
 | Role | Hak |
 |------|-----|
@@ -90,6 +92,32 @@ Semua modul: **single form modal** (tanpa Repeater multi-row), **ID_TASK** auto 
 | **Checker Terima** | Datang Mobil, Terima Supplier — data sendiri |
 | **Checker Keluar** | Keluar Barang — data sendiri |
 | **Checker Kiriman** | Kiriman Mobil — data sendiri |
+
+#### 2.10.2 Fine-Grained Permission (Per-Menu & Per-Action)
+
+Di atas role default, Admin bisa kustomisasi akses **per-user** melalui UI Edit User:
+
+- **Permission names:** `{action}_{module_key}` — contoh: `view_task_retur_cabangs`, `create_task_retur_cabangs`, `update_task_retur_cabangs`, `delete_task_retur_cabangs`
+- **4 actions per module:** view, create, update, delete
+- **Coverage:** Semua modul task, master data, non-task (Input SJ, BranchShipment, Retur Masuk/Keluar, Pusat Dokumen, Cuti & Absensi, Users, TvBoard)
+
+#### 2.10.3 UI Akses Menu (di Edit User)
+
+- **Checkbox tree** dengan struktur: **Group → Menu → Actions**
+- Toggle per action (view/create/update/delete) — centang "Menu" = auto-centang view+create+update
+- **Select All** per group — centang sekali, semua menu dalam grup terpilih
+- Default permissions dari role tetap ada, UI menambahkan/mencabut permission tambahan
+- **Admin bypass:** Admin tetap punya akses penuh implicit (Spatie gate `before`)
+
+#### 2.10.4 Resource Authorization Pattern
+
+```php
+canViewAny()     → auth()->user()->can('view_{module}')
+canCreate()      → auth()->user()->can('create_{module}')
+canEdit()        → auth()->user()->can('update_{module}')
+canDelete()      → auth()->user()->can('delete_{module}')
+getEloquentQuery() → filter own data untuk non-Admin (via permission check)
+```
 
 ### 2.11 UI/UX
 - **Primary color:** `#EA580C` (orange)

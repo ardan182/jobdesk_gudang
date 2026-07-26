@@ -113,7 +113,9 @@ ActivityLog → belongsTo: User
 
 ---
 
-## 5. Role Access Pattern
+## 5. Role & Permission Access Pattern
+
+### 5.1 Default Role-Based Access
 
 ```php
 canViewAny()           → hasRole('Admin') || hasRole('Checker X')
@@ -121,6 +123,44 @@ canDelete()            → only Admin
 getEloquentQuery()     → where('user_id', auth()->id()) for non-Admin
 shouldRegisterNavigation() → hasRole('Admin') || hasRole('Checker X')
 ```
+
+### 5.2 Fine-Grained Permission (Per-Menu & Per-Action)
+
+Permissions disimpan di tabel Spatie `permissions` + `model_has_permissions`. Format: `{action}_{module_key}`.
+
+| Action | Permission Name Examples |
+|--------|-------------------------|
+| view | `view_task_retur_cabangs`, `view_master_suppliers`, `view_branch_shipments` |
+| create | `create_task_retur_cabangs`, `create_master_suppliers` |
+| update | `update_task_retur_cabangs`, `update_master_suppliers` |
+| delete | `delete_task_retur_cabangs` |
+
+### 5.3 Resource Authorization
+
+```php
+canViewAny()     → auth()->user()->can('view_{module}')
+canCreate()      → auth()->user()->can('create_{module}')
+canEdit($record) → auth()->user()->can('update_{module}')
+canDelete($record)→ auth()->user()->can('delete_{module}')
+shouldRegisterNavigation() → auth()->user()->can('view_{module}')
+getEloquentQuery() → filter own data jika user tidak punya akses global (via permission atau gate)
+```
+
+### 5.4 Admin Bypass
+
+```php
+// Di AppServiceProvider atau AuthServiceProvider
+Gate::before(function ($user) {
+    return $user->hasRole('Admin') ? true : null;
+});
+```
+
+### 5.5 UI Akses Menu (Edit User)
+
+- Section "Akses Menu" di form Edit User
+- Checkbox tree: Group → Menu → Actions (view/create/update/delete)
+- Select All per group
+- State disimpan ke Spatie `model_has_permissions`
 
 ---
 
