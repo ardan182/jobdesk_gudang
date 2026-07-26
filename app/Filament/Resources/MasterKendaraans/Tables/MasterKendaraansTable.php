@@ -2,11 +2,15 @@
 
 namespace App\Filament\Resources\MasterKendaraans\Tables;
 
+use App\Filament\Resources\MasterKendaraans\Schemas\MasterKendaraanForm;
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Infolists\Components\TextEntry;
+use Filament\Schemas\Components\Section;
+use Filament\Support\Enums\Width;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -36,9 +40,22 @@ class MasterKendaraansTable
                     ->sortable()
                     ->grow(false),
                 TextColumn::make('masa_berlaku_stnk')
-                    ->label('Masa Berlaku STNK')
+                    ->label('STNK 1 Thn')
                     ->date('d/m/Y')
                     ->sortable()
+                    ->grow(false),
+                TextColumn::make('stnk_5_tahun_sampai')
+                    ->label('STNK 5 Thn')
+                    ->date('d/m/Y')
+                    ->sortable()
+                    ->badge()
+                    ->color(function ($record): string {
+                        if (!$record->stnk_5_tahun_sampai) return 'gray';
+                        $days = now()->startOfDay()->diffInDays($record->stnk_5_tahun_sampai, false);
+                        if ($days < 0) return 'danger';
+                        if ($days <= 365) return 'warning';
+                        return 'success';
+                    })
                     ->grow(false),
                 TextColumn::make('masa_berlaku_kir')
                     ->label('Masa Berlaku KIR')
@@ -82,27 +99,42 @@ class MasterKendaraansTable
                     ->tooltip('Lihat Detail')
                     ->color('info')
                     ->modalHeading('Detail Kendaraan')
-                    ->modalWidth('lg')
-                    ->infolist([
-                        TextEntry::make('nomor_polisi')->label('Nomor Polisi'),
-                        TextEntry::make('jenis_kendaraan')
-                            ->label('Jenis Kendaraan')
-                            ->formatStateUsing(fn (string $state): string => $state === 'mobil' ? 'Mobil' : 'Motor'),
-                        TextEntry::make('merek_dan_model')->label('Merek dan Model'),
-                        TextEntry::make('masa_berlaku_stnk')->label('Masa Berlaku STNK')->date('d/m/Y'),
-                        TextEntry::make('masa_berlaku_kir')->label('Masa Berlaku KIR')->date('d/m/Y'),
-                        TextEntry::make('nomor_rangka')->label('Nomor Rangka'),
-                        TextEntry::make('nomor_mesin')->label('Nomor Mesin'),
-                        TextEntry::make('no_stnk')->label('No STNK'),
-                        TextEntry::make('no_kir')->label('No KIR'),
-                        TextEntry::make('keterangan')->label('Keterangan'),
+                    ->modalSubmitAction(false)
+                    ->modalCancelAction(fn (Action $action) => $action->label('Tutup'))
+                    ->schema([
+                        Section::make('Informasi Kendaraan')
+                            ->columns(2)
+                            ->schema([
+                                TextEntry::make('nomor_polisi')->label('Nomor Polisi'),
+                                TextEntry::make('jenis_kendaraan')
+                                    ->label('Jenis Kendaraan')
+                                    ->formatStateUsing(fn (string $state): string => $state === 'mobil' ? 'Mobil' : 'Motor'),
+                                TextEntry::make('merek_dan_model')->label('Merek dan Model'),
+                                TextEntry::make('masa_berlaku_stnk')->label('STNK 1 Thn')->date('d/m/Y'),
+                                TextEntry::make('masa_berlaku_kir')->label('Masa Berlaku KIR')->date('d/m/Y'),
+                                TextEntry::make('stnk_5_tahun_sampai')->label('STNK 5 Thn')->date('d/m/Y')
+                                    ->badge()
+                                    ->color(function ($record): string {
+                                        if (!$record->stnk_5_tahun_sampai) return 'gray';
+                                        $days = now()->startOfDay()->diffInDays($record->stnk_5_tahun_sampai, false);
+                                        if ($days < 0) return 'danger';
+                                        if ($days <= 365) return 'warning';
+                                        return 'success';
+                                    }),
+                                TextEntry::make('nomor_rangka')->label('Nomor Rangka'),
+                                TextEntry::make('nomor_mesin')->label('Nomor Mesin'),
+                                TextEntry::make('no_stnk')->label('No STNK'),
+                                TextEntry::make('no_kir')->label('No KIR'),
+                                TextEntry::make('keterangan')->label('Keterangan')->columnSpanFull(),
+                            ]),
                     ]),
                 EditAction::make()
                     ->iconButton()
                     ->tooltip('Ubah Data')
                     ->color('warning')
                     ->modalHeading('Edit Kendaraan')
-                    ->modalWidth('lg'),
+                    ->form(MasterKendaraanForm::getFormFields())
+                    ->modalWidth(Width::Full),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

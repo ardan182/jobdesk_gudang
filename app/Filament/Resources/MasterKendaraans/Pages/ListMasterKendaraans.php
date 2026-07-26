@@ -6,6 +6,7 @@ use App\Filament\Resources\MasterKendaraans\MasterKendaraanResource;
 use App\Filament\Resources\MasterKendaraans\Schemas\MasterKendaraanForm;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
+use Filament\Support\Enums\Width;
 
 class ListMasterKendaraans extends ListRecords
 {
@@ -19,7 +20,7 @@ class ListMasterKendaraans extends ListRecords
                 ->icon('heroicon-m-plus')
                 ->modalHeading('Tambah Kendaraan')
                 ->form(MasterKendaraanForm::getFormFields())
-                ->modalWidth('lg'),
+                ->modalWidth(Width::Full),
         ];
     }
 }

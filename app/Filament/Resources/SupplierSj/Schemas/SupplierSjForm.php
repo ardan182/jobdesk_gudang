@@ -62,10 +62,8 @@ class SupplierSjForm
                         ->dehydrated(false)
                         ->afterStateHydrated(function ($component, $state) {
                             $record = $component->getRecord();
-                            if ($record && $record->tanggal_datang) {
-                                $days = abs(now()->startOfDay()->diffInDays($record->tanggal_datang));
-                                $prefix = in_array($record->status_input, ['belum_di_cek', 'draft']) ? 'blm input' : 'input';
-                                $component->state("{$prefix} {$days} hr");
+                            if ($record) {
+                                $component->state($record->tempo_display);
                             }
                         }),
                     TextInput::make('terima_ref_tampil')

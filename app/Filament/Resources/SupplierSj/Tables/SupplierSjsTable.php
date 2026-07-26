@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\SupplierSj\Tables;
 
 use App\Filament\Resources\SupplierSj\Schemas\SupplierSjForm;
-use App\Filament\Resources\SupplierSj\Pages\ListSupplierSjs as ListSupplierSj;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -79,12 +78,7 @@ class SupplierSjsTable
                         'selesai' => 'success',
                         default => 'gray',
                     })
-                    ->getStateUsing(function ($record) {
-                        if (!$record->tanggal_datang) return '-';
-                        $days = abs(now()->startOfDay()->diffInDays($record->tanggal_datang));
-                        $prefix = in_array($record->status_input, ['belum_di_cek', 'draft']) ? 'blm input' : 'input';
-                        return "{$prefix} {$days} hr";
-                    }),
+                    ->getStateUsing(fn ($record) => $record->tempo_display),
                 TextColumn::make('tanggal_input')
                     ->label('Tgl Input')
                     ->date('d/m/Y')
@@ -136,12 +130,7 @@ class SupplierSjsTable
                                         'selesai' => 'success',
                                         default => 'gray',
                                     })
-                                    ->getStateUsing(function ($record) {
-                                        if (!$record->tanggal_datang) return '-';
-                                        $days = abs(now()->startOfDay()->diffInDays($record->tanggal_datang));
-                                        $prefix = in_array($record->status_input, ['belum_di_cek', 'draft']) ? 'blm input' : 'input';
-                                        return "{$prefix} {$days} hr";
-                                    }),
+                                    ->getStateUsing(fn ($record) => $record->tempo_display),
                                 TextEntry::make('status_input')->label('Status')
                                     ->badge()
                                     ->color(fn (string $state): string => match ($state) {
@@ -170,10 +159,12 @@ class SupplierSjsTable
                                 ->send();
                             return;
                         }
-                        $record->update($data);
-                        if (filled($data['nomor_po_referensi'] ?? null)) {
-                            ListSupplierSj::syncPoToTerimaSupplier($record->fresh());
+                        if (($data['status_input'] ?? null) === 'selesai' && $record->tanggal_datang) {
+                            $tanggalInput = $data['tanggal_input'] ?? $record->tanggal_input;
+                            $endDate = $tanggalInput ? \Carbon\Carbon::parse($tanggalInput) : now();
+                            $data['tempo_hari'] = abs($endDate->diffInDays($record->tanggal_datang));
                         }
+                        $record->update($data);
                     }),
             ])
             ->toolbarActions([

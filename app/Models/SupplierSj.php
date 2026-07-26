@@ -18,13 +18,29 @@ class SupplierSj extends Model
         'jumlah_faktur',
         'status_input',
         'tanggal_input',
+        'tempo_hari',
         'keterangan',
     ];
 
     protected $casts = [
         'tanggal_datang' => 'date',
         'tanggal_input' => 'date',
+        'tempo_hari' => 'integer',
     ];
+
+    public function getTempoDisplayAttribute(): string
+    {
+        if (!$this->tanggal_datang) return '-';
+
+        if ($this->tempo_hari !== null) {
+            $days = $this->tempo_hari;
+        } else {
+            $days = abs(now()->startOfDay()->diffInDays($this->tanggal_datang));
+        }
+
+        $prefix = in_array($this->status_input, ['belum_di_cek', 'draft']) ? 'blm input' : 'input';
+        return "{$prefix} {$days} hr";
+    }
 
     protected static function booted(): void
     {
