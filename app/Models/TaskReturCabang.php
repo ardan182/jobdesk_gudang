@@ -17,10 +17,12 @@ class TaskReturCabang extends Model
         'jenis_retur',
         'tanggal_bongkar',
         'no_sj_retur',
-        'jumlah_sj',
+        'jumlah_sj_bagus',
+        'catatan_bagus',
+        'jumlah_sj_jelek',
+        'catatan_jelek',
         'jam_bongkar',
         'nama_sopir',
-        'helpers',
         'status',
         'keterangan',
         'user_id',
@@ -30,7 +32,8 @@ class TaskReturCabang extends Model
         'jam_bongkar' => 'datetime:H:i',
         'jam_tiba' => 'datetime:H:i',
         'tanggal_bongkar' => 'date:Y-m-d',
-        'jumlah_sj' => 'integer',
+        'jumlah_sj_bagus' => 'integer',
+        'jumlah_sj_jelek' => 'integer',
     ];
 
     protected static function booted(): void
@@ -57,7 +60,7 @@ class TaskReturCabang extends Model
 
         static::updated(function ($model) {
             $changes = [];
-            $tracked = ['cabang', 'no_plat_mobil', 'jam_tiba', 'jenis_retur', 'tanggal_bongkar', 'jumlah_sj', 'jam_bongkar', 'nama_sopir', 'status', 'keterangan'];
+            $tracked = ['cabang', 'no_plat_mobil', 'jam_tiba', 'jenis_retur', 'tanggal_bongkar', 'jumlah_sj_bagus', 'catatan_bagus', 'jumlah_sj_jelek', 'catatan_jelek', 'jam_bongkar', 'nama_sopir', 'status', 'keterangan'];
             foreach ($tracked as $field) {
                 $old = $model->getOriginal($field);
                 $new = $model->$field;

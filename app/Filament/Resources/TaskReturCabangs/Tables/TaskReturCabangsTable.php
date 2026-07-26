@@ -69,10 +69,17 @@ class TaskReturCabangsTable
                     ->time('H:i')
                     ->sortable()
                     ->grow(false),
-                TextColumn::make('jumlah_sj')
-                    ->label('Jumlah SJ')
+                TextColumn::make('jumlah_sj_bagus')
+                    ->label('SJ Bagus')
                     ->numeric()
                     ->sortable()
+                    ->toggleable()
+                    ->grow(false),
+                TextColumn::make('jumlah_sj_jelek')
+                    ->label('SJ Jelek')
+                    ->numeric()
+                    ->sortable()
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('nama_sopir')
                     ->label('Sopir')
@@ -82,7 +89,15 @@ class TaskReturCabangsTable
                     ->label('Helper')
                     ->badge()
                     ->color('info')
-                    ->getStateUsing(fn ($record) => $record->helpers->pluck('nama_karyawan')->toArray())
+                    ->tooltip(fn ($record) => $record->helpers->pluck('nama_karyawan')->implode(', '))
+                    ->getStateUsing(function ($record) {
+                        $names = $record->helpers->pluck('nama_karyawan');
+                        $result = $names->take(2)->toArray();
+                        if ($names->count() > 2) {
+                            $result[] = '+' . ($names->count() - 2) . ' more';
+                        }
+                        return $result;
+                    })
                     ->grow(false),
                 TextColumn::make('status')
                     ->label('Status')
@@ -193,12 +208,16 @@ class TaskReturCabangsTable
                                 TextEntry::make('jenis_retur')->label('Jenis Retur')->badge(),
                                 TextEntry::make('tanggal_bongkar')->label('Tanggal Bongkar'),
                                 TextEntry::make('jam_bongkar')->label('Jam Bongkar'),
-                                TextEntry::make('jumlah_sj')->label('Jumlah SJ'),
+                                TextEntry::make('jumlah_sj_bagus')->label('SJ Bagus'),
+                                TextEntry::make('catatan_bagus')->label('Catatan Bagus'),
+                                TextEntry::make('jumlah_sj_jelek')->label('SJ Jelek'),
+                                TextEntry::make('catatan_jelek')->label('Catatan Jelek'),
                                 TextEntry::make('nama_sopir')->label('Sopir'),
                                 TextEntry::make('helpers_list')
                                     ->label('Helper')
                                     ->badge()
                                     ->color('info')
+                                    ->separator(', ')
                                     ->state(fn ($record) => $record->helpers->pluck('nama_karyawan')->toArray()),
                                 TextEntry::make('status')->label('Status')->badge(),
                                 TextEntry::make('keterangan')->label('Keterangan')->columnSpanFull(),

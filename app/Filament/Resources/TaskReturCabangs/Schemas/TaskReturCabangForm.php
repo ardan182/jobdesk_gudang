@@ -18,15 +18,18 @@ class TaskReturCabangForm
     public static function getFormFields(): array
     {
         return [
-            Section::make('Informasi Task')
-                ->columns(2)
+            Section::make('Informasi Kiriman')
+                ->description('Data kiriman mobil yang sudah selesai dengan retur')
+                ->columns(3)
                 ->schema([
                     Select::make('kiriman_mobil_id')
                         ->label('Kiriman Mobil')
                         ->prefixIcon('heroicon-m-truck')
                         ->searchable()
+                        ->disabled(fn ($component) => $component->getRecord() !== null)
                         ->required()
                         ->live()
+                        ->columnSpanFull()
                         ->options(function () {
                             return TaskKirimanMobil::where('status', 'selesai')
                                 ->whereIn('retur_option', ['ada_retur'])
@@ -34,6 +37,17 @@ class TaskReturCabangForm
                                 ->mapWithKeys(fn ($k) => [
                                     $k->id => "{$k->cabang} - {$k->no_plat_mobil} - " . ($k->jam_tiba?->format('H:i') ?? '-'),
                                 ]);
+                        })
+                        ->afterStateHydrated(function ($component, $state) {
+                            $record = $component->getRecord();
+                            if ($record && $record->cabang && $record->no_plat_mobil) {
+                                $kirim = TaskKirimanMobil::where('cabang', $record->cabang)
+                                    ->where('no_plat_mobil', $record->no_plat_mobil)
+                                    ->first();
+                                if ($kirim) {
+                                    $component->state($kirim->id);
+                                }
+                            }
                         })
                         ->afterStateUpdated(function ($state, $set) {
                             $kirim = TaskKirimanMobil::find($state);
@@ -47,7 +61,6 @@ class TaskReturCabangForm
                                 $set('jam_tiba', null);
                             }
                         }),
-
                     Select::make('cabang')
                         ->label('Toko')
                         ->prefixIcon('heroicon-m-building-storefront')
@@ -56,7 +69,6 @@ class TaskReturCabangForm
                         ->options(fn () => TaskKirimanMobil::whereIn('retur_option', ['ada_retur'])
                             ->whereNotNull('cabang')
                             ->pluck('cabang', 'cabang')->unique()),
-
                     Select::make('no_plat_mobil')
                         ->label('No Plat Mobil')
                         ->prefixIcon('heroicon-m-truck')
@@ -65,7 +77,6 @@ class TaskReturCabangForm
                         ->options(fn () => TaskKirimanMobil::whereIn('retur_option', ['ada_retur'])
                             ->whereNotNull('no_plat_mobil')
                             ->pluck('no_plat_mobil', 'no_plat_mobil')->unique()),
-
                     TimePicker::make('jam_tiba')
                         ->label('Jam Tiba')
                         ->prefixIcon('heroicon-m-clock')
@@ -73,7 +84,11 @@ class TaskReturCabangForm
                         ->dehydrated()
                         ->seconds(false)
                         ->step(60),
-
+                ]),
+            Section::make('Data Retur')
+                ->description('Jenis retur, jumlah SJ, dan catatan per jenis')
+                ->columns(3)
+                ->schema([
                     Select::make('jenis_retur')
                         ->label('Jenis Retur')
                         ->prefixIcon('heroicon-m-arrows-right-left')
@@ -82,34 +97,67 @@ class TaskReturCabangForm
                             'retur_jelek' => 'Retur Jelek',
                             'rb_dan_rj' => 'RB dan RJ',
                         ])
+                        ->live()
                         ->required(),
-
                     DatePicker::make('tanggal_bongkar')
                         ->label('Tanggal Bongkar')
                         ->prefixIcon('heroicon-m-calendar')
                         ->native(false)
                         ->required(),
-
                     TimePicker::make('jam_bongkar')
                         ->label('Jam Bongkar')
                         ->prefixIcon('heroicon-m-clock')
                         ->seconds(false)
                         ->step(60)
                         ->required(),
-
-                    TextInput::make('jumlah_sj')
-                        ->label('Jumlah SJ Retur')
-                        ->prefixIcon('heroicon-m-document-text')
-                        ->numeric()
+                    Select::make('nama_sopir')
+                        ->label('Nama Sopir')
+                        ->prefixIcon('heroicon-m-user')
+                        ->options(MasterSopir::pluck('nama_sopir', 'nama_sopir'))
+                        ->searchable()
                         ->required(),
-
                     Select::make('helpers')
                         ->label('Helper')
                         ->prefixIcon('heroicon-m-users')
                         ->multiple()
+                        ->columnSpan(2)
                         ->options(WarehouseEmployee::pluck('nama_karyawan', 'id'))
-                        ->searchable(),
-
+                        ->searchable()
+                        ->afterStateHydrated(function ($component, $state) {
+                            $record = $component->getRecord();
+                            if ($record) {
+                                $component->state($record->helpers()->pluck('warehouse_employee_id')->toArray());
+                            }
+                        }),
+                    TextInput::make('jumlah_sj_bagus')
+                        ->label('Jumlah SJ Retur Bagus')
+                        ->prefixIcon('heroicon-m-document-text')
+                        ->numeric()
+                        ->required()
+                        ->visible(fn ($get) => in_array($get('jenis_retur'), ['retur_bagus', 'rb_dan_rj'])),
+                    Textarea::make('catatan_bagus')
+                        ->label('Catatan Retur Bagus')
+                        ->required()
+                        ->rows(2)
+                        ->columnSpan(2)
+                        ->visible(fn ($get) => in_array($get('jenis_retur'), ['retur_bagus', 'rb_dan_rj'])),
+                    TextInput::make('jumlah_sj_jelek')
+                        ->label('Jumlah SJ Retur Jelek')
+                        ->prefixIcon('heroicon-m-document-text')
+                        ->numeric()
+                        ->required()
+                        ->visible(fn ($get) => in_array($get('jenis_retur'), ['retur_jelek', 'rb_dan_rj'])),
+                    Textarea::make('catatan_jelek')
+                        ->label('Catatan Retur Jelek')
+                        ->required()
+                        ->rows(2)
+                        ->columnSpan(2)
+                        ->visible(fn ($get) => in_array($get('jenis_retur'), ['retur_jelek', 'rb_dan_rj'])),
+                ]),
+            Section::make('Status')
+                ->description('Status proses dan catatan global')
+                ->columns(3)
+                ->schema([
                     Select::make('status')
                         ->label('Status')
                         ->prefixIcon('heroicon-m-check-badge')
@@ -119,18 +167,12 @@ class TaskReturCabangForm
                         ])
                         ->default('draft')
                         ->required(),
-
-                    Select::make('nama_sopir')
-                        ->label('Nama Sopir')
-                        ->prefixIcon('heroicon-m-user')
-                        ->options(MasterSopir::pluck('nama_sopir', 'nama_sopir'))
-                        ->searchable()
-                        ->required(),
-
                     Textarea::make('keterangan')
-                        ->label('Keterangan')
+                        ->label('Keterangan Global')
                         ->required()
-                        ->columnSpanFull(),
+                        ->rows(3)
+                        ->columnSpanFull()
+                        ->placeholder('Catatan tambahan untuk semua jenis retur...'),
                 ]),
         ];
     }
