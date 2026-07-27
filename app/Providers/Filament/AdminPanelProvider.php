@@ -100,6 +100,30 @@ class AdminPanelProvider extends PanelProvider
                     input[type="time"]::-webkit-calendar-picker-indicator:hover {
                         opacity: 0.8;
                     }
+                    /* ─── Vertical branch line per grup sidebar ─── */
+                    .fi-sidebar-group-items {
+                        position: relative;
+                    }
+                    .fi-sidebar-group-items::before {
+                        content: \'\';
+                        position: absolute;
+                        left: 2.5rem;
+                        top: 0.25rem;
+                        bottom: 0.25rem;
+                        width: 1.5px;
+                        background: rgba(255, 255, 255, 0.06);
+                        pointer-events: none;
+                    }
+
+                    /* ─── Filter AboveContent container box ─── */
+                    .fi-ta-filter-form {
+                        background: rgba(255, 255, 255, 0.03);
+                        border: 1px solid rgba(255, 255, 255, 0.08);
+                        border-radius: 0.5rem;
+                        padding: 0.75rem 1rem;
+                        margin-bottom: 0.75rem;
+                        max-width: 900px;
+                    }
 
                     /* ─── Sidebar: teks tidak terpotong ─── */
                     .fi-sidebar-item-label {

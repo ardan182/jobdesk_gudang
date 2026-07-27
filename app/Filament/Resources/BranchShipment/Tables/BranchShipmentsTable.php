@@ -8,11 +8,17 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
+use Filament\Forms\Components\DatePicker;
+use Filament\Schemas\Components\Grid;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Section;
 use Filament\Support\Enums\Width;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Enums\FiltersLayout;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class BranchShipmentsTable
 {
@@ -100,7 +106,41 @@ class BranchShipmentsTable
                     ->limit(50)
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
-            ->filters([])
+            ->filters([
+                SelectFilter::make('pilih_kiriman')
+                    ->label('Kiriman')
+                    ->options([
+                        'pembagian_po' => 'Pembagian PO',
+                        'stock_gudang' => 'Stock Gudang',
+                        'rb_pesanan' => 'RB / Pesanan',
+                    ])
+                    ->placeholder('Semua'),
+                SelectFilter::make('cabang')
+                    ->label('Cabang')
+                    ->options(fn () => \App\Models\MasterToko::pluck('nama_toko', 'nama_toko'))
+                    ->searchable()
+                    ->placeholder('Semua'),
+                Filter::make('tanggal_buat')
+                    ->label('Tanggal Buat')
+                    ->form([
+                        Grid::make(2)->schema([
+                            DatePicker::make('tanggal_dari')->label('Dari'),
+                            DatePicker::make('tanggal_sampai')->label('Sampai'),
+                        ]),
+                    ])
+                    ->query(fn (Builder $query, array $data) => $query
+                        ->when($data['tanggal_dari'], fn ($q, $d) => $q->whereDate('tanggal_buat', '>=', $d))
+                        ->when($data['tanggal_sampai'], fn ($q, $d) => $q->whereDate('tanggal_buat', '<=', $d))
+                    ),
+                SelectFilter::make('status')
+                    ->label('Status')
+                    ->options([
+                        'draft' => 'Draft',
+                        'selesai' => 'Selesai',
+                    ])
+                    ->placeholder('Semua'),
+            ], layout: FiltersLayout::AboveContent)
+            ->filtersFormColumns(5)
             ->recordActions([
                 ViewAction::make()
                     ->iconButton()

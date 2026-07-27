@@ -228,6 +228,33 @@
 - [ ] Test semua role checker — akses sesuai role
 - [ ] Ringkasan bulanan Cuti & Absensi (PDF/print)
 
+## Fase 18: Export Table Plugin (Postponed) ⏳
+
+Plugin `occtherapist/advanced-table-export-for-filament` untuk export data table ke XLSX/CSV/PDF/JSON/XML/clipboard dengan column picker.
+
+### Plugin Setup
+- [ ] Install: `composer require occtherapist/advanced-table-export-for-filament`
+- [ ] Install PDF driver: `composer require dompdf/dompdf`
+- [ ] Daftarkan plugin di AdminPanelProvider
+- [ ] Set `.env`: `ADVANCED_TABLE_EXPORT_PDF_RENDERER=dompdf`
+- [ ] Konfigurasi: max rows, preview per page, default format
+
+### Implementasi per Resource
+- [ ] TaskReturCabangs — header action + bulk action
+- [ ] TaskReturSuppliers — header action + bulk action
+- [ ] TaskDatangMobilSuppliers — header action + bulk action
+- [ ] TaskTerimaSuppliers — header action + bulk action
+- [ ] TaskKeluarBarangs — header action + bulk action
+- [ ] TaskKirimanMobils — header action + bulk action
+- [ ] SupplierSj — header action + bulk action
+- [ ] BranchShipment — header action + bulk action
+- [ ] KendaraanDokumen — header action + bulk action
+- [ ] SupplierReturnInbound — header action + bulk action
+- [ ] WarehouseEmployees — header action + bulk action
+- [ ] Users — header action + bulk action
+- [ ] WarehouseDocuments — header action + bulk action
+- [ ] Semua Master (Ekspedisi, Kendaraan, Sopir, Toko, Supplier) — header action + bulk action
+
 ## Fase 18: Fine-Grained RBAC (Per-Menu & Per-Action) 🆕
 
 ### Ringkasan

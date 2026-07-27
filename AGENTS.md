@@ -95,7 +95,8 @@ All XLSX exports use **ZipArchive + XML manual** (no maatwebsite/phpspreadsheet)
 ## Dependencies
 - `filament/filament` — admin panel v5
 - `spatie/laravel-permission` — role middleware
-- Zero export/import libraries — all native ZipArchive + XML
+- Zero export/import libraries for master templates — all native ZipArchive + XML
+- `occtherapist/advanced-table-export-for-filament` (Postponed) — table grid export XLSX/CSV/PDF/JSON/XML via plugin
 
 ## Pull & update di PC kantor (Windows/Linux)
 ```bash

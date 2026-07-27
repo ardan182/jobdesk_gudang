@@ -248,6 +248,11 @@ Checker Kiriman input manual di menu Kiriman Mobil
 - Routes: `GET /suppliers/template`, `GET /employees/template`
 - **SupplierImport** — CSV/XLSX/XLS, auto-uppercase kode_supplier
 - **WarehouseEmployeeImport** — CSV/XLSX/XLS, auto-create Division
+- **Table Export (Postponed):** Plugin `occtherapist/advanced-table-export-for-filament` untuk export XLSX/CSV/PDF/JSON/XML dari table grid
+  - Header action: export hasil filter/sort/search
+  - Bulk action: export selected rows
+  - Column picker: user pilih kolom
+  - PDF via Dompdf, XLSX via OpenSpout
 
 ---
 

@@ -17,6 +17,12 @@ Aplikasi pencatatan jobdesk harian gudang berbasis web. Digitalisasi log harian 
 - **Divisions:** Kelola divisi via widget di Employee Gudang
 - **Import:** Supplier & Employee via upload CSV/XLSX/XLS (ZipArchive, tanpa library eksternal)
 - **Export Template:** Download template XLSX via route `suppliers/template`, `employees/template`
+- **Export Data (Postponed):** Export semua table grid ke XLSX/CSV/PDF/JSON/XML via plugin `occtherapist/advanced-table-export-for-filament`
+  - Header action: export filtered/sorted/searched data
+  - Bulk action: export selected rows
+  - Column picker: user pilih kolom sebelum export
+  - PDF via Dompdf (tambahan `dompdf/dompdf`)
+  - XLSX via OpenSpout (built-in plugin)
 
 ### 2.2 Modul Task (Log Harian) — Single Form
 
@@ -162,6 +168,7 @@ Semua punya: `id_task` (indexed), `user_id` (FK).
 | Pengiriman | Input Kirim Barang, Checker Keluar Barang, Kiriman Mobil |
 | Administrasi (Admin) | Cuti & Absensi, **Pusat Dokumen** |
 | Pengaturan (Admin) | Users |
+| (toolbar) | Export XLSX/CSV/PDF/JSON (plugin — semua halaman) |
 
 ---
 
@@ -221,7 +228,51 @@ Semua modul input **satu per satu** — tidak ada Repeater multi-row.
 
 ---
 
-## 7. Referensi
+## 7. Export Plugin (Postponed)
+
+Gunakan `occtherapist/advanced-table-export-for-filament` untuk export data table ke XLSX, CSV, PDF, JSON, XML, clipboard.
+
+### Fitur Plugin
+- **Header action** — export hasil filter/sort/search langsung dari tabel
+- **Bulk action** — export hanya baris yang dipilih
+- **Column picker** — user milih kolom sebelum export
+- **Quick actions** — ActionGroup 1-klik per format
+- **Configurable:** batas baris, orientasi PDF, delimiter CSV, format default
+
+### PDF Driver
+- `dompdf/dompdf` — paling ringan, tanpa headless browser
+- Setup: `composer require dompdf/dompdf` + set `ADVANCED_TABLE_EXPORT_PDF_RENDERER=dompdf` di `.env`
+
+### Instalasi nanti
+```bash
+composer require occtherapist/advanced-table-export-for-filament
+composer require dompdf/dompdf
+```
+
+### Konfigurasi Panel
+```php
+->plugins([
+    AdvancedTableExportForFilamentPlugin::make()
+        ->maxPdfRows(200)
+        ->maxExportRows(2000)
+        ->previewPerPage(25),
+])
+```
+
+### Penggunaan di Table
+```php
+use OccTherapist\AdvancedTableExportForFilament\Actions\TableExportHeaderAction;
+use OccTherapist\AdvancedTableExportForFilament\Actions\TableExportBulkAction;
+
+->headerActions([
+    TableExportHeaderAction::make(),
+])
+->toolbarActions([
+    TableExportBulkAction::make(),
+])
+```
+
+## 8. Referensi
 
 - [Filament v5 Documentation](https://filamentphp.com/docs/5.x/)
 - [Filament v5 Actions / Edit](https://filamentphp.com/docs/5.x/actions/edit)
@@ -231,3 +282,4 @@ Semua modul input **satu per satu** — tidak ada Repeater multi-row.
 - [Laravel 13 Documentation](https://laravel.com/docs/13.x)
 - [Spatie Laravel Permission](https://spatie.be/docs/laravel-permission/v6/)
 - [Filament Hub (Plugin Repository)](https://filament-hub.com/features/4.x)
+- [Advanced Table Export for Filament](https://github.com/occtherapist/advanced-table-export-for-filament)

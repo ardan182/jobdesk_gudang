@@ -14,7 +14,8 @@
 | Auth | Spatie Laravel Permission | - | 5 role: Admin, Checker Retur/Terima/Keluar/Kiriman |
 | Frontend | Tailwind CSS + Alpine.js | - | Bundled via Filament |
 | Assets | Vite | - | `npm run dev` / `npm run build` |
-| Export/Import | ZipArchive + SimpleXML + DOMDocument | native PHP | Tidak pakai maatwebsite/phpspreadsheet |
+| Export/Import (master) | ZipArchive + SimpleXML + DOMDocument | native PHP | Template download, import CSV/XLSX/XLS |
+| Export Table (Postponed) | `occtherapist/advanced-table-export-for-filament` + OpenSpout + Dompdf | plugin | Export filtered data via header/bulk action |
 | Code Graph | Graphify | 0.9.17 | 5800+ nodes, 18000+ edges |
 
 ---
