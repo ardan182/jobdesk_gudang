@@ -1,6 +1,6 @@
 # Project Context: Jobdesk Gudang AP
 
-**Versi:** 2.0 | **Tanggal:** 25 Juli 2026
+**Versi:** 2.1 | **Tanggal:** 27 Juli 2026
 
 ---
 
@@ -253,7 +253,9 @@ Checker Kiriman input manual di menu Kiriman Mobil
 
 ## 11. UI/UX & CSS Customizations
 
-- **Primary color:** `#EA580C` (orange)
+- **Theme:** Aurum (Gold-on-Graphite), preset **Sapphire** (biru safir)
+- **Header actions:** semua tombol hijau solid, ukuran kecil via CSS
+- **Helpers badge:** orange (`warning`) di semua modul + tooltip
 - **Sidebar:** collapsible, groups collapsed by default, persist via localStorage
 - **Compact table:** padding 2px, line-height 1.2, striped rows
 - **Font:** Arial, base 14px

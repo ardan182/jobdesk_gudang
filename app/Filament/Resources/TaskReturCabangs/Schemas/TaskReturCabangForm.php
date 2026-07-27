@@ -35,7 +35,7 @@ class TaskReturCabangForm
                                 ->whereIn('retur_option', ['ada_retur'])
                                 ->get()
                                 ->mapWithKeys(fn ($k) => [
-                                    $k->id => "{$k->cabang} - {$k->no_plat_mobil} - " . ($k->jam_tiba?->format('H:i') ?? '-'),
+                                    $k->id => "{$k->cabang} - {$k->no_plat_mobil} - {$k->jam_tiba?->format('H:i')} - tgl kirim : {$k->tanggal_kirim?->format('d/m/Y')}",
                                 ]);
                         })
                         ->afterStateHydrated(function ($component, $state, $set) {

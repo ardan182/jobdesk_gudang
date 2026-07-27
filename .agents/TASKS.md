@@ -209,6 +209,17 @@
 - [x] UI/UX Restructure: Input SJ Supplier → 2 Section (Data Dokumen, Status Input)
 - [x] TV Board: tambah link URL + copy + buka tab baru di halaman pengaturan
 - [x] Hapus tombol "Input SJ Baru" — auto-create only dari Terima Supplier
+- [x] Install Aurum Theme (Gold default → Sapphire)
+- [x] Header actions: button hijau solid + size kecil via CSS
+- [x] Fix Carbon month() type error di ManageLeaves + Blade view
+- [x] Fix MasterKendaraan saved hook: tambah masa_berlaku di firstOrCreate
+- [x] KIR: ubah masa berlaku dari 3 bulan jadi 6 bulan
+- [x] KendaraanDokumen: tambah toggleable di kolom masa_berlaku
+- [x] Helper badge warna orange (Checker Terima Supplier + Checker Keluar Barang)
+- [x] Fix Retur Cabang edit: auto-fill kiriman_mobil_id, helpers proper pattern
+- [x] Retur Cabang: cabang/no_plat_mobil jadi TextInput (biar nilai tampil di edit)
+- [x] Retur Cabang: catatan_bagus, catatan_jelek, keterangan jadi nullable (form + DB)
+- [x] Retur Cabang: dropdown kiriman_mobil_id tampilkan tanggal_kirim
 
 ## Fase 17: Export/Import ⏳
 

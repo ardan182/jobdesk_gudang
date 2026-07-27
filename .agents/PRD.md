@@ -1,6 +1,6 @@
 # PRD — Jobdesk Gudang AP
 
-**Versi:** 2.2 | **Tanggal:** 25 Juli 2026
+**Versi:** 2.3 | **Tanggal:** 27 Juli 2026
 
 ---
 
@@ -215,6 +215,9 @@ Semua modul input **satu per satu** — tidak ada Repeater multi-row.
 - Grup waktu/jadwal pakai `columns(3)` agar lebih rapat
 - Kolom tabel bisa toggle show/hide via tombol Columns
 - Tombol "Input SJ Baru" dihapus — SJ auto-create dari Terima Supplier
+- **Header actions:** semua tombol Tambah/Simpan hijau solid, ukuran kecil (CSS)
+- **Aurum Theme:** tema Gold-on-Graphite (preset Sapphire: biru safir)
+- **Helpers badge:** warna orange (warning) + tooltip semua nama
 
 ---
 
