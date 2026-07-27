@@ -14,6 +14,7 @@ use Filament\PanelProvider;
 use App\Filament\Pages\Auth\Login as CustomLogin;
 use Filament\Support\Enums\Width;
 use ThalysJuvenal\Aurum\AurumTheme;
+use ThalysJuvenal\Aurum\Presets\Sapphire;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
@@ -32,6 +33,7 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login(CustomLogin::class)
             ->plugin(AurumTheme::make()
+                ->preset(Sapphire::class)
                 ->brandName('GUDANG AP')
                 ->brandTagline('JOBDESK GUDANG')
             )
@@ -129,6 +131,20 @@ class AdminPanelProvider extends PanelProvider
                     }
                     .dark .fi-ta-row.fi-striped {
                         background-color: rgba(255,255,255,0.04) !important;
+                    }
+
+                    /* ─── Header actions: hijau + kecil ─── */
+                    .fi-header-actions .fi-btn,
+                    .fi-header-actions a[type="button"],
+                    .fi-header-actions button {
+                        background: #22c55e !important;
+                        border-color: #22c55e !important;
+                        color: white !important;
+                        font-size: 0.85rem !important;
+                        padding: 0.3rem 0.85rem !important;
+                        height: auto !important;
+                        min-height: 0 !important;
+                        line-height: 1.4 !important;
                     }
                 </style>
                 <script>
