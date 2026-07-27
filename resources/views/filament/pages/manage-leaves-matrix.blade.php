@@ -9,8 +9,8 @@
     $jenisLabel = ['Cuti' => 'C', 'Sakit' => 'S', 'Izin' => 'I'];
     $employees = $this->employees;
     $calendar = $this->calendar;
-    $bulan = $this->bulan;
-    $tahun = $this->tahun;
+    $bulan = (int) $this->bulan;
+    $tahun = (int) $this->tahun;
 @endphp
 {{-- Legend --}}
 <div class="flex flex-wrap items-center gap-3 pb-2 text-xs text-gray-400">
