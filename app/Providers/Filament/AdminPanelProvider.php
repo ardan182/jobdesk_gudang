@@ -134,9 +134,7 @@ class AdminPanelProvider extends PanelProvider
                     }
 
                     /* ─── Header actions: hijau + kecil ─── */
-                    .fi-header-actions .fi-btn,
-                    .fi-header-actions a[type="button"],
-                    .fi-header-actions button {
+                    .fi-header-actions-ctn .fi-btn {
                         background: #22c55e !important;
                         border-color: #22c55e !important;
                         color: white !important;
