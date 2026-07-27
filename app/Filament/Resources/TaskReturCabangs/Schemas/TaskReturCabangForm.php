@@ -134,7 +134,6 @@ class TaskReturCabangForm
                         ->visible(fn ($get) => in_array($get('jenis_retur'), ['retur_bagus', 'rb_dan_rj'])),
                     Textarea::make('catatan_bagus')
                         ->label('Catatan Retur Bagus')
-                        ->required()
                         ->rows(2)
                         ->columnSpan(2)
                         ->visible(fn ($get) => in_array($get('jenis_retur'), ['retur_bagus', 'rb_dan_rj'])),
@@ -146,7 +145,6 @@ class TaskReturCabangForm
                         ->visible(fn ($get) => in_array($get('jenis_retur'), ['retur_jelek', 'rb_dan_rj'])),
                     Textarea::make('catatan_jelek')
                         ->label('Catatan Retur Jelek')
-                        ->required()
                         ->rows(2)
                         ->columnSpan(2)
                         ->visible(fn ($get) => in_array($get('jenis_retur'), ['retur_jelek', 'rb_dan_rj'])),
@@ -166,7 +164,6 @@ class TaskReturCabangForm
                         ->required(),
                     Textarea::make('keterangan')
                         ->label('Keterangan Global')
-                        ->required()
                         ->rows(3)
                         ->columnSpanFull()
                         ->placeholder('Catatan tambahan untuk semua jenis retur...'),
