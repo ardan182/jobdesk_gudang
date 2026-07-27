@@ -65,6 +65,7 @@ class KendaraanDokumensTable
                     ->sortable()
                     ->badge()
                     ->color(fn ($record): string => $record->status_warna)
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('user_perpanjang')
                     ->label('User')
