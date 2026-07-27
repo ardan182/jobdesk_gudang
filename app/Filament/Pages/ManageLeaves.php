@@ -72,7 +72,7 @@ class ManageLeaves extends Page
 
     public function loadData(): void
     {
-        $daysInMonth = now()->month($this->bulan)->daysInMonth;
+        $daysInMonth = now()->month((int) $this->bulan)->daysInMonth;
         $this->calendar = range(1, $daysInMonth);
         $startDate = "{$this->tahun}-{$this->bulan}-01";
         $endDate = "{$this->tahun}-{$this->bulan}-{$daysInMonth}";
