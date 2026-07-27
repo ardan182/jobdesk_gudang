@@ -45,7 +45,7 @@ class MasterKendaraan extends Model
             if (isset($changes['masa_berlaku_stnk'])) {
                 $dok = KendaraanDokumen::firstOrCreate([
                     'master_kendaraan_id' => $model->id, 'jenis' => 'stnk', 'periode' => '1_tahun',
-                ]);
+                ], ['masa_berlaku' => $changes['masa_berlaku_stnk']]);
                 if ($dok->masa_berlaku?->format('Y-m-d') !== $changes['masa_berlaku_stnk']) {
                     $dok->updateQuietly(['masa_berlaku' => $changes['masa_berlaku_stnk']]);
                 }
@@ -54,7 +54,11 @@ class MasterKendaraan extends Model
             if (isset($changes['stnk_5_tahun_sampai'])) {
                 $dok = KendaraanDokumen::firstOrCreate([
                     'master_kendaraan_id' => $model->id, 'jenis' => 'stnk', 'periode' => '5_tahun',
-                ], ['nomor_dokumen' => $model->no_stnk, 'user_perpanjang' => 'System']);
+                ], [
+                    'nomor_dokumen' => $model->no_stnk,
+                    'user_perpanjang' => 'System',
+                    'masa_berlaku' => $changes['stnk_5_tahun_sampai'],
+                ]);
                 if ($dok->masa_berlaku?->format('Y-m-d') !== $changes['stnk_5_tahun_sampai']) {
                     $dok->updateQuietly(['masa_berlaku' => $changes['stnk_5_tahun_sampai']]);
                 }
@@ -63,7 +67,7 @@ class MasterKendaraan extends Model
             if (isset($changes['masa_berlaku_kir'])) {
                 $dok = KendaraanDokumen::firstOrCreate([
                     'master_kendaraan_id' => $model->id, 'jenis' => 'kir',
-                ]);
+                ], ['masa_berlaku' => $changes['masa_berlaku_kir']]);
                 if ($dok->masa_berlaku?->format('Y-m-d') !== $changes['masa_berlaku_kir']) {
                     $dok->updateQuietly(['masa_berlaku' => $changes['masa_berlaku_kir']]);
                 }
