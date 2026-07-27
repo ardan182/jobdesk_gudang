@@ -106,7 +106,8 @@ class TaskTerimaSuppliersTable
                 TextColumn::make('helpers_names')
                     ->label('Helpers')
                     ->badge()
-                    ->color('success')
+                    ->color('warning')
+                    ->tooltip(fn ($record) => $record->helpers->pluck('nama_karyawan')->implode(', '))
                     ->getStateUsing(function ($record) {
                         $names = $record->helpers->pluck('nama_karyawan');
                         $result = $names->take(2)->toArray();
@@ -114,7 +115,8 @@ class TaskTerimaSuppliersTable
                             $result[] = '+' . ($names->count() - 2) . ' more';
                         }
                         return $result;
-                    }),
+                    })
+                    ->grow(false),
                 TextColumn::make('created_at')
                     ->label('Tanggal')
                     ->date('d/m/Y')

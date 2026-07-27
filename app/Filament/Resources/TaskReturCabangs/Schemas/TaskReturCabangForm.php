@@ -4,7 +4,6 @@ namespace App\Filament\Resources\TaskReturCabangs\Schemas;
 
 use App\Models\MasterSopir;
 use App\Models\TaskKirimanMobil;
-use App\Models\WarehouseEmployee;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -38,7 +37,7 @@ class TaskReturCabangForm
                                     $k->id => "{$k->cabang} - {$k->no_plat_mobil} - " . ($k->jam_tiba?->format('H:i') ?? '-'),
                                 ]);
                         })
-                        ->afterStateHydrated(function ($component, $state) {
+                        ->afterStateHydrated(function ($component, $state, $set) {
                             $record = $component->getRecord();
                             if ($record && $record->cabang && $record->no_plat_mobil) {
                                 $kirim = TaskKirimanMobil::where('cabang', $record->cabang)
@@ -46,6 +45,9 @@ class TaskReturCabangForm
                                     ->first();
                                 if ($kirim) {
                                     $component->state($kirim->id);
+                                    $set('cabang', $kirim->cabang);
+                                    $set('no_plat_mobil', $kirim->no_plat_mobil);
+                                    $set('jam_tiba', $kirim->jam_tiba?->format('H:i'));
                                 }
                             }
                         })
@@ -121,14 +123,8 @@ class TaskReturCabangForm
                         ->prefixIcon('heroicon-m-users')
                         ->multiple()
                         ->columnSpan(2)
-                        ->options(WarehouseEmployee::pluck('nama_karyawan', 'id'))
-                        ->searchable()
-                        ->afterStateHydrated(function ($component, $state) {
-                            $record = $component->getRecord();
-                            if ($record) {
-                                $component->state($record->helpers()->pluck('warehouse_employee_id')->toArray());
-                            }
-                        }),
+                        ->relationship('helpers', 'nama_karyawan')
+                        ->searchable(),
                     TextInput::make('jumlah_sj_bagus')
                         ->label('Jumlah SJ Retur Bagus')
                         ->prefixIcon('heroicon-m-document-text')

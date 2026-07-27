@@ -84,7 +84,7 @@ class TaskKeluarBarangsTable
                 TextColumn::make('helper')
                     ->label('Helper')
                     ->badge()
-                    ->color('success')
+                    ->color('warning')
                     ->tooltip(fn ($record) => $record->helper
                         ? WarehouseEmployee::whereIn('id', $record->helper)
                             ->pluck('nama_karyawan')
