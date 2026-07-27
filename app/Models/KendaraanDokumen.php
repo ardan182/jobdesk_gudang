@@ -30,7 +30,7 @@ class KendaraanDokumen extends Model
             if ($model->tanggal_terbit && !$model->masa_berlaku) {
                 $terbit = Carbon::parse($model->tanggal_terbit);
                 $model->masa_berlaku = match ($model->jenis) {
-                    'kir' => $terbit->copy()->addMonths(3),
+                    'kir' => $terbit->copy()->addMonths(6),
                     'stnk' => match ($model->periode) {
                         '5_tahun' => $terbit->copy()->addYears(5),
                         default => $terbit->copy()->addYear(),
@@ -98,7 +98,7 @@ class KendaraanDokumen extends Model
             '1_tahun' => '1 Tahun',
             '5_tahun' => '5 Tahun',
             default => match ($this->jenis) {
-                'kir' => '3 Bulan',
+                'kir' => '6 Bulan',
                 default => '-',
             },
         };
