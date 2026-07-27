@@ -14,9 +14,12 @@ use Filament\Schemas\Components\Section;
 use Filament\Support\Enums\Width;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Filament\Tables\Filters\Filter;
 use Filament\Forms\Components\DatePicker;
+use Filament\Schemas\Components\Grid;
 use Filament\Forms\Components\Select;
+use Filament\Tables\Enums\FiltersLayout;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 
 class TaskKeluarBarangsTable
@@ -113,43 +116,33 @@ class TaskKeluarBarangsTable
                     ->grow(false),
             ])
             ->filters([
-                Filter::make('status')
-                    ->label('Status')
-                    ->form([
-                        Select::make('status')
-                            ->label('Status')
-                            ->options([
-                                'draft' => 'Draft',
-                                'siap kirim' => 'Siap Kirim',
-                                'selesai' => 'Selesai',
-                            ])
-                            ->placeholder('Semua Status'),
-                    ])
-                    ->query(function (Builder $query, array $data): Builder {
-                        return $query->when(
-                            $data['status'] ?? null,
-                            fn (Builder $query, $status): Builder => $query->where('status', $status),
-                        );
-                    }),
+                SelectFilter::make('cabang')
+                    ->label('Cabang')
+                    ->options(fn () => \App\Models\MasterToko::pluck('nama_toko', 'nama_toko'))
+                    ->searchable()
+                    ->placeholder('Semua Cabang'),
                 Filter::make('created_at')
+                    ->label('Tanggal Buat')
                     ->form([
-                        DatePicker::make('created_from')
-                            ->label('Dari Tanggal'),
-                        DatePicker::make('created_until')
-                            ->label('Sampai Tanggal'),
+                        Grid::make(2)->schema([
+                            DatePicker::make('created_from')->label('Dari'),
+                            DatePicker::make('created_until')->label('Sampai'),
+                        ]),
                     ])
-                    ->query(function (Builder $query, array $data): Builder {
-                        return $query
-                            ->when(
-                                $data['created_from'],
-                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
-                            )
-                            ->when(
-                                $data['created_until'],
-                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
-                            );
-                    }),
-            ])
+                    ->query(fn (Builder $query, array $data) => $query
+                        ->when($data['created_from'], fn ($q, $d) => $q->whereDate('created_at', '>=', $d))
+                        ->when($data['created_until'], fn ($q, $d) => $q->whereDate('created_at', '<=', $d))
+                    ),
+                SelectFilter::make('status')
+                    ->label('Status')
+                    ->options([
+                        'draft' => 'Draft',
+                        'siap kirim' => 'Siap Kirim',
+                        'selesai' => 'Selesai',
+                    ])
+                    ->placeholder('Semua Status'),
+            ], layout: FiltersLayout::AboveContent)
+            ->filtersFormColumns(3)
             ->recordAction('view')
             ->recordActions([
                 ViewAction::make()
