@@ -2,7 +2,7 @@
 
 namespace App\Providers\Filament;
 
-use Filament\FontProviders\LocalFontProvider;
+use Filament\FontProviders\BundleFontProvider;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -13,7 +13,7 @@ use Filament\Panel;
 use Filament\PanelProvider;
 use App\Filament\Pages\Auth\Login as CustomLogin;
 use Filament\Support\Enums\Width;
-use Andreia\FilamentNordTheme\FilamentNordThemePlugin;
+use ThalysJuvenal\Aurum\AurumTheme;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
@@ -31,10 +31,11 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login(CustomLogin::class)
-            ->plugin(FilamentNordThemePlugin::make())
-            ->colors([
-                'primary' => '#EA580C',
-            ])
+            ->plugin(AurumTheme::make()
+                ->brandName('GUDANG AP')
+                ->brandTagline('JOBDESK GUDANG')
+            )
+            ->colors([])
             ->sidebarCollapsibleOnDesktop()
             ->sidebarWidth('14rem')
 
@@ -47,7 +48,7 @@ class AdminPanelProvider extends PanelProvider
                 NavigationGroup::make('Administrasi')->collapsed(true),
                 NavigationGroup::make('Pengaturan')->collapsed(true),
             ])
-            ->font('Arial', provider: LocalFontProvider::class)
+            ->font('Instrument Sans')
             ->maxContentWidth(Width::Full)
             ->renderHook('panels::head.end', fn (): HtmlString => new HtmlString('
                 <style>

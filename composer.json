@@ -17,7 +17,8 @@
         "filament/filament": "*",
         "laravel/framework": "^13.8",
         "laravel/tinker": "^3.0",
-        "spatie/laravel-permission": "^8.3"
+        "spatie/laravel-permission": "^8.3",
+        "thalysjuvenal/aurum-filament-theme": "*"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

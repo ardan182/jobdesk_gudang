@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "266bedb470210fa87a61a17a6e811f04",
+    "content-hash": "9d6ede726276437d3f77a29c4336154d",
     "packages": [
         {
             "name": "andreia/filament-nord-theme",
@@ -8201,6 +8201,68 @@
                 }
             ],
             "time": "2026-06-08T20:24:16+00:00"
+        },
+        {
+            "name": "thalysjuvenal/aurum-filament-theme",
+            "version": "v1.1.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/thalysjuvenal/aurum-filament-theme.git",
+                "reference": "b57fbdac697ae819dfc3f9c6a17f16294bae8003"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/thalysjuvenal/aurum-filament-theme/zipball/b57fbdac697ae819dfc3f9c6a17f16294bae8003",
+                "reference": "b57fbdac697ae819dfc3f9c6a17f16294bae8003",
+                "shasum": ""
+            },
+            "require": {
+                "filament/filament": "^5.0",
+                "php": "^8.2",
+                "spatie/laravel-package-tools": "^1.16"
+            },
+            "require-dev": {
+                "larastan/larastan": "^3.10",
+                "laravel/pint": "^1.29",
+                "orchestra/testbench": "^10.0",
+                "pestphp/pest": "^4.0",
+                "pestphp/pest-plugin-laravel": "^4.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "ThalysJuvenal\\Aurum\\AurumThemeServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "ThalysJuvenal\\Aurum\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Thalys Juvenal"
+                }
+            ],
+            "description": "Aurum — executive gold/graphite theme plugin for FilamentPHP v5 panels",
+            "keywords": [
+                "dark-sidebar",
+                "filament",
+                "filamentphp",
+                "laravel",
+                "theme"
+            ],
+            "support": {
+                "issues": "https://github.com/thalysjuvenal/aurum-filament-theme/issues",
+                "source": "https://github.com/thalysjuvenal/aurum-filament-theme/tree/v1.1.2"
+            },
+            "time": "2026-07-13T11:21:25+00:00"
         },
         {
             "name": "tijsverkoyen/css-to-inline-styles",
