@@ -220,6 +220,8 @@
 - [x] Retur Cabang: cabang/no_plat_mobil jadi TextInput (biar nilai tampil di edit)
 - [x] Retur Cabang: catatan_bagus, catatan_jelek, keterangan jadi nullable (form + DB)
 - [x] Retur Cabang: dropdown kiriman_mobil_id tampilkan tanggal_kirim
+- [x] Merge Retur Supplier: hapus Retur Keluar + Retur Masuk, buat menu Supplier Return In & Out
+- [x] Cuti & Absensi: dropdown tahun dinamis dari database + searchable
 
 ## Fase 17: Export/Import ⏳
 

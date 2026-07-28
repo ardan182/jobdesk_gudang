@@ -130,8 +130,8 @@ class ArrivalSupplierTruck extends Model
         return $this->hasMany(TaskTerimaSupplier::class, 'arrival_supplier_truck_id');
     }
 
-    public function taskReturSuppliers(): HasMany
+    public function supplierReturns(): HasMany
     {
-        return $this->hasMany(TaskReturSupplier::class, 'arrival_supplier_truck_id');
+        return $this->hasMany(SupplierReturn::class, 'arrival_supplier_truck_id');
     }
 }

@@ -5,7 +5,7 @@ namespace App\Filament\Widgets;
 use App\Models\TaskKeluarBarang;
 use App\Models\TaskKirimanMobil;
 use App\Models\TaskReturCabang;
-use App\Models\TaskReturSupplier;
+use App\Models\SupplierReturn;
 use App\Models\TaskTerimaSupplier;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
@@ -18,10 +18,10 @@ class StatsOverviewWidget extends BaseWidget
 
         if ($user?->hasRole('Admin')) {
             return [
-                Stat::make('Retur ke Supplier', TaskReturSupplier::count())
+                Stat::make('Retur ke Supplier', SupplierReturn::where('jenis_pengiriman', 'retur_keluar')->count())
                     ->icon('heroicon-o-arrow-left-on-rectangle')
                     ->color('warning'),
-                Stat::make('Retur dari Cabang', TaskReturCabang::count())
+                Stat::make('Retur dari Supplier', SupplierReturn::where('jenis_pengiriman', 'retur_masuk')->count())
                     ->icon('heroicon-o-arrow-right-on-rectangle')
                     ->color('info'),
                 Stat::make('Terima Barang', TaskTerimaSupplier::count())
@@ -41,10 +41,10 @@ class StatsOverviewWidget extends BaseWidget
 
         if ($user?->hasRole('Checker Retur')) {
             return [
-                Stat::make('Retur ke Supplier', TaskReturSupplier::where('user_id', $user->id)->count())
+                Stat::make('Retur ke Supplier', SupplierReturn::where('jenis_pengiriman', 'retur_keluar')->where('user_id', $user->id)->count())
                     ->icon('heroicon-o-arrow-left-on-rectangle')
                     ->color('warning'),
-                Stat::make('Retur dari Cabang', TaskReturCabang::where('user_id', $user->id)->count())
+                Stat::make('Retur dari Supplier', SupplierReturn::where('jenis_pengiriman', 'retur_masuk')->where('user_id', $user->id)->count())
                     ->icon('heroicon-o-arrow-right-on-rectangle')
                     ->color('info'),
             ];
