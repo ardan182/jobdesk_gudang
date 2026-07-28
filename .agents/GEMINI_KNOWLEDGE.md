@@ -70,10 +70,9 @@ npm run build
 | | Master Toko | BuildingStorefront | Admin |
 | | Master Supplier | BuildingStorefront | Admin |
 | | Master Employee Gudang | UserGroup | Admin |
+| **Purchasing Order** | Komplain PO | DocumentText | Semua |
 | **Retur** | Retur Masuk dari Cabang | ArrowPath | Admin, Checker Retur |
-| | Retur Keluar ke Supplier | ArrowUpOnSquare | Admin, Checker Retur |
-| | Retur Masuk dari Supplier | ArrowDownOnSquare | Semua |
-| | Retur Keluar untuk Cabang | PaperAirplane | Semua |
+| | Retur In & Out Supplier | ArrowUturnLeft | Admin, Checker Retur |
 | **Penerimaan** | Input SJ dari Supplier | DocumentText | Semua |
 | | Datang Mobil Supplier | Truck | Admin, Checker Terima |
 | | Checker Terima Barang Supplier | ClipboardDocumentList | Admin, Checker Terima |

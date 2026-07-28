@@ -281,3 +281,10 @@ Permission-based access control per-module & per-action, dikelola melalui UI Edi
 - [ ] **Default Role Permissions** — update RoleSeeder: setiap role punya permission default sesuai fungsinya
 - [ ] **Admin bypass** — Admin tetap punya semua permission implicit (Spatie `Super Admin` atau `*` wildcard)
 - [ ] **Test semua role + custom user** — verifikasi akses sesuai permission yang diset
+
+## Fase 19: Purchasing Order — Komplain PO ✅
+
+- [x] Grup navigasi baru **Purchasing Order** (sebelum Retur)
+- [x] Menu **Komplain PO** dengan icon `document-text`
+- [x] Halaman "Coming Soon" pending pengembangan fitur
+- [ ] Implementasi fitur Komplain PO (Gudang ↔ Admin PO)

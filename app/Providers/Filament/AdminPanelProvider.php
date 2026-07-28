@@ -44,6 +44,7 @@ class AdminPanelProvider extends PanelProvider
             ->favicon(asset('images/favicon.svg'))
             ->navigationGroups([
                 NavigationGroup::make('Master')->collapsed(true),
+                NavigationGroup::make('Purchasing Order')->collapsed(true),
                 NavigationGroup::make('Retur')->collapsed(true),
                 NavigationGroup::make('Penerimaan')->collapsed(true),
                 NavigationGroup::make('Pengiriman')->collapsed(true),
@@ -52,6 +53,11 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->font('Instrument Sans')
             ->maxContentWidth(Width::Full)
+            ->renderHook('panels::footer', fn (): HtmlString => new HtmlString('
+                <div style="text-align: center;" class="text-xs text-gray-500 py-3 border-t border-gray-200/10">
+                    &copy; ' . date('Y') . ' jobdesk MSK. All rights reserved.
+                </div>
+            '))
             ->renderHook('panels::head.end', fn (): HtmlString => new HtmlString('
                 <style>
                     html { font-size: 14px; }
@@ -184,6 +190,7 @@ class AdminPanelProvider extends PanelProvider
             ->pages([
                 Dashboard::class,
                 \App\Filament\Pages\ManageLeaves::class,
+                \App\Filament\Pages\KomplainPo::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
