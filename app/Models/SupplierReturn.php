@@ -18,10 +18,11 @@ class SupplierReturn extends Model
         'no_plat_mobil',
         'tanggal_datang',
         'jam_kedatangan',
-        'jenis_retur',
+        'jenis_retur_keluar',
+        'jenis_retur_masuk',
         'no_nota_retur',
-        'total_koli',
-        'total_kolian',
+        'total_koli_keluar',
+        'total_kolian_masuk',
         'status',
         'keterangan',
         'user_id',
@@ -30,8 +31,8 @@ class SupplierReturn extends Model
     protected $casts = [
         'tanggal_datang' => 'date:Y-m-d',
         'jam_kedatangan' => 'datetime:H:i',
-        'total_koli' => 'integer',
-        'total_kolian' => 'integer',
+        'total_koli_keluar' => 'integer',
+        'total_kolian_masuk' => 'integer',
     ];
 
     protected $attributes = [

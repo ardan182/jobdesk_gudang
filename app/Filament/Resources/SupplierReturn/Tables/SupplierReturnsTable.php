@@ -70,19 +70,33 @@ class SupplierReturnsTable
                     ->date('d/m/Y')
                     ->sortable()
                     ->grow(false),
-                TextColumn::make('jenis_retur')
-                    ->label('Jenis Retur')
+                TextColumn::make('jenis_retur_keluar')
+                    ->label('Jenis Retur Keluar')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
                         'servis' => 'warning',
                         'ganti_barang' => 'info',
-                        'potong_nota' => 'danger',
                         default => 'gray',
                     })
                     ->formatStateUsing(fn (string $state): string => match ($state) {
                         'servis' => 'Servis',
                         'ganti_barang' => 'Ganti Barang',
+                        default => $state,
+                    })
+                    ->grow(false),
+                TextColumn::make('jenis_retur_masuk')
+                    ->label('Jenis Retur Masuk')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'potong_nota' => 'danger',
+                        'servis' => 'warning',
+                        'ganti_barang' => 'info',
+                        default => 'gray',
+                    })
+                    ->formatStateUsing(fn (string $state): string => match ($state) {
                         'potong_nota' => 'Potong Nota',
+                        'servis' => 'Servis',
+                        'ganti_barang' => 'Ganti Barang',
                         default => $state,
                     })
                     ->grow(false),
@@ -90,14 +104,14 @@ class SupplierReturnsTable
                     ->label('No Nota')
                     ->searchable()
                     ->grow(false),
-                TextColumn::make('total_koli')
-                    ->label('Koli')
+                TextColumn::make('total_koli_keluar')
+                    ->label('Koli Keluar')
                     ->numeric()
                     ->sortable()
                     ->toggleable()
                     ->grow(false),
-                TextColumn::make('total_kolian')
-                    ->label('Kolian')
+                TextColumn::make('total_kolian_masuk')
+                    ->label('Kolian Masuk')
                     ->numeric()
                     ->sortable()
                     ->toggleable()
@@ -172,10 +186,11 @@ class SupplierReturnsTable
                                 TextEntry::make('no_plat_mobil')->label('No Plat'),
                                 TextEntry::make('tanggal_datang')->label('Tgl Datang')->date('d/m/Y'),
                                 TextEntry::make('jam_kedatangan')->label('Jam Kedatangan'),
-                                TextEntry::make('jenis_retur')->label('Jenis Retur')->badge(),
+                                TextEntry::make('jenis_retur_keluar')->label('Jenis Retur Keluar')->badge(),
+                                TextEntry::make('jenis_retur_masuk')->label('Jenis Retur Masuk')->badge(),
                                 TextEntry::make('no_nota_retur')->label('No Nota'),
-                                TextEntry::make('total_koli')->label('Koli'),
-                                TextEntry::make('total_kolian')->label('Kolian'),
+                                TextEntry::make('total_koli_keluar')->label('Koli Keluar'),
+                                TextEntry::make('total_kolian_masuk')->label('Kolian Masuk'),
                                 TextEntry::make('status')->label('Status')->badge(),
                                 TextEntry::make('keterangan')->label('Keterangan')->columnSpanFull(),
                             ]),

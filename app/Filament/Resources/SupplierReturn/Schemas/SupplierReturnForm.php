@@ -98,31 +98,13 @@ class SupplierReturnForm
                         ->seconds(false),
                 ]),
             Section::make('Detail Retur')
-                ->description('Jenis retur, nota, dan quantity')
-                ->columns(2)
+                ->description('Nota, status, jenis retur, dan quantity')
+                ->columns(3)
                 ->schema([
-                    Select::make('jenis_retur')
-                        ->label('Jenis Retur')
-                        ->prefixIcon('heroicon-m-tag')
-                        ->required()
-                        ->live()
-                        ->options(fn ($get) => self::getReturOptions($get('jenis_pengiriman'))),
                     TextInput::make('no_nota_retur')
                         ->label('No Nota Retur')
                         ->prefixIcon('heroicon-m-document-text')
                         ->required(),
-                    TextInput::make('total_koli')
-                        ->label('Total Koli')
-                        ->prefixIcon('heroicon-m-cube')
-                        ->numeric()
-                        ->minValue(1)
-                        ->visible(fn ($get) => in_array($get('jenis_pengiriman'), ['retur_masuk', 'datang_dan_keluar'])),
-                    TextInput::make('total_kolian')
-                        ->label('Total Kolian')
-                        ->prefixIcon('heroicon-m-cube')
-                        ->numeric()
-                        ->minValue(1)
-                        ->visible(fn ($get) => in_array($get('jenis_pengiriman'), ['retur_keluar', 'datang_dan_keluar'])),
                     Select::make('status')
                         ->label('Status')
                         ->prefixIcon('heroicon-m-check-badge')
@@ -132,27 +114,41 @@ class SupplierReturnForm
                         ])
                         ->default('draft')
                         ->required(),
+                    Select::make('jenis_retur_keluar')
+                        ->label('Jenis Retur Keluar')
+                        ->prefixIcon('heroicon-m-tag')
+                        ->options([
+                            'servis' => 'Servis',
+                            'ganti_barang' => 'Ganti Barang',
+                        ])
+                        ->visible(fn ($get) => in_array($get('jenis_pengiriman'), ['retur_keluar', 'datang_dan_keluar'])),
+                    TextInput::make('total_koli_keluar')
+                        ->label('Total Koli Keluar')
+                        ->prefixIcon('heroicon-m-cube')
+                        ->numeric()
+                        ->minValue(1)
+                        ->visible(fn ($get) => in_array($get('jenis_pengiriman'), ['retur_keluar', 'datang_dan_keluar'])),
+                    Select::make('jenis_retur_masuk')
+                        ->label('Jenis Retur Masuk')
+                        ->prefixIcon('heroicon-m-tag')
+                        ->options([
+                            'potong_nota' => 'Potong Nota',
+                            'servis' => 'Servis',
+                            'ganti_barang' => 'Ganti Barang',
+                        ])
+                        ->visible(fn ($get) => in_array($get('jenis_pengiriman'), ['retur_masuk', 'datang_dan_keluar'])),
+                    TextInput::make('total_kolian_masuk')
+                        ->label('Total Kolian Masuk')
+                        ->prefixIcon('heroicon-m-cube')
+                        ->numeric()
+                        ->minValue(1)
+                        ->visible(fn ($get) => in_array($get('jenis_pengiriman'), ['retur_masuk', 'datang_dan_keluar'])),
                     Textarea::make('keterangan')
                         ->label('Keterangan')
                         ->columnSpanFull()
                         ->rows(3),
                 ]),
         ];
-    }
-
-    public static function getReturOptions(?string $jenisPengiriman): array
-    {
-        return match ($jenisPengiriman) {
-            'retur_masuk' => [
-                'servis' => 'Servis',
-                'ganti_barang' => 'Ganti Barang',
-            ],
-            default => [
-                'potong_nota' => 'Potong Nota',
-                'servis' => 'Servis',
-                'ganti_barang' => 'Ganti Barang',
-            ],
-        };
     }
 
     private static function getTakenTruckIds($record): array
