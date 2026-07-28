@@ -29,6 +29,7 @@ class SupplierReturnForm
                         ->searchable()
                         ->preload()
                         ->placeholder('Pilih mobil datang...')
+                        ->disabled(fn ($component) => $component->getRecord() !== null)
                         ->columnSpanFull()
                         ->live()
                         ->options(function ($component) {
@@ -63,6 +64,7 @@ class SupplierReturnForm
                             'retur_keluar' => 'Retur Keluar',
                             'datang_dan_keluar' => 'Datang & Keluar',
                         ])
+                        ->disabled(fn ($state, $component) => $component?->getRecord() !== null)
                         ->required()
                         ->live()
                         ->columnSpanFull(),
