@@ -208,7 +208,13 @@ class ManageLeaves extends Page
                                             ->live(),
                                         Select::make('tahun')
                                             ->label('Tahun')
-                                            ->options(array_combine(range(now()->year - 2, now()->year + 2), range(now()->year - 2, now()->year + 2)))
+                                            ->searchable()
+                                            ->options(function () {
+                                                $firstYear = \App\Models\WarehouseLeave::query()
+                                                    ->min(\Illuminate\Support\Facades\DB::raw('YEAR(tanggal_mulai)')) ?? now()->year;
+                                                $range = range($firstYear, now()->year + 2);
+                                                return array_combine($range, $range);
+                                            })
                                             ->default($this->tahun)
                                             ->live(),
                                         Select::make('filter_divisi')
