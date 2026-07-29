@@ -33,26 +33,31 @@ class TaskKeluarBarangsTable
                     ->label('ID Task')
                     ->searchable()
                     ->sortable()
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('cabang')
                     ->label('Cabang')
                     ->searchable()
                     ->width('120px')
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('nomor_sj')
                     ->label('No SJ')
                     ->searchable()
                     ->width('130px')
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('total_qty')
                     ->label('Qty Input')
                     ->numeric()
                     ->sortable()
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('qty_checker')
                     ->label('Qty Checker')
                     ->numeric()
                     ->sortable()
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('no_po')
                     ->label('No PO')
@@ -63,6 +68,7 @@ class TaskKeluarBarangsTable
                     ->label('Jam Disiapkan')
                     ->time('H:i')
                     ->sortable()
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('status')
                     ->label('Status')
@@ -79,10 +85,12 @@ class TaskKeluarBarangsTable
                         'selesai' => 'Selesai',
                         default => $state,
                     })
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('diserahkan_kepada')
                     ->label('Diserahkan')
                     ->searchable()
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('helper')
                     ->label('Helper')
@@ -102,17 +110,20 @@ class TaskKeluarBarangsTable
                         }
                         return $result;
                     })
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('user.name')
                     ->label('Checker')
                     ->searchable()
                     ->sortable()
                     ->visible(fn () => auth()->user()?->hasRole('Admin') ?? false)
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('created_at')
                     ->label('Tanggal')
                     ->date('d/m/Y')
                     ->sortable()
+                    ->toggleable()
                     ->grow(false),
             ])
             ->filters([

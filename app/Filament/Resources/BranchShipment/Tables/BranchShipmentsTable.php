@@ -33,6 +33,7 @@ class BranchShipmentsTable
                     ->label('ID Task')
                     ->searchable()
                     ->sortable()
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('pilih_kiriman')
                     ->label('Kiriman')
@@ -49,16 +50,19 @@ class BranchShipmentsTable
                         'rb_pesanan' => 'danger',
                         default => 'gray',
                     })
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('cabang')
                     ->label('Cabang')
                     ->searchable()
                     ->sortable()
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('nomor_sj')
                     ->label('No SJ')
                     ->searchable()
                     ->sortable()
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('no_po')
                     ->label('No PO')
@@ -69,6 +73,7 @@ class BranchShipmentsTable
                     ->label('Qty')
                     ->numeric()
                     ->sortable()
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('tanggal_buat')
                     ->label('Tgl Buat')
@@ -88,12 +93,14 @@ class BranchShipmentsTable
                         'selesai' => 'Selesai',
                         default => $state,
                     })
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('user.name')
                     ->label('Dibuat')
                     ->searchable()
                     ->sortable()
                     ->visible(fn () => auth()->user()?->hasRole('Admin') ?? false)
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('created_at')
                     ->label('Dibuat')
@@ -140,7 +147,7 @@ class BranchShipmentsTable
                     ])
                     ->placeholder('Semua'),
             ], layout: FiltersLayout::AboveContent)
-            ->filtersFormColumns(5)
+            ->filtersFormColumns(4)
             ->recordActions([
                 ViewAction::make()
                     ->iconButton()
