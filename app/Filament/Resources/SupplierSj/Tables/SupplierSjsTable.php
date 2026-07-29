@@ -8,12 +8,18 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
+use Filament\Forms\Components\DatePicker;
+use Filament\Schemas\Components\Grid;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Notifications\Notification;
 use Filament\Schemas\Components\Section;
 use Filament\Support\Enums\Width;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Enums\FiltersLayout;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class SupplierSjsTable
 {
@@ -22,40 +28,48 @@ class SupplierSjsTable
         return $table
             ->defaultPaginationPageOption(50)
             ->defaultSort('created_at', 'desc')
+            ->description('Data dibuat otomatis dari modul Terima mobil Supplier.')
             ->recordAction('view')
             ->columns([
                 TextColumn::make('id_task')
                     ->label('ID Task')
                     ->searchable()
                     ->sortable()
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('nama_supplier')
                     ->label('Nama Supplier')
                     ->searchable()
                     ->sortable()
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('tanggal_datang')
                     ->label('Tgl Datang')
                     ->date('d/m/Y')
                     ->sortable()
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('nomor_po_referensi')
                     ->label('No PO')
                     ->searchable()
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('jumlah_koli')
                     ->label('Koli')
                     ->numeric()
                     ->sortable()
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('jumlah_faktur')
                     ->label('Faktur')
                     ->numeric()
                     ->sortable()
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('status_input')
                     ->label('Status')
                     ->badge()
+                    ->toggleable()
                     ->color(fn (string $state): string => match ($state) {
                         'belum_di_cek' => 'gray',
                         'draft' => 'warning',
@@ -72,6 +86,7 @@ class SupplierSjsTable
                 TextColumn::make('tempo')
                     ->label('Tempo')
                     ->badge()
+                    ->toggleable()
                     ->grow(false)
                     ->color(fn ($record): string => match ($record->status_input) {
                         'belum_di_cek', 'draft' => 'danger',
@@ -83,6 +98,7 @@ class SupplierSjsTable
                     ->label('Tgl Input')
                     ->date('d/m/Y')
                     ->sortable()
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('keterangan')
                     ->label('Keterangan')
@@ -95,7 +111,38 @@ class SupplierSjsTable
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->grow(false),
             ])
-            ->filters([])
+            ->filters([
+                SelectFilter::make('nama_supplier')
+                    ->label('Nama Supplier')
+                    ->options(fn () => \App\Models\SupplierSj::distinct()->pluck('nama_supplier', 'nama_supplier'))
+                    ->searchable()
+                    ->placeholder('Semua'),
+                Filter::make('tanggal_input')
+                    ->label('Tgl Input')
+                    ->form([
+                        Grid::make(2)->schema([
+                            DatePicker::make('input_dari')
+                                ->label('Dari')
+                                ->helperText('tgl mulai'),
+                            DatePicker::make('input_sampai')
+                                ->label('Sampai')
+                                ->helperText('tgl akhir'),
+                        ]),
+                    ])
+                    ->query(fn (Builder $query, array $data) => $query
+                        ->when($data['input_dari'], fn ($q, $d) => $q->whereDate('tanggal_input', '>=', $d))
+                        ->when($data['input_sampai'], fn ($q, $d) => $q->whereDate('tanggal_input', '<=', $d))
+                    ),
+                SelectFilter::make('status_input')
+                    ->label('Status')
+                    ->options([
+                        'belum_di_cek' => 'Belum Di Cek',
+                        'draft' => 'Draft',
+                        'selesai' => 'Selesai',
+                    ])
+                    ->placeholder('Semua'),
+            ], layout: FiltersLayout::AboveContent)
+            ->filtersFormColumns(3)
             ->recordActions([
                 ViewAction::make()
                     ->iconButton()

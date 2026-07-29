@@ -8,14 +8,16 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
+use Filament\Forms\Components\DatePicker;
+use Filament\Schemas\Components\Grid;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Section;
 use Filament\Support\Enums\Width;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Table;
+use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Filters\Filter;
-use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Select;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 
 class TaskKirimanMobilsTable
@@ -141,43 +143,44 @@ class TaskKirimanMobilsTable
                     ->grow(false),
             ])
             ->filters([
-                Filter::make('status')
+                SelectFilter::make('cabang')
+                    ->label('Cabang')
+                    ->options(fn () => \App\Models\MasterToko::pluck('nama_toko', 'nama_toko'))
+                    ->searchable()
+                    ->placeholder('Semua Cabang'),
+                Filter::make('tanggal_kirim')
+                    ->label('Tanggal Kirim')
+                    ->form([
+                        Grid::make(2)->schema([
+                            DatePicker::make('kirim_dari')
+                                ->label('Dari')
+                                ->helperText('tgl kirim mulai'),
+                            DatePicker::make('kirim_sampai')
+                                ->label('Sampai')
+                                ->helperText('tgl kirim akhir'),
+                        ]),
+                    ])
+                    ->query(fn (Builder $query, array $data) => $query
+                        ->when($data['kirim_dari'], fn ($q, $d) => $q->whereDate('tanggal_kirim', '>=', $d))
+                        ->when($data['kirim_sampai'], fn ($q, $d) => $q->whereDate('tanggal_kirim', '<=', $d))
+                    ),
+                SelectFilter::make('retur_option')
+                    ->label('Retur')
+                    ->options([
+                        'tidak_ada_retur' => 'Tidak Ada Retur',
+                        'ada_retur' => 'Ada Retur',
+                    ])
+                    ->placeholder('Semua'),
+                SelectFilter::make('status')
                     ->label('Status')
-                    ->form([
-                        Select::make('status')
-                            ->label('Status')
-                            ->options([
-                                'draft' => 'Draft',
-                                'dalam pengiriman' => 'Dalam Pengiriman',
-                                'datang' => 'Datang',
-                            ])
-                            ->placeholder('Semua Status'),
+                    ->options([
+                        'draft' => 'Draft',
+                        'dalam pengiriman' => 'Dalam Pengiriman',
+                        'selesai' => 'Selesai',
                     ])
-                    ->query(function (Builder $query, array $data): Builder {
-                        return $query->when(
-                            $data['status'] ?? null,
-                            fn (Builder $query, $status): Builder => $query->where('status', $status),
-                        );
-                    }),
-                Filter::make('created_at')
-                    ->form([
-                        DatePicker::make('created_from')
-                            ->label('Dari Tanggal'),
-                        DatePicker::make('created_until')
-                            ->label('Sampai Tanggal'),
-                    ])
-                    ->query(function (Builder $query, array $data): Builder {
-                        return $query
-                            ->when(
-                                $data['created_from'],
-                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
-                            )
-                            ->when(
-                                $data['created_until'],
-                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
-                            );
-                    }),
-            ])
+                    ->placeholder('Semua Status'),
+            ], layout: FiltersLayout::AboveContent)
+            ->filtersFormColumns(4)
             ->recordAction('view')
             ->recordActions([
                 ViewAction::make()

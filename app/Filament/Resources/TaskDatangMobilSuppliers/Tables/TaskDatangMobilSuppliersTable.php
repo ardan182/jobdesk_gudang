@@ -8,10 +8,16 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
+use Filament\Forms\Components\DatePicker;
+use Filament\Schemas\Components\Grid;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Section;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Enums\FiltersLayout;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class TaskDatangMobilSuppliersTable
 {
@@ -100,7 +106,51 @@ class TaskDatangMobilSuppliersTable
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->grow(false),
             ])
-            ->filters([])
+            ->filters([
+                SelectFilter::make('supplier_id')
+                    ->label('Supplier')
+                    ->relationship('supplier', 'nama_supplier')
+                    ->searchable()
+                    ->placeholder('Semua Supplier'),
+                SelectFilter::make('expedition_id')
+                    ->label('Ekspedisi')
+                    ->relationship('expedition', 'nama_ekspedisi')
+                    ->searchable()
+                    ->placeholder('Semua Ekspedisi'),
+                SelectFilter::make('jenis_kiriman')
+                    ->label('Jenis Kiriman')
+                    ->options([
+                        'DATANG' => 'Datang',
+                        'RETUR' => 'Retur',
+                        'DATANG & RETUR' => 'Datang & Retur',
+                    ])
+                    ->placeholder('Semua'),
+                Filter::make('tanggal_datang')
+                    ->label('Tgl Datang')
+                    ->form([
+                        Grid::make(2)->schema([
+                            DatePicker::make('datang_dari')
+                                ->label('Dari')
+                                ->helperText('tgl mulai'),
+                            DatePicker::make('datang_sampai')
+                                ->label('Sampai')
+                                ->helperText('tgl akhir'),
+                        ]),
+                    ])
+                    ->query(fn (Builder $query, array $data) => $query
+                        ->when($data['datang_dari'], fn ($q, $d) => $q->whereDate('tanggal_datang', '>=', $d))
+                        ->when($data['datang_sampai'], fn ($q, $d) => $q->whereDate('tanggal_datang', '<=', $d))
+                    ),
+                SelectFilter::make('status')
+                    ->label('Status')
+                    ->options([
+                        'MENGANTRI' => 'Mengantri',
+                        'PROSES' => 'Proses',
+                        'SELESAI' => 'Selesai',
+                    ])
+                    ->placeholder('Semua Status'),
+            ], layout: FiltersLayout::AboveContent)
+            ->filtersFormColumns(5)
             ->recordActions([
                 ViewAction::make()
                     ->iconButton()

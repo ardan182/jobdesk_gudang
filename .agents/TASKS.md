@@ -282,6 +282,17 @@ Permission-based access control per-module & per-action, dikelola melalui UI Edi
 - [ ] **Admin bypass** — Admin tetap punya semua permission implicit (Spatie `Super Admin` atau `*` wildcard)
 - [ ] **Test semua role + custom user** — verifikasi akses sesuai permission yang diset
 
+## Fase 20: Filter AboveContent + UI Polish ✅
+
+- [x] **BranchShipment (Input Kirim Barang)** — filter AboveContent: Kiriman, Cabang, Tanggal, Status; 5 kolom
+- [x] **TaskKeluarBarangs (Checker Keluar Barang)** — filter AboveContent: Cabang, Tanggal, Status; 3 kolom
+- [x] **TaskKirimanMobils (Kiriman Mobil)** — filter AboveContent: Cabang, Tgl Kirim, Retur, Status; 4 kolom + helper text
+- [x] **TaskTerimaSuppliers** — pisah kolom Supplier/Ekspedisi; toggleable semua kolom; filter AboveContent: Supplier, Status, Tanggal; 4 kolom
+- [x] **TaskDatangMobilSuppliers** — filter AboveContent: Supplier, Ekspedisi, Jenis Kiriman, Tgl Datang, Status; 5 kolom
+- [x] **SupplierSj (Input SJ Supplier)** — filter AboveContent: Nama Supplier, Tgl Input, Status; 3 kolom; toggleable semua kolom; description auto-created
+- [x] CSS light mode — pertebal border input/modal/table (1.5px #C8C4BC)
+- [x] Footer — text center "© 2026 jobdesk MSK. All rights reserved."
+
 ## Fase 19: Purchasing Order — Komplain PO ✅
 
 - [x] Grup navigasi baru **Purchasing Order** (sebelum Retur)

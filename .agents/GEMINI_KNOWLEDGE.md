@@ -61,28 +61,28 @@ npm run build
 
 ## 4. Navigation Groups
 
-| Group | Menu | Ikon | Role Access |
-|-------|------|------|-------------|
-| **Dashboard** (no group) | Dasbor | home | Semua role |
-| **Master** | Master Ekspedisi | BuildingOffice2 | Admin |
-| | Master Kendaraan | Truck | Admin |
-| | Master Sopir | Users | Admin |
-| | Master Toko | BuildingStorefront | Admin |
-| | Master Supplier | BuildingStorefront | Admin |
-| | Master Employee Gudang | UserGroup | Admin |
-| **Purchasing Order** | Komplain PO | DocumentText | Semua |
-| **Retur** | Retur Masuk dari Cabang | ArrowPath | Admin, Checker Retur |
-| | Retur In & Out Supplier | ArrowUturnLeft | Admin, Checker Retur |
-| **Penerimaan** | Input SJ dari Supplier | DocumentText | Semua |
-| | Datang Mobil Supplier | Truck | Admin, Checker Terima |
-| | Checker Terima Barang Supplier | ClipboardDocumentList | Admin, Checker Terima |
-| **Pengiriman** | Input Kirim Barang | PaperAirplane | Admin, Checker Keluar |
-| | Checker Keluar Barang | ClipboardDocumentCheck | Admin, Checker Keluar |
-| | Kiriman Mobil | Truck | Admin, Checker Kiriman |
-| **Administrasi** | Cuti & Absensi | CalendarDays | Admin |
-| | Pusat Dokumen | DocumentArrowDown | Admin (CRUD), all (view) |
-| **Pengaturan** | Users | RectangleStack | Admin |
-| | Pengaturan Board TV | tv | Admin |
+| Group | Menu | Ikon | Role Access | Filter Layout |
+|-------|------|------|-------------|---------------|
+| **Dashboard** (no group) | Dasbor | home | Semua role | — |
+| **Master** | Master Ekspedisi | BuildingOffice2 | Admin | Dropdown |
+| | Master Kendaraan | Truck | Admin | Dropdown |
+| | Master Sopir | Users | Admin | Dropdown |
+| | Master Toko | BuildingStorefront | Admin | Dropdown |
+| | Master Supplier | BuildingStorefront | Admin | Dropdown |
+| | Master Employee Gudang | UserGroup | Admin | Dropdown |
+| **Purchasing Order** | Komplain PO | DocumentText | Semua | — |
+| **Retur** | Retur Masuk dari Cabang | ArrowPath | Admin, Checker Retur | Dropdown |
+| | Retur In & Out Supplier | ArrowUturnLeft | Admin, Checker Retur | Dropdown |
+| **Penerimaan** | Input SJ dari Supplier | DocumentText | Semua | **AboveContent** (3 col) |
+| | Datang Mobil Supplier | Truck | Admin, Checker Terima | **AboveContent** (5 col) |
+| | Checker Terima Barang Supplier | ClipboardDocumentList | Admin, Checker Terima | **AboveContent** (4 col) |
+| **Pengiriman** | Input Kirim Barang | PaperAirplane | Admin, Checker Keluar | **AboveContent** (5 col) |
+| | Checker Keluar Barang | ClipboardDocumentCheck | Admin, Checker Keluar | **AboveContent** (3 col) |
+| | Kiriman Mobil | Truck | Admin, Checker Kiriman | **AboveContent** (4 col) |
+| **Administrasi** | Cuti & Absensi | CalendarDays | Admin | — |
+| | Pusat Dokumen | DocumentArrowDown | Admin (CRUD), all (view) | Dropdown |
+| **Pengaturan** | Users | RectangleStack | Admin | Dropdown |
+| | Pengaturan Board TV | tv | Admin | — |
 
 ---
 

@@ -132,6 +132,26 @@ getEloquentQuery() → filter own data untuk non-Admin (via permission check)
 - **Icons:** Semua tombol Create pake `->icon('heroicon-m-plus')`
 - **Font:** Arial 14px
 
+### 2.12 Filter UI Standard (AboveContent)
+
+6 menu task sudah menggunakan layout `AboveContent` — filter langsung terlihat di atas tabel tanpa klik dropdown:
+
+| Menu | Jumlah Filter | Layout |
+|------|--------------|--------|
+| Input Kirim Barang | 4 (Kiriman, Cabang, Tanggal, Status) | 5 kolom |
+| Checker Keluar Barang | 3 (Cabang, Tanggal, Status) | 3 kolom |
+| Kiriman Mobil | 4 (Cabang, Tgl Kirim, Retur, Status) | 4 kolom |
+| Checker Terima Supplier | 3 (Supplier, Status, Tanggal) | 4 kolom |
+| Datang Mobil Supplier | 5 (Supplier, Ekspedisi, Jenis Kiriman, Tgl Datang, Status) | 5 kolom |
+| Input SJ Supplier | 3 (Nama Supplier, Tgl Input, Status) | 3 kolom |
+
+**Aturan:**
+- `SelectFilter` → auto-apply saat dipilih
+- `Filter` + DatePicker → ada tombol Terapkan
+- Date inline: `Grid::make(2)` untuk Dari + Sampai
+- Helper text: lowercase ("tgl mulai", "tgl akhir")
+- Semua kolom tabel: `->toggleable()` untuk show/hide kolom
+
 ---
 
 ## 3. Database

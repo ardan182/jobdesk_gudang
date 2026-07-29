@@ -8,13 +8,16 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
+use Filament\Forms\Components\DatePicker;
+use Filament\Schemas\Components\Grid;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Section;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Table;
-use Filament\Tables\Filters\Filter;
-use Filament\Forms\Components\DatePicker;
 use Filament\Support\Enums\Width;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Enums\FiltersLayout;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 
 class TaskTerimaSuppliersTable
@@ -28,44 +31,50 @@ class TaskTerimaSuppliersTable
                     ->label('ID Task')
                     ->searchable()
                     ->sortable()
+                    ->toggleable()
                     ->grow(false),
-                TextColumn::make('arrivalSupplierTruck.no_plat_mobil')
-                    ->label('Plat Mobil')
+                TextColumn::make('arrivalSupplierTruck.supplier.nama_supplier')
+                    ->label('Supplier')
                     ->searchable()
                     ->toggleable()
                     ->grow(false),
-                TextColumn::make('nama_supplier_ekspedisi')
-                    ->label('Supplier / Ekspedisi')
+                TextColumn::make('arrivalSupplierTruck.expedition.nama_ekspedisi')
+                    ->label('Ekspedisi')
                     ->searchable()
-                    ->width('160px')
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('no_po_referensi')
                     ->label('No PO Referensi')
                     ->searchable()
-                    ->width('140px')
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('jumlah_kolian')
                     ->label('Kolian')
                     ->numeric()
                     ->sortable()
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('jam_datang')
                     ->label('Jam Datang')
                     ->time('H:i')
                     ->sortable()
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('jam_bongkar')
                     ->label('Jam Bongkar')
                     ->time('H:i')
                     ->sortable()
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('selesai_bongkar')
                     ->label('Selesai Bongkar')
                     ->time('H:i')
                     ->sortable()
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('lama_bongkar')
                     ->label('Lama Bkr')
+                    ->toggleable()
                     ->grow(false)
                     ->getStateUsing(function ($record) {
                         if (!$record->jam_bongkar || !$record->selesai_bongkar) return '-';
@@ -78,14 +87,17 @@ class TaskTerimaSuppliersTable
                     ->label('Lembar SJ')
                     ->numeric()
                     ->sortable()
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('nama_sopir')
                     ->label('Sopir')
                     ->searchable()
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('status')
                     ->label('Status')
                     ->badge()
+                    ->toggleable()
                     ->color(fn (string $state): string => match ($state) {
                         'DRAFT' => 'gray',
                         'SELESAI' => 'success',
@@ -107,6 +119,7 @@ class TaskTerimaSuppliersTable
                     ->label('Helpers')
                     ->badge()
                     ->color('warning')
+                    ->toggleable()
                     ->tooltip(fn ($record) => $record->helpers->pluck('nama_karyawan')->implode(', '))
                     ->getStateUsing(function ($record) {
                         $names = $record->helpers->pluck('nama_karyawan');
@@ -121,28 +134,40 @@ class TaskTerimaSuppliersTable
                     ->label('Tanggal')
                     ->date('d/m/Y')
                     ->sortable()
+                    ->toggleable()
                     ->grow(false),
             ])
             ->filters([
+                SelectFilter::make('arrivalSupplierTruck.supplier_id')
+                    ->label('Supplier')
+                    ->relationship('arrivalSupplierTruck.supplier', 'nama_supplier')
+                    ->searchable()
+                    ->placeholder('Semua Supplier'),
                 Filter::make('created_at')
+                    ->label('Tanggal')
                     ->form([
-                        DatePicker::make('created_from')
-                            ->label('Dari Tanggal'),
-                        DatePicker::make('created_until')
-                            ->label('Sampai Tanggal'),
+                        Grid::make(2)->schema([
+                            DatePicker::make('created_from')
+                                ->label('Dari')
+                                ->helperText('tgl mulai'),
+                            DatePicker::make('created_until')
+                                ->label('Sampai')
+                                ->helperText('tgl akhir'),
+                        ]),
                     ])
-                    ->query(function (Builder $query, array $data): Builder {
-                        return $query
-                            ->when(
-                                $data['created_from'],
-                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
-                            )
-                            ->when(
-                                $data['created_until'],
-                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
-                            );
-                    })
-            ])
+                    ->query(fn (Builder $query, array $data) => $query
+                        ->when($data['created_from'], fn ($q, $d) => $q->whereDate('created_at', '>=', $d))
+                        ->when($data['created_until'], fn ($q, $d) => $q->whereDate('created_at', '<=', $d))
+                    ),
+                SelectFilter::make('status')
+                    ->label('Status')
+                    ->options([
+                        'DRAFT' => 'Draft',
+                        'SELESAI' => 'Selesai',
+                    ])
+                    ->placeholder('Semua Status'),
+            ], layout: FiltersLayout::AboveContent)
+            ->filtersFormColumns(4)
             ->recordAction('view')
             ->recordActions([
                 ViewAction::make()
@@ -168,7 +193,8 @@ class TaskTerimaSuppliersTable
                                         default => 'gray',
                                     }),
                                 TextEntry::make('arrivalSupplierTruck.supplier.nama_supplier')->label('Supplier'),
-                                TextEntry::make('nama_supplier_ekspedisi')->label('Supplier / Ekspedisi'),
+                                TextEntry::make('arrivalSupplierTruck.supplier.nama_supplier')->label('Supplier'),
+                                TextEntry::make('arrivalSupplierTruck.expedition.nama_ekspedisi')->label('Ekspedisi'),
                                 TextEntry::make('no_po_referensi')->label('No PO Referensi'),
                                 TextEntry::make('jam_datang')->label('Jam Datang'),
                                 TextEntry::make('jumlah_kolian')->label('Kolian'),

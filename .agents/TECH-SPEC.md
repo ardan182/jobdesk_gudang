@@ -337,7 +337,41 @@ static::creating(function ($model) {
 
 ---
 
-## 11. Computed / Virtual Columns
+## 11. Filter AboveContent Standards
+
+### Implementation Pattern
+
+```php
+use Filament\Tables\Enums\FiltersLayout;
+use Filament\Schemas\Components\Grid;
+use Filament\Tables\Filters\SelectFilter;
+
+->filters([...], layout: FiltersLayout::AboveContent)
+->filtersFormColumns(4)  // 2-5 kolom sesuai kebutuhan
+```
+
+### Rules
+- `SelectFilter` → auto-apply, tidak perlu tombol Terapkan
+- `Filter::make()` with `DatePicker` → perlu tombol Terapkan
+- DatePicker inline: bungkus dengan `Grid::make(2)` untuk Dari + Sampai
+- Helper text: `->helperText('tgl mulai')` / `->helperText('tgl akhir')`
+
+### Deployed Menus (AboveContent)
+
+| Menu | Kolom | Filters |
+|------|-------|---------|
+| Input Kirim Barang | 5 | Kiriman, Cabang, Tanggal, Status |
+| Checker Keluar Barang | 3 | Cabang, Tanggal, Status |
+| Kiriman Mobil | 4 | Cabang, Tgl Kirim, Retur, Status |
+| Checker Terima Supplier | 4 | Supplier, Status, Tanggal |
+| Datang Mobil Supplier | 5 | Supplier, Ekspedisi, Jenis Kiriman, Tgl Datang, Status |
+| Input SJ Supplier | 3 | Nama Supplier, Tgl Input, Status |
+
+### 11.1 UI/UX Patterning
+
+- **Date filter labels**: "Tgl Kirim", "Tanggal", "Tgl Datang", "Tgl Input"
+- **Date filter helper**: lowercase "tgl mulai" / "tgl akhir"
+- **Table description**: untuk menu auto-generated data, pakai `->description()`
 
 ### Tempo (SupplierSj — Input SJ Supplier)
 ```php

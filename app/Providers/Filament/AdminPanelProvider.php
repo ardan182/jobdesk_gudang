@@ -123,14 +123,23 @@ class AdminPanelProvider extends PanelProvider
                         pointer-events: none;
                     }
 
-                    /* ─── Filter AboveContent container box ─── */
-                    .fi-ta-filter-form {
-                        background: rgba(255, 255, 255, 0.03);
-                        border: 1px solid rgba(255, 255, 255, 0.08);
-                        border-radius: 0.5rem;
-                        padding: 0.75rem 1rem;
-                        margin-bottom: 0.75rem;
-                        max-width: 900px;
+                    /* ─── Light mode: pertebal border ─── */
+                    :root:not(.dark) .fi-input-wrp {
+                        border-width: 1.5px;
+                        border-color: #C8C4BC;
+                    }
+                    :root:not(.dark) .fi-modal-window,
+                    :root:not(.dark) .fi-dropdown-panel {
+                        border-width: 1.5px;
+                        border-color: #C8C4BC;
+                    }
+                    :root:not(.dark) .fi-section:not(.fi-section-not-contained),
+                    :root:not(.dark) .fi-ta-ctn {
+                        border-width: 1.5px;
+                        border-color: #C8C4BC;
+                    }
+                    :root:not(.dark) .fi-ta-cell {
+                        border-color: rgba(128, 128, 128, 0.25);
                     }
 
                     /* ─── Sidebar: teks tidak terpotong ─── */
