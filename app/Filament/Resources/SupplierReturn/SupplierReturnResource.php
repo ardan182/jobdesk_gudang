@@ -24,7 +24,7 @@ class SupplierReturnResource extends Resource
 
     public static function getNavigationIcon(): string
     {
-        return 'heroicon-o-arrow-uturn-left';
+        return 'heroicon-o-arrow-path';
     }
 
     public static function getNavigationGroup(): ?string

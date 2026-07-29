@@ -17,7 +17,7 @@ class TaskReturCabangResource extends Resource
 {
     protected static ?string $model = TaskReturCabang::class;
 
-    protected static string|\BackedEnum|null $navigationIcon = Heroicon::OutlinedArrowPath;
+    protected static string|\BackedEnum|null $navigationIcon = Heroicon::OutlinedArrowUturnLeft;
 
     protected static ?string $navigationLabel = 'Retur Masuk dari Toko';
 
