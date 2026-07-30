@@ -16,7 +16,7 @@ class KendaraanDokumenForm
     {
         return [
             Section::make('Informasi Dokumen')
-                ->description('Data referensi dari sistem')
+                ->description('Dibuat otomatis, jika tidak muncul lengkapi data di master kendaraan')
                 ->columns(2)
                 ->schema([
                     Select::make('master_kendaraan_id')

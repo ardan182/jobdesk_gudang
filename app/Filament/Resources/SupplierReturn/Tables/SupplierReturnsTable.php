@@ -31,6 +31,7 @@ class SupplierReturnsTable
                     ->label('ID Task')
                     ->searchable()
                     ->sortable()
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('jenis_pengiriman')
                     ->label('Jenis')
@@ -47,10 +48,12 @@ class SupplierReturnsTable
                         'datang_dan_keluar' => 'Datang & Keluar',
                         default => $state,
                     })
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('nama_supplier')
                     ->label('Supplier')
                     ->searchable()
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('nama_ekspedisi')
                     ->label('Ekspedisi')
@@ -60,15 +63,18 @@ class SupplierReturnsTable
                 TextColumn::make('nama_supir')
                     ->label('Supir')
                     ->searchable()
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('no_plat_mobil')
                     ->label('No Plat')
                     ->searchable()
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('tanggal_datang')
                     ->label('Tgl Datang')
                     ->date('d/m/Y')
                     ->sortable()
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('jenis_retur_keluar')
                     ->label('Jenis Retur Keluar')
@@ -83,6 +89,7 @@ class SupplierReturnsTable
                         'ganti_barang' => 'Ganti Barang',
                         default => $state,
                     })
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('jenis_retur_masuk')
                     ->label('Jenis Retur Masuk')
@@ -99,10 +106,12 @@ class SupplierReturnsTable
                         'ganti_barang' => 'Ganti Barang',
                         default => $state,
                     })
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('no_nota_retur')
                     ->label('No Nota')
                     ->searchable()
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('total_koli_keluar')
                     ->label('Koli Keluar')
@@ -129,17 +138,20 @@ class SupplierReturnsTable
                         'selesai' => 'Selesai',
                         default => $state,
                     })
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('user.name')
                     ->label('Checker')
                     ->searchable()
                     ->sortable()
                     ->visible(fn () => auth()->user()?->hasRole('Admin') ?? false)
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('created_at')
                     ->label('Tanggal')
                     ->date('d/m/Y')
                     ->sortable()
+                    ->toggleable()
                     ->grow(false),
             ])
             ->filters([

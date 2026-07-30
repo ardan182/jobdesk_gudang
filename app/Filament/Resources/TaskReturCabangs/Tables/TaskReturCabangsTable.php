@@ -29,19 +29,23 @@ class TaskReturCabangsTable
                     ->label('ID Task')
                     ->searchable()
                     ->sortable()
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('cabang')
                     ->label('Toko')
                     ->searchable()
                     ->width('130px')
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('no_plat_mobil')
                     ->label('No Plat')
                     ->width('120px')
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('jam_tiba')
                     ->label('Jam Tiba')
                     ->time('H:i')
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('jenis_retur')
                     ->label('Jenis Retur')
@@ -58,16 +62,19 @@ class TaskReturCabangsTable
                         'rb_dan_rj' => 'RB dan RJ',
                         default => $state,
                     })
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('tanggal_bongkar')
                     ->label('Tgl Bongkar')
                     ->date('d/m/Y')
                     ->sortable()
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('jam_bongkar')
                     ->label('Jam Bongkar')
                     ->time('H:i')
                     ->sortable()
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('jumlah_sj_bagus')
                     ->label('SJ Bagus')
@@ -84,6 +91,7 @@ class TaskReturCabangsTable
                 TextColumn::make('nama_sopir')
                     ->label('Sopir')
                     ->searchable()
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('helpers_list')
                     ->label('Helper')
@@ -98,6 +106,7 @@ class TaskReturCabangsTable
                         }
                         return $result;
                     })
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('status')
                     ->label('Status')
@@ -112,17 +121,20 @@ class TaskReturCabangsTable
                         'selesai' => 'Selesai',
                         default => $state,
                     })
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('user.name')
                     ->label('Checker')
                     ->searchable()
                     ->sortable()
                     ->visible(fn () => auth()->user()?->hasRole('Admin') ?? false)
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('created_at')
                     ->label('Tanggal')
                     ->date('d/m/Y')
                     ->sortable()
+                    ->toggleable()
                     ->grow(false),
             ])
             ->filters([
