@@ -23,6 +23,7 @@ class KendaraanDokumensTable
         return $table
             ->defaultSort('created_at', 'desc')
             ->defaultGroup('periode')
+            ->description('Dibuat otomatis, jika tidak muncul lengkapi data di master kendaraan')
             ->groups([
                 Group::make('periode')
                     ->getTitleFromRecordUsing(fn ($record) => match ($record->periode) {
