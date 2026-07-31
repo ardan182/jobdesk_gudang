@@ -123,6 +123,11 @@ class AdminPanelProvider extends PanelProvider
                         pointer-events: none;
                     }
 
+                    /* ─── Stats overview: 5 kotak per baris jika ≥5 kartu ─── */
+                    .aurum-stats-grid:has(.aurum-stat:nth-child(5)) {
+                        grid-template-columns: repeat(5, minmax(0, 1fr));
+                    }
+
                     /* ─── Light mode: pertebal border ─── */
                     :root:not(.dark) .fi-input-wrp {
                         border-width: 1.5px;

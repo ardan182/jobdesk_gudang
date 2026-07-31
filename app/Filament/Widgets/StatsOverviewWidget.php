@@ -2,67 +2,104 @@
 
 namespace App\Filament\Widgets;
 
+use App\Models\ArrivalSupplierTruck;
+use App\Models\KendaraanDokumen;
+use App\Models\SupplierSj;
 use App\Models\TaskKeluarBarang;
 use App\Models\TaskKirimanMobil;
 use App\Models\TaskReturCabang;
 use App\Models\SupplierReturn;
 use App\Models\TaskTerimaSupplier;
-use Filament\Widgets\StatsOverviewWidget as BaseWidget;
-use Filament\Widgets\StatsOverviewWidget\Stat;
+use ThalysJuvenal\Aurum\Widgets\AurumStat;
+use ThalysJuvenal\Aurum\Widgets\AurumStatsOverview;
 
-class StatsOverviewWidget extends BaseWidget
+class StatsOverviewWidget extends AurumStatsOverview
 {
+    protected int | string | array $columnSpan = 'full';
+
     protected function getStats(): array
     {
         $user = auth()->user();
 
         if ($user?->hasRole('Admin')) {
             return [
-                Stat::make('Retur ke Supplier', SupplierReturn::where('jenis_pengiriman', 'retur_keluar')->count())
+                AurumStat::make('Retur ke Supplier', (string) SupplierReturn::where('jenis_pengiriman', 'retur_keluar')->count())
                     ->icon('heroicon-o-arrow-left-on-rectangle')
-                    ->color('warning'),
-                Stat::make('Retur dari Supplier', SupplierReturn::where('jenis_pengiriman', 'retur_masuk')->count())
+                    ->description('Total retur keluar ke supplier'),
+                AurumStat::make('Retur dari Supplier', (string) SupplierReturn::where('jenis_pengiriman', 'retur_masuk')->count())
                     ->icon('heroicon-o-arrow-right-on-rectangle')
-                    ->color('info'),
-                Stat::make('Terima Barang', TaskTerimaSupplier::count())
+                    ->description('Total retur masuk dari supplier'),
+                AurumStat::make('Terima Barang', (string) TaskTerimaSupplier::count())
                     ->icon('heroicon-o-arrow-down-tray')
-                    ->color('success'),
-                Stat::make('Keluar Barang', TaskKeluarBarang::count())
+                    ->description('Total barang diterima'),
+                AurumStat::make('Keluar Barang', (string) TaskKeluarBarang::count())
                     ->icon('heroicon-o-arrow-up-tray')
-                    ->color('danger'),
-                Stat::make('Kiriman Mobil', TaskKirimanMobil::count())
+                    ->description('Total barang keluar'),
+                AurumStat::make('Kiriman Mobil', (string) TaskKirimanMobil::count())
                     ->icon('heroicon-o-truck')
-                    ->color('primary'),
+                    ->description('Total pengiriman mobil'),
+                AurumStat::make('Retur Masuk Cabang', (string) TaskReturCabang::count())
+                    ->icon('heroicon-o-arrow-path')
+                    ->description('Total retur dari cabang'),
+                AurumStat::make('Datang Mobil', (string) ArrivalSupplierTruck::count())
+                    ->icon('heroicon-o-truck')
+                    ->description('Total mobil supplier'),
+                AurumStat::make('SJ Belum Di Cek', (string) SupplierSj::where('status_input', 'belum_di_cek')->count())
+                    ->icon('heroicon-o-document-magnifying-glass')
+                    ->description('SJ pending cek'),
+                AurumStat::make('STNK/KIR ≤ 30 hari', (string) KendaraanDokumen::whereNotNull('masa_berlaku')
+                    ->where('masa_berlaku', '<=', now()->addDays(30))
+                    ->count())
+                    ->icon('heroicon-o-exclamation-triangle')
+                    ->description('Dokumen expired / akan expired'),
             ];
         }
-
-        $count = 0;
-        $label = 'Total Task';
 
         if ($user?->hasRole('Checker Retur')) {
             return [
-                Stat::make('Retur ke Supplier', SupplierReturn::where('jenis_pengiriman', 'retur_keluar')->where('user_id', $user->id)->count())
+                AurumStat::make('Retur ke Supplier', (string) SupplierReturn::where('jenis_pengiriman', 'retur_keluar')->where('user_id', $user->id)->count())
                     ->icon('heroicon-o-arrow-left-on-rectangle')
-                    ->color('warning'),
-                Stat::make('Retur dari Supplier', SupplierReturn::where('jenis_pengiriman', 'retur_masuk')->where('user_id', $user->id)->count())
+                    ->description('Retur keluar Anda'),
+                AurumStat::make('Retur dari Supplier', (string) SupplierReturn::where('jenis_pengiriman', 'retur_masuk')->where('user_id', $user->id)->count())
                     ->icon('heroicon-o-arrow-right-on-rectangle')
-                    ->color('info'),
+                    ->description('Retur masuk Anda'),
             ];
-        } elseif ($user?->hasRole('Checker Terima')) {
+        }
+
+        if ($user?->hasRole('Checker Terima')) {
             $count = TaskTerimaSupplier::where('user_id', $user->id)->count();
-            $label = 'Total Terima Barang';
-        } elseif ($user?->hasRole('Checker Keluar')) {
+
+            return [
+                AurumStat::make('Total Terima Barang', (string) $count)
+                    ->icon('heroicon-o-arrow-down-tray')
+                    ->description('Total terima barang Anda'),
+            ];
+        }
+
+        if ($user?->hasRole('Checker Keluar')) {
             $count = TaskKeluarBarang::where('user_id', $user->id)->count();
-            $label = 'Total Keluar Barang';
-        } elseif ($user?->hasRole('Checker Kiriman')) {
+
+            return [
+                AurumStat::make('Total Keluar Barang', (string) $count)
+                    ->icon('heroicon-o-arrow-up-tray')
+                    ->description('Total keluar barang Anda'),
+            ];
+        }
+
+        if ($user?->hasRole('Checker Kiriman')) {
             $count = TaskKirimanMobil::where('user_id', $user->id)->count();
-            $label = 'Total Kiriman';
+
+            return [
+                AurumStat::make('Total Kiriman', (string) $count)
+                    ->icon('heroicon-o-truck')
+                    ->description('Total kiriman Anda'),
+            ];
         }
 
         return [
-            Stat::make($label, $count)
+            AurumStat::make('Total Task', '0')
                 ->icon('heroicon-o-clipboard-document-check')
-                ->color('primary'),
+                ->description('Belum ada task'),
         ];
     }
 }
