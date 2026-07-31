@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\TaskReturCabangs\Schemas;
 
-use App\Models\MasterSopir;
 use App\Models\TaskKirimanMobil;
 use App\Models\WarehouseEmployee;
 use Filament\Forms\Components\DatePicker;
@@ -20,7 +19,7 @@ class TaskReturCabangForm
         return [
             Section::make('Informasi Kiriman')
                 ->description('Data kiriman mobil yang sudah selesai dengan retur')
-                ->columns(3)
+                ->columns(4)
                 ->schema([
                     Select::make('kiriman_mobil_id')
                         ->label('Kiriman Mobil')
@@ -49,6 +48,7 @@ class TaskReturCabangForm
                                     $set('cabang', $kirim->cabang);
                                     $set('no_plat_mobil', $kirim->no_plat_mobil);
                                     $set('jam_tiba', $kirim->jam_tiba?->format('H:i'));
+                                    $set('nama_sopir', $kirim->nama_supir);
                                 }
                             }
                         })
@@ -58,10 +58,12 @@ class TaskReturCabangForm
                                 $set('cabang', $kirim->cabang);
                                 $set('no_plat_mobil', $kirim->no_plat_mobil);
                                 $set('jam_tiba', $kirim->jam_tiba?->format('H:i'));
+                                $set('nama_sopir', $kirim->nama_supir);
                             } else {
                                 $set('cabang', null);
                                 $set('no_plat_mobil', null);
                                 $set('jam_tiba', null);
+                                $set('nama_sopir', null);
                             }
                         }),
                     TextInput::make('cabang')
@@ -81,6 +83,11 @@ class TaskReturCabangForm
                         ->dehydrated()
                         ->seconds(false)
                         ->step(60),
+                    TextInput::make('nama_sopir')
+                        ->label('Nama Sopir')
+                        ->prefixIcon('heroicon-m-user')
+                        ->disabled()
+                        ->dehydrated(),
                 ]),
             Section::make('Data Retur')
                 ->description('Jenis retur, jumlah SJ, dan catatan per jenis')
@@ -106,12 +113,6 @@ class TaskReturCabangForm
                         ->prefixIcon('heroicon-m-clock')
                         ->seconds(false)
                         ->step(60)
-                        ->required(),
-                    Select::make('nama_sopir')
-                        ->label('Nama Sopir')
-                        ->prefixIcon('heroicon-m-user')
-                        ->options(MasterSopir::pluck('nama_sopir', 'nama_sopir'))
-                        ->searchable()
                         ->required(),
                     Select::make('helpers')
                         ->label('Helper')

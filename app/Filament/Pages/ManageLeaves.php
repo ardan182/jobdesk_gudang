@@ -12,6 +12,7 @@ use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Schemas\Components\Html;
@@ -38,6 +39,7 @@ class ManageLeaves extends Page
     public $tahun = 0;
     public $filter_divisi = null;
     public $hanya_absen = false;
+    public $search = '';
 
     public array $employees = [];
     public array $calendar = [];
@@ -55,7 +57,7 @@ class ManageLeaves extends Page
 
     public function updated($property): void
     {
-        if (in_array($property, ['bulan', 'tahun', 'filter_divisi', 'hanya_absen'])) {
+        if (in_array($property, ['bulan', 'tahun', 'filter_divisi', 'hanya_absen', 'search'])) {
             $this->loadData();
         }
     }
@@ -81,6 +83,15 @@ class ManageLeaves extends Page
 
         if (filled($this->filter_divisi)) {
             $query->where('division_id', $this->filter_divisi);
+        }
+
+        if (filled($this->search)) {
+            $query->where(function ($q) {
+                $q->where('nama_karyawan', 'like', '%' . $this->search . '%')
+                    ->orWhereHas('division', fn ($d) =>
+                        $d->where('nama_divisi', 'like', '%' . $this->search . '%')
+                    );
+            });
         }
 
         $allEmployees = $query->get();
@@ -225,6 +236,12 @@ class ManageLeaves extends Page
                                         Checkbox::make('hanya_absen')
                                             ->label('Hanya yang absen')
                                             ->live(),
+                                        TextInput::make('search')
+                                            ->label('Cari Nama / Divisi')
+                                            ->placeholder('Ketik nama atau divisi...')
+                                            ->prefixIcon('heroicon-m-magnifying-glass')
+                                            ->live()
+                                            ->debounce(500),
                                     ]),
                                 View::make('filament.pages.manage-leaves-matrix'),
                             ]),
