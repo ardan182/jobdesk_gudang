@@ -31,27 +31,30 @@
         * { -ms-overflow-style: none; scrollbar-width: none; }
         .tv-card { background-color: #FFFFFF; border: 1px solid #E2E8F0; box-shadow: 0 4px 12px -2px rgba(13, 18, 130, 0.05); }
         .marquee-container:hover .marquee-content { animation-play-state: paused; }
+        @media (max-width: 640px) {
+            .marquee-content { animation-duration: 15s; }
+        }
     </style>
 </head>
-<body x-data="tvBoardApp()" x-init="initApp()" class="h-screen w-screen flex flex-col bg-slate-100 text-slate-800 overflow-hidden antialiased">
+<body x-data="tvBoardApp()" x-init="initApp()" class="h-screen w-screen flex flex-col bg-slate-100 text-slate-800 overflow-y-auto md:overflow-hidden antialiased">
 
-    <header class="h-20 bg-navy text-white px-8 flex items-center justify-between shrink-0 shadow-lg relative z-30">
-        <div class="flex items-center gap-4">
-            <div class="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center text-white border border-white/20 shadow-inner">
-                <i class="fa-solid fa-desktop text-2xl"></i>
+    <header class="h-16 sm:h-20 bg-navy text-white px-3 sm:px-6 lg:px-8 flex items-center justify-between shrink-0 shadow-lg relative z-30">
+        <div class="flex items-center gap-2 sm:gap-4 min-w-0">
+            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-white/10 rounded-2xl flex items-center justify-center text-white border border-white/20 shadow-inner shrink-0">
+                <i class="fa-solid fa-desktop text-lg sm:text-2xl"></i>
             </div>
-            <div>
-                <div class="flex items-center gap-3">
-                    <h1 class="text-2xl font-black tracking-tight text-white uppercase">BOARD TV</h1>
-                    <span class="bg-white/15 text-white text-xs font-black px-3 py-1 rounded-lg border border-white/20 uppercase tracking-wider">Jobdesk Gudang AP</span>
+            <div class="min-w-0">
+                <div class="flex items-center gap-2 sm:gap-3">
+                    <h1 class="text-lg sm:text-2xl font-black tracking-tight text-white uppercase leading-tight">BOARD TV</h1>
+                    <span class="hidden md:inline-flex bg-white/15 text-white text-xs font-black px-3 py-1 rounded-lg border border-white/20 uppercase tracking-wider">Jobdesk Gudang AP</span>
                 </div>
-                <p class="text-xs font-medium text-slate-200 flex items-center gap-2 mt-0.5">
+                <p class="hidden sm:flex text-xs font-medium text-slate-200 items-center gap-2 mt-0.5">
                     <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
                     <span>Monitoring Realtime Gudang</span>
                 </p>
             </div>
         </div>
-        <div class="flex items-center gap-6">
+        <div class="flex items-center gap-2 sm:gap-3 lg:gap-6 shrink-0">
             <div class="hidden lg:flex items-center gap-3">
                 <div class="flex items-center gap-2 px-3.5 py-1.5 bg-white/10 rounded-xl border border-white/15">
                     <i class="fa-solid fa-truck-moving text-amber-300 text-sm"></i>
@@ -69,20 +72,20 @@
                     <span class="text-base font-black text-white font-mono" x-text="supplierInvoices.length">0</span>
                 </div>
             </div>
-            <div class="bg-white/10 px-5 py-2 rounded-2xl border border-white/20 flex items-center gap-3">
-                <i class="fa-regular fa-clock text-amber-300 text-2xl"></i>
+            <div class="bg-white/10 px-3 py-1.5 sm:px-5 sm:py-2 rounded-2xl border border-white/20 flex items-center gap-2 sm:gap-3">
+                <i class="fa-regular fa-clock text-amber-300 text-xl sm:text-2xl"></i>
                 <div class="text-right">
-                    <div class="text-2xl font-black tracking-wider font-mono text-white leading-none" x-text="currentTime">09:30</div>
-                    <div class="text-[11px] font-bold text-slate-200 mt-1 uppercase tracking-wide leading-none" x-text="currentDate">Kamis, 23 Juli 2026</div>
+                    <div class="text-xl sm:text-2xl font-black tracking-wider font-mono text-white leading-none" x-text="currentTime">09:30</div>
+                    <div class="hidden sm:block text-[11px] font-bold text-slate-200 mt-1 uppercase tracking-wide leading-none" x-text="currentDate">Kamis, 23 Juli 2026</div>
                 </div>
             </div>
-            <button @click="toggleFullscreen()" title="Fullscreen" class="w-11 h-11 rounded-2xl bg-white/10 hover:bg-white/20 text-white border border-white/20 flex items-center justify-center transition-all active:scale-95">
-                <i class="fa-solid fa-expand text-lg"></i>
+            <button @click="toggleFullscreen()" title="Fullscreen" class="w-9 h-9 sm:w-11 sm:h-11 rounded-2xl bg-white/10 hover:bg-white/20 text-white border border-white/20 flex items-center justify-center transition-all active:scale-95 shrink-0">
+                <i class="fa-solid fa-expand text-sm sm:text-lg"></i>
             </button>
         </div>
     </header>
 
-    <div class="h-10 bg-softgray border-b border-softgray-300 text-slate-800 px-6 flex items-center shrink-0 relative z-20 overflow-hidden">
+    <div class="h-9 sm:h-10 bg-softgray border-b border-softgray-300 text-slate-800 px-3 sm:px-6 flex items-center shrink-0 relative z-20 overflow-hidden">
         <div class="bg-navy text-white px-3 py-1 rounded-lg text-xs font-extrabold uppercase tracking-wider flex items-center gap-2 shrink-0 z-10 shadow-sm">
             <i class="fa-solid fa-bullhorn text-amber-300 animate-pulse"></i>
             <span>STATUS</span>
@@ -92,8 +95,8 @@
         </div>
     </div>
 
-    <main class="flex-1 p-5 overflow-hidden">
-        <div class="h-full grid grid-cols-12 grid-rows-2 gap-5">
+    <main class="flex-1 p-3 sm:p-5 overflow-hidden">
+        <div class="h-full grid grid-cols-1 md:grid-cols-2 md:grid-rows-2 gap-3 sm:gap-5">
 
             @php
                 $showCard = $settings ? [
@@ -157,25 +160,26 @@
 
             @foreach ($cardDefs as $i => $card)
                 @if ($showCard[$i])
-                <section class="col-span-6 row-span-1 tv-card rounded-2xl overflow-hidden flex flex-col">
-                    <div class="px-5 py-3.5 bg-softgray border-b border-softgray-300 flex items-center justify-between shrink-0">
-                        <div class="flex items-center gap-3">
-                            <div class="w-8 h-8 rounded-lg bg-navy text-white flex items-center justify-center font-bold shadow-sm">
-                                <i class="{{ $card['icon'] }} text-sm"></i>
+                <section class="col-span-1 tv-card rounded-2xl overflow-hidden flex flex-col min-h-0">
+                    <div class="px-3 py-2.5 sm:px-5 sm:py-3.5 bg-softgray border-b border-softgray-300 flex items-center justify-between shrink-0">
+                        <div class="flex items-center gap-2 sm:gap-3 min-w-0">
+                            <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-navy text-white flex items-center justify-center font-bold shadow-sm shrink-0">
+                                <i class="{{ $card['icon'] }} text-xs sm:text-sm"></i>
                             </div>
-                            <div>
-                                <h2 class="font-extrabold text-navy text-base uppercase tracking-wide leading-none">{{ $card['title'] }}</h2>
-                                <span class="text-[11px] text-slate-500 font-semibold">{{ $card['subtitle'] }}</span>
+                            <div class="min-w-0">
+                                <h2 class="font-extrabold text-navy text-xs sm:text-base uppercase tracking-wide leading-none truncate">{{ $card['title'] }}</h2>
+                                <span class="text-[10px] sm:text-[11px] text-slate-500 font-semibold truncate block">{{ $card['subtitle'] }}</span>
                             </div>
                         </div>
-                        <span class="bg-navy/10 text-navy font-extrabold text-xs px-3 py-1 rounded-full border border-navy/20">{{ $card['count'] }} {{ $card['unit'] }}</span>
+                        <span class="bg-navy/10 text-navy font-extrabold text-[10px] sm:text-xs px-2 sm:px-3 py-1 rounded-full border border-navy/20 shrink-0">{{ $card['count'] }} {{ $card['unit'] }}</span>
                     </div>
-                    <div class="p-4 flex-1 overflow-hidden flex flex-col justify-between bg-white">
-                        <table class="w-full text-left text-xs border-collapse">
+                    <div class="p-2 sm:p-4 flex-1 overflow-hidden flex flex-col justify-between bg-white">
+                        <div class="overflow-x-auto -mx-1 px-1">
+                        <table class="w-full text-left text-[11px] sm:text-xs border-collapse">
                             <thead>
-                                <tr class="border-b-2 border-slate-200 text-slate-500 uppercase font-extrabold text-[11px] tracking-wider">
+                                <tr class="border-b-2 border-slate-200 text-slate-500 uppercase font-extrabold text-[10px] sm:text-[11px] tracking-wider">
                                     @foreach ($card['cols'] as $col)
-                                    <th class="pb-2.5 px-2 {{ $col === 'Status' ? 'text-center' : '' }}">{{ $col }}</th>
+                                    <th class="pb-1.5 sm:pb-2.5 px-1 sm:px-2 whitespace-nowrap {{ $col === 'Status' ? 'text-center' : '' }}">{{ $col }}</th>
                                     @endforeach
                                 </tr>
                             </thead>
@@ -183,13 +187,13 @@
                                 @forelse ($card['data'] as $item)
                                 <tr class="hover:bg-slate-50 transition-colors">
                                     @foreach ($card['fields'] as $field)
-                                    <td class="py-3 px-2 {{ $loop->first ? 'font-mono font-extrabold text-navy text-sm' : ($field === 'tempo' ? 'font-semibold text-rose-600 text-xs' : ($field === 'qty' ? 'font-mono font-bold text-slate-700 text-xs' : ($field === 'tgl' ? 'font-mono text-slate-500 text-xs' : 'font-bold text-slate-900 text-sm'))) }} {{ $field === 'supplier' || $field === 'noSj' ? 'max-w-[150px] truncate' : '' }}">
+                                    <td class="py-1.5 sm:py-3 px-1 sm:px-2 {{ $loop->first ? 'font-mono font-extrabold text-navy text-xs sm:text-sm' : ($field === 'tempo' ? 'font-semibold text-rose-600 text-[11px] sm:text-xs' : ($field === 'qty' ? 'font-mono font-bold text-slate-700 text-[11px] sm:text-xs' : ($field === 'tgl' ? 'font-mono text-slate-500 text-[11px] sm:text-xs' : 'font-bold text-slate-900 text-xs sm:text-sm'))) }} {{ $field === 'supplier' || $field === 'noSj' ? 'max-w-[80px] sm:max-w-[150px] truncate' : '' }}">
                                         {{ $item[$field] ?? '-' }}
                                     </td>
                                     @endforeach
                                     @if (in_array('Status', $card['cols']))
-                                    <td class="py-3 px-2 text-center">
-                                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-black uppercase
+                                    <td class="py-1.5 sm:py-3 px-1 sm:px-2 text-center">
+                                        <span class="inline-flex items-center gap-1 sm:gap-1.5 px-1.5 sm:px-3 py-0.5 sm:py-1 rounded-lg text-[10px] sm:text-xs font-black uppercase whitespace-nowrap
                                             @php
                                                 $sc = $item['statusCode'] ?? '';
                                                 $colors = match(true) {
@@ -202,7 +206,7 @@
                                             @endphp
                                             {{ $colors }}">
                                             <span>{{ $item['statusIcon'] ?? '❓' }}</span>
-                                            <span>{{ $item['statusText'] ?? $sc }}</span>
+                                            <span class="hidden sm:inline">{{ $item['statusText'] ?? $sc }}</span>
                                         </span>
                                     </td>
                                     @endif
@@ -212,9 +216,10 @@
                                 @endforelse
                             </tbody>
                         </table>
-                        <div class="pt-2 border-t border-slate-100 flex justify-between items-center text-[11px] font-medium text-slate-400">
-                            <span>{{ $card['legend'] }}</span>
-                            <span class="text-navy font-bold">{{ $card['footerNote'] }}</span>
+                        </div>
+                        <div class="pt-2 border-t border-slate-100 flex justify-between items-center text-[10px] sm:text-[11px] font-medium text-slate-400 gap-2">
+                            <span class="truncate">{{ $card['legend'] }}</span>
+                            <span class="text-navy font-bold shrink-0">{{ $card['footerNote'] }}</span>
                         </div>
                     </div>
                 </section>
