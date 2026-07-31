@@ -11,25 +11,6 @@ Route::get('/', function () {
     return redirect('/admin');
 });
 
-Route::get('/session-debug', function () {
-    return response()->json([
-        'encrypt' => config('session.encrypt'),
-        'secure'  => config('session.secure'),
-        'driver'  => config('session.driver'),
-    ]);
-});
-
-Route::get('/auth-debug', function () {
-    return response()->json([
-        'authenticated' => auth()->check(),
-        'id'            => auth()->id(),
-        'email'         => auth()->user()?->email,
-        'session_id'    => session()->getId(),
-        'user_count'    => \App\Models\User::count(),
-        'user_2_exists' => \App\Models\User::find(2)?->email,
-    ]);
-});
-
 Route::get('/suppliers/template', function () {
     return app(\App\Exports\SuppliersExport::class)->download();
 })->name('suppliers.template.download');
