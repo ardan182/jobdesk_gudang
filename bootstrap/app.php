@@ -19,10 +19,6 @@ return Application::configure(basePath: dirname(__DIR__))
             Request::HEADER_X_FORWARDED_AWS_ELB
         );
 
-        config()->set('session.encrypt', false);
-        config()->set('session.secure', false);
-        config()->set('session.driver', 'database');
-
         $middleware->encryptCookies(except: [
             'jobdeskgudangap-session',
         ]);
