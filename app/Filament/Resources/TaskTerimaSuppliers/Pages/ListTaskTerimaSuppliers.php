@@ -6,6 +6,7 @@ use App\Filament\Resources\TaskTerimaSuppliers\Schemas\TaskTerimaSupplierForm;
 use App\Filament\Resources\TaskTerimaSuppliers\TaskTerimaSupplierResource;
 use App\Services\TaskIdGenerator;
 use Filament\Actions\Action;
+use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Support\Enums\Width;
 
@@ -34,6 +35,11 @@ class ListTaskTerimaSuppliers extends ListRecords
                     if (filled($helpers)) {
                         $record->helpers()->sync($helpers);
                     }
+
+                    Notification::make()
+                        ->title('Task Terima Supplier berhasil disimpan')
+                        ->success()
+                        ->send();
                 }),
         ];
     }
