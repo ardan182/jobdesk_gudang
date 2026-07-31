@@ -1,6 +1,6 @@
 # Project Context: Jobdesk Gudang AP
 
-**Versi:** 2.1 | **Tanggal:** 27 Juli 2026
+**Versi:** 2.2 | **Tanggal:** 31 Juli 2026
 
 ---
 
@@ -56,6 +56,22 @@ php artisan migrate
 php artisan optimize
 npm run build
 ```
+
+### Deploy di Hostinger (gudang.mutiarasuperkitchen.com)
+- Document root: `public_html/gudang/public/`
+- PHP 8.3+, MySQL via hPanel
+- `SESSION_DRIVER=database` untuk session
+- `bootstrap/app.php` sudah di-set `trustProxies` + `encryptCookies(except)` untuk session cookie
+
+### ⚠️ KRITIS: User model WAJIB implement FilamentUser
+Di production, Filament `Authenticate` middleware memblokir panel (403) jika User model tidak implement `FilamentUser`. Sudah di-fix di `app/Models/User.php`:
+```php
+class User extends Authenticatable implements FilamentUser
+{
+    public function canAccessPanel(Panel $panel): bool { return true; }
+}
+```
+Jangan hapus `implements FilamentUser` ini saat mengubah model User!
 
 ---
 

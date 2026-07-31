@@ -299,3 +299,14 @@ Permission-based access control per-module & per-action, dikelola melalui UI Edi
 - [x] Menu **Komplain PO** dengan icon `document-text`
 - [x] Halaman "Coming Soon" pending pengembangan fitur
 - [ ] Implementasi fitur Komplain PO (Gudang ↔ Admin PO)
+
+## Fase 21: Deployment Hosting + Fix 403 ✅
+
+- [x] Deploy ke Hostinger (`gudang.mutiarasuperkitchen.com`)
+- [x] Fix 403 di production — **User model harus implement `FilamentUser` + `canAccessPanel()`**
+- [x] Fix session hosting — `SESSION_DRIVER=database`, `encryptCookies(except)` untuk session cookie
+- [x] Fix TrustProxies — `bootstrap/app.php` trustProxies untuk proxy Hostinger
+- [x] Redirect `/` ke `/admin`
+- [x] Logo `logo_msk.png` di login & sidebar
+- [x] Debug session/auth (route sementara, sudah dihapus)
+- [x] Docs update: PRD, TASKS, GEMINI_KNOWLEDGE, README

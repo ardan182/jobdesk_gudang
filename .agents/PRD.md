@@ -1,6 +1,6 @@
 # PRD — Jobdesk Gudang AP
 
-**Versi:** 2.4 | **Tanggal:** 28 Juli 2026
+**Versi:** 2.5 | **Tanggal:** 31 Juli 2026
 
 ---
 
@@ -292,6 +292,45 @@ use OccTherapist\AdvancedTableExportForFilament\Actions\TableExportBulkAction;
     TableExportBulkAction::make(),
 ])
 ```
+
+## 7. Deployment & Fix 403 di Production
+
+### Deploy ke Hostinger
+- URL: `gudang.mutiarasuperkitchen.com`
+- Document root: `public_html/gudang/public/`
+- PHP 8.3+, MySQL via hPanel
+
+### Fix Kritis — 403 di Production
+**Masalah:** Setelah login berhasil & session valid, semua `/admin/*` tetap 403.
+
+**Penyebab:** Filament middleware `Authenticate` memblokir akses panel di environment `production` jika model User **tidak implement `FilamentUser`**:
+```php
+abort_if(
+    $user instanceof FilamentUser ?
+        (! $user->canAccessPanel($panel)) :
+        (config('app.env') !== 'local'),
+    403,
+);
+```
+
+**Fix:** `app/Models/User.php`
+```php
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
+
+class User extends Authenticatable implements FilamentUser
+{
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return true;
+    }
+}
+```
+
+### Konfigurasi Session untuk Hosting
+- `SESSION_DRIVER=database` (paling reliable di shared hosting)
+- `bootstrap/app.php`: `encryptCookies(except: ['jobdeskgudangap-session'])` — exclude session cookie dari enkripsi
+- `bootstrap/app.php`: `trustProxies(at: '*', ...)` — trust proxy Hostinger (HTTPS → HTTP internal)
 
 ## 8. Referensi
 
