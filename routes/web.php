@@ -11,6 +11,14 @@ Route::get('/', function () {
     return redirect('/admin');
 });
 
+Route::get('/session-debug', function () {
+    return response()->json([
+        'encrypt' => config('session.encrypt'),
+        'secure'  => config('session.secure'),
+        'driver'  => config('session.driver'),
+    ]);
+});
+
 Route::get('/suppliers/template', function () {
     return app(\App\Exports\SuppliersExport::class)->download();
 })->name('suppliers.template.download');
