@@ -72,7 +72,7 @@ class ArrivalSupplierTruck extends Model
     public function syncStatus(): void
     {
         $hasTerima = $this->taskTerimaSuppliers()->exists();
-        $hasRetur = $this->taskReturSuppliers()->exists();
+        $hasRetur = $this->supplierReturns()->exists();
 
         if (!$hasTerima && !$hasRetur) {
             $this->update(['status' => 'MENGANTRI', 'jam_selesai' => null]);
@@ -87,12 +87,12 @@ class ArrivalSupplierTruck extends Model
         $needRetur = in_array($this->jenis_kiriman, ['RETUR', 'DATANG & RETUR']);
 
         if ($needRetur) {
-            $returDone = $this->taskReturSuppliers()->whereNotNull('jam_muat')->exists();
+            $returDone = $this->supplierReturns()->whereNotNull('jam_kedatangan')->exists();
 
             if ($terimaSelesai && $returDone) {
                 $times = [$terimaSelesai->selesai_bongkar->format('H:i')];
-                $retur = $this->taskReturSuppliers()->whereNotNull('jam_muat')->first();
-                if ($retur) $times[] = $retur->jam_muat->format('H:i');
+                $retur = $this->supplierReturns()->whereNotNull('jam_kedatangan')->first();
+                if ($retur) $times[] = $retur->jam_kedatangan->format('H:i');
                 sort($times);
                 $this->update(['status' => 'SELESAI', 'jam_selesai' => end($times)]);
                 return;
