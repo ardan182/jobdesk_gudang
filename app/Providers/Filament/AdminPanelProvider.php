@@ -123,9 +123,19 @@ class AdminPanelProvider extends PanelProvider
                         pointer-events: none;
                     }
 
-                    /* ─── Stats overview: 5 kotak per baris jika ≥5 kartu ─── */
-                    .aurum-stats-grid:has(.aurum-stat:nth-child(5)) {
-                        grid-template-columns: repeat(5, minmax(0, 1fr));
+                    /* ─── Stats overview: responsif ─── */
+                    .aurum-stats-grid {
+                        grid-template-columns: repeat(1, minmax(0, 1fr));
+                    }
+                    @media (min-width: 640px) {
+                        .aurum-stats-grid {
+                            grid-template-columns: repeat(2, minmax(0, 1fr));
+                        }
+                    }
+                    @media (min-width: 1024px) {
+                        .aurum-stats-grid:has(.aurum-stat:nth-child(5)) {
+                            grid-template-columns: repeat(5, minmax(0, 1fr));
+                        }
                     }
 
                     /* ─── Light mode: pertebal border ─── */

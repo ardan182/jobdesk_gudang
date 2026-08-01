@@ -402,6 +402,70 @@ TextColumn::make('lama_bongkar')
 
 ---
 
+## 11.1 Dashboard Widgets (Aurum)
+
+### StatsOverviewWidget
+```php
+use ThalysJuvenal\Aurum\Widgets\AurumStatsOverview;
+use ThalysJuvenal\Aurum\Widgets\AurumStat;
+
+class StatsOverviewWidget extends AurumStatsOverview
+{
+    protected int | string | array $columnSpan = 'full';
+
+    protected function getStats(): array
+    {
+        return [
+            AurumStat::make('Label', (string) Model::count())
+                ->icon('heroicon-o-...')
+                ->description('...'),
+        ];
+    }
+}
+```
+- Value harus `(string)` — AurumStat value bertipe string
+- Tidak ada `->color()` — warna otomatis dari preset
+- Admin: 9 kartu | Checker: sesuai role (data sendiri)
+
+### AurumValueList (ExpiringDocumentsWidget / LeavesTodayWidget)
+```php
+use ThalysJuvenal\Aurum\Widgets\AurumValueList;
+use ThalysJuvenal\Aurum\Widgets\ValueListItem;
+
+class ExpiringDocumentsWidget extends AurumValueList
+{
+    protected ?string $heading = '⚠️ STNK/KIR Segera Expired';
+
+    protected static ?int $sort = 1;
+
+    protected function getItems(): array
+    {
+        return [
+            ValueListItem::make('🚗 D 8526 OE')
+                ->value('STNK - EXPIRED')
+                ->status('danger')  // success|warning|danger|info|muted
+                ->url(KendaraanDokumenResource::getUrl('index')),
+        ];
+    }
+
+    public static function canView(): bool
+    {
+        return auth()->user()?->hasRole('Admin') ?? false;
+    }
+}
+```
+- Default `columnSpan` = 1 dari 2 kolom → widget berpasangan berdampingan
+- `sort` menentukan urutan di dashboard
+
+### Stats Grid Responsif (CSS)
+```css
+.aurum-stats-grid { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+@media (min-width: 640px) { .aurum-stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1024px) { .aurum-stats-grid:has(.aurum-stat:nth-child(5)) { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
+```
+
+---
+
 ## 12. SupplierSj Auto-Creation (Integrasi)
 
 ### Trigger

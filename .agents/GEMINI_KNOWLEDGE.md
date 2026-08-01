@@ -281,6 +281,20 @@ Checker Kiriman input manual di menu Kiriman Mobil
 - **Font:** Arial, base 14px
 - **All modals:** ViewAction (Section 2 kolom) + EditAction/Create (form Section, Width::Full)
 - **Single form input** — no Repeater multi-row
+- **Light mode border:** input/modal/table 1.5px `#C8C4BC`
+- **Footer:** text center "© 2026 jobdesk MSK. All rights reserved."
+
+## 11.1 Dashboard Widgets (Aurum)
+
+| Widget | Komponen | Isi | Akses |
+|--------|----------|-----|-------|
+| StatsOverviewWidget | `AurumStatsOverview`+`AurumStat` | Admin 9 kartu, Checker sesuai role | Semua |
+| ExpiringDocumentsWidget | `AurumValueList`+`ValueListItem` | STNK/KIR ≤7 hari / EXPIRED | Admin |
+| LeavesTodayWidget | `AurumValueList`+`ValueListItem` | Cuti/Sakit/Izin hari ini + divisi | Admin |
+| RecentActivityWidget | `TableWidget` | 10 log terakhir + filter | Semua |
+
+**Stats grid responsif (CSS):** mobile 1 kolom → tablet 2 → desktop 5 per baris (jika ≥5 kartu).
+**Layout dashboard:** Stats (full) → [Expiring | Cuti] setengah-setengah → RecentActivity (full).
 
 ---
 
@@ -467,7 +481,9 @@ app/
 │   │   └── WarehouseEmployees/
 │   └── Widgets/
 │       ├── RecentActivityWidget.php
-│       └── StatsOverviewWidget.php
+│       ├── StatsOverviewWidget.php      # AurumStatsOverview (9 kartu admin)
+│       ├── ExpiringDocumentsWidget.php  # STNK/KIR ≤7 hari / EXPIRED
+│       └── LeavesTodayWidget.php        # Cuti/Sakit/Izin hari ini
 ├── Http/Middleware/
 │   └── CheckTvBoardToken.php        # (deleted)
 ├── Imports/

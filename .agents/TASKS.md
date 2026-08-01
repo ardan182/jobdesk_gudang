@@ -310,3 +310,16 @@ Permission-based access control per-module & per-action, dikelola melalui UI Edi
 - [x] Logo `logo_msk.png` di login & sidebar
 - [x] Debug session/auth (route sementara, sudah dihapus)
 - [x] Docs update: PRD, TASKS, GEMINI_KNOWLEDGE, README
+
+## Fase 22: Dashboard — Aurum Widgets ✅
+
+- [x] **StatsOverviewWidget** — upgrade ke `AurumStatsOverview` + `AurumStat`
+  - Admin: 9 kartu (Retur ke/dari Supplier, Terima, Keluar, Kiriman, Retur Masuk Cabang, Datang Mobil, SJ Belum Di Cek, STNK/KIR ≤30 hari)
+  - Checker: kartu sesuai role (data sendiri)
+  - Full width (`columnSpan = 'full'`)
+  - Grid responsif: mobile 1 kolom, tablet 2, desktop 5 per baris
+- [x] **ExpiringDocumentsWidget** (AurumValueList) — STNK/KIR ≤7 hari atau EXPIRED
+  - Admin only, half width, klik → menu Masa Berlaku STNK/KIR
+- [x] **LeavesTodayWidget** (AurumValueList) — Cuti/Sakit/Izin hari ini
+  - Admin only, half width, tampil divisi, klik → Cuti & Absensi
+- [x] Layout dashboard: Stats (full) → [Expiring | Cuti] → RecentActivity (full)

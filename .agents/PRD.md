@@ -84,8 +84,15 @@ Semua modul: **single form modal** (tanpa Repeater multi-row), **ID_TASK** auto 
 - **Sisa Cuti:** `jatah_cuti - totalCutiDipakai` (warna merah jika 0)
 
 ### 2.9 Dashboard
-- **StatsOverviewWidget:** 5 card (Admin) atau sesuai role
+- **StatsOverviewWidget** — AurumStatsOverview + AurumStat, full width
+  - **Admin (9 kartu):** Retur ke/dari Supplier, Terima, Keluar, Kiriman, Retur Masuk Cabang, Datang Mobil, SJ Belum Di Cek, STNK/KIR ≤30 hari
+  - **Checker:** kartu sesuai role (data sendiri)
+  - Grid responsif: mobile 1 kolom, tablet 2, desktop 5 per baris
+- **ExpiringDocumentsWidget** — AurumValueList, STNK/KIR ≤7 hari atau EXPIRED (Admin only, setengah halaman, klik → menu STNK/KIR)
+- **LeavesTodayWidget** — AurumValueList, Cuti/Sakit/Izin hari ini + divisi (Admin only, setengah halaman, klik → Cuti & Absensi)
 - **RecentActivityWidget:** 10 log terakhir, filter module, pagination
+
+Layout: Stats (full) → [Expiring | Cuti] → RecentActivity (full)
 
 ### 2.10 Role, Access & Permission Management (Spatie Permission)
 
