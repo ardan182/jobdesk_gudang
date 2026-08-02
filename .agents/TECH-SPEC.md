@@ -470,14 +470,34 @@ class ExpiringDocumentsWidget extends AurumValueList
 
 ### Service: `app/Services/TableExportService.php`
 ```php
-public static function streamXlsx(Builder $query, array $columns, string $fileName): StreamedResponse
-public static function streamPdf(Builder $query, array $columns, string $fileName): StreamedResponse
+// Query-based (menu resource table)
+public static function streamXlsx(Builder $query, array $columns, string $fileName, array $formatters = []): StreamedResponse
+public static function streamPdf(Builder $query, array $columns, string $fileName, array $formatters = []): StreamedResponse
+
+// Array-based (custom page)
+public static function streamXlsxFromRows(array $headers, array $rows, string $fileName): StreamedResponse
+public static function streamPdfFromRows(array $headers, array $rows, string $fileName): StreamedResponse
+
 public static function resolveValue($record, string $path): string
 ```
 - `columns` = `['Label' => 'kolom.path']` — dot-notation support (`supplier.nama_supplier`)
-- **XLSX:** OpenSpout `Writer\XLSX`, `openToFile('php://output')`, chunk 500
-- **PDF:** view `exports.table-pdf` → `Dompdf`, A4 landscape, `limit(200)`
+- **`$formatters`** = `['path' => fn($record) => string]` — callback per kolom (helper ID→nama, status→label, computed)
+- **XLSX (query):** OpenSpout `Writer\XLSX`, `openToFile('php://output')`, chunk 500
+- **XLSX (rows):** border semua sel + header bold — OpenSpout `Style` + `Border` + `BorderPart`
+- **PDF:** view `exports.table-pdf` (query) / `exports.table-pdf-rows` (array, font 7px) → `Dompdf`, A4 landscape, `limit(200)`
 - **resolveValue:** Carbon → `d/m/Y` (atau `d/m/Y H:i` jika ada waktu), array → `"a, b"`, bool → `Ya/Tidak`
+
+### Border XLSX Rows (OpenSpout)
+```php
+$border = new Border(
+    new BorderPart(Border::LEFT, Color::BLACK, Border::WIDTH_THIN, Border::STYLE_SOLID),
+    new BorderPart(Border::RIGHT, Color::BLACK, Border::WIDTH_THIN, Border::STYLE_SOLID),
+    new BorderPart(Border::TOP, Color::BLACK, Border::WIDTH_THIN, Border::STYLE_SOLID),
+    new BorderPart(Border::BOTTOM, Color::BLACK, Border::WIDTH_THIN, Border::STYLE_SOLID),
+);
+$headerStyle = (new Style)->setBorder($border)->setFontBold();
+$rowStyle = (new Style)->setBorder($border);
+```
 
 ### Toolbar Action (sebelum search)
 ```php
@@ -491,7 +511,7 @@ use Filament\Support\Enums\Size;
         ->outlined()->size(Size::Small)
         ->action(fn (Action $a) => TableExportService::streamXlsx(
             $a->getLivewire()->getFilteredTableQuery(),
-            self::exportColumns(), 'nama-file')),
+            self::exportColumns(), 'nama-file', self::exportFormatters())),
     Action::make('export_pdf')
         ->label('Export PDF')
         ->icon('heroicon-o-document-text')
@@ -499,7 +519,7 @@ use Filament\Support\Enums\Size;
         ->outlined()->size(Size::Small)
         ->action(fn (Action $a) => TableExportService::streamPdf(
             $a->getLivewire()->getFilteredTableQuery(),
-            self::exportColumns(), 'nama-file')),
+            self::exportColumns(), 'nama-file', self::exportFormatters())),
 ])
 ```
 - `toolbarActions` render di `fi-ta-header-toolbar` (baris search) — tombol sebelum search, sejajar
@@ -508,9 +528,19 @@ use Filament\Support\Enums\Size;
 - `getFilteredTableQuery()` — hormati filter aktif + scope role
 - `headerActions` TIDAK dipakai (render di baris heading, kanan atas)
 
+### Custom Page Export (Cuti & Absensi)
+- Export action diletakkan di dalam Section Filter via `Filament\Schemas\Components\Actions`
+- Icon/outlined kecil di baris filter, `->alignEnd()` + search `hiddenLabel()` agar sejajar
+- `buildAbsensiMatrix()` → headers `[Karyawan, 01..31, Sisa]`, rows `[nama, C/S/I/''..., sisa]`
+
 ### Deployment
-- ✅ TaskDatangMobilSuppliers (kolom: id_task, supplier, ekspedisi, sopir, no_plat, jenis_kiriman, tanggal_datang, jam_datang, jam_selesai, status, keterangan)
-- ⏳ Copy pola ke menu lain
+- ✅ TaskDatangMobilSuppliers
+- ✅ TaskTerimaSuppliers
+- ✅ SupplierSj
+- ✅ BranchShipment
+- ✅ TaskKeluarBarangs (formatter helper→nama)
+- ✅ TaskKirimanMobils (formatters total_sj, SJ, status/retur label)
+- ✅ ManageLeaves — Papan Absensi (array-based, border + header bold)
 
 ---
 

@@ -26,7 +26,7 @@
             @foreach ($rows as $record)
                 <tr>
                     @foreach ($columns as $path)
-                        <td>{{ \App\Services\TableExportService::resolveValue($record, $path) }}</td>
+                        <td>{{ isset($formatters[$path]) ? $formatters[$path]($record) : \App\Services\TableExportService::resolveValue($record, $path) }}</td>
                     @endforeach
                 </tr>
             @endforeach

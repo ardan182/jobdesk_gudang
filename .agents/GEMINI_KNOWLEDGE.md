@@ -264,12 +264,15 @@ Checker Kiriman input manual di menu Kiriman Mobil
 - **SupplierImport** — CSV/XLSX/XLS, auto-uppercase kode_supplier
 - **WarehouseEmployeeImport** — CSV/XLSX/XLS, auto-create Division
 - **Table Export (Custom):** `App\Services\TableExportService` — tombol **outlined kecil** (XLSX & PDF) di toolbar (sebelum search)
-  - `streamXlsx()` — OpenSpout, chunk 500, StreamedResponse
-  - `streamPdf()` — HTML table (`exports/table-pdf`) → dompdf, A4 landscape, limit 200
+  - Query-based: `streamXlsx()` / `streamPdf($query, $columns, $fileName, $formatters)`
+  - Array-based (custom page): `streamXlsxFromRows()` / `streamPdfFromRows()`
+  - `$formatters` = `['path' => fn($record) => string]` — konversi kolom khusus (helper→nama, status→label, computed)
+  - XLSX rows: **border semua sel + header bold** (OpenSpout `Style`/`Border`/`BorderPart`)
+  - PDF: `exports/table-pdf` (query) / `exports/table-pdf-rows` (array, font 7px) → dompdf, A4 landscape, limit 200
   - `resolveValue()` — data_get dot-notation, format Carbon/array/bool
   - Style: `->outlined()->size(Size::Small)` + label + icon (enum `Filament\Support\Enums\Size`)
   - Pakai `getFilteredTableQuery()` → hormati filter aktif + scope role
-  - Deployment: TaskDatangMobilSuppliers (pola: 2 action + `exportColumns()`)
+  - **Deploy:** Datang Mobil, Terima Supplier, Input SJ, Input Kirim Barang, Checker Keluar (helper→nama), Kiriman Mobil (formatters), Cuti & Absensi (Papan Absensi matrix, border XLSX)
 
 ---
 

@@ -5,6 +5,7 @@ namespace App\Filament\Pages;
 use App\Models\Division;
 use App\Models\WarehouseEmployee;
 use App\Models\WarehouseLeave;
+use App\Services\TableExportService;
 use Carbon\Carbon;
 use Filament\Actions\Action;
 use Filament\Actions\EditAction;
@@ -15,12 +16,15 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
+use Filament\Schemas\Components\Actions;
+use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Html;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Schemas\Components\View;
 use Filament\Schemas\Schema;
+use Filament\Support\Enums\Size;
 use Filament\Support\Icons\Heroicon;
 
 class ManageLeaves extends Page
@@ -205,7 +209,7 @@ class ManageLeaves extends Page
                             ->icon('heroicon-o-calendar-days')
                             ->schema([
                                 Section::make('Filter')
-                                    ->columns(5)
+                                    ->columns(6)
                                     ->compact()
                                     ->schema([
                                         Select::make('bulan')
@@ -235,13 +239,52 @@ class ManageLeaves extends Page
                                             ->live(),
                                         Checkbox::make('hanya_absen')
                                             ->label('Hanya yang absen')
+                                            ->inline()
                                             ->live(),
-                                        TextInput::make('search')
-                                            ->label('Cari Nama / Divisi')
-                                            ->placeholder('Ketik nama atau divisi...')
-                                            ->prefixIcon('heroicon-m-magnifying-glass')
-                                            ->live()
-                                            ->debounce(500),
+                                        Grid::make(2)
+                                            ->columnSpan(2)
+                                            ->schema([
+                                                Actions::make([
+                                                    Action::make('export_absensi_xlsx')
+                                                        ->label('Export XLSX')
+                                                        ->icon('heroicon-o-document-arrow-down')
+                                                        ->color('success')
+                                                        ->outlined()
+                                                        ->size(Size::Small)
+                                                        ->action(function () {
+                                                            [$headers, $rows] = $this->buildAbsensiMatrix();
+
+                                                            return TableExportService::streamXlsxFromRows(
+                                                                $headers,
+                                                                $rows,
+                                                                'papan-absensi-' . $this->tahun . '-' . str_pad($this->bulan, 2, '0', STR_PAD_LEFT),
+                                                            );
+                                                        }),
+                                                    Action::make('export_absensi_pdf')
+                                                        ->label('Export PDF')
+                                                        ->icon('heroicon-o-document-text')
+                                                        ->color('danger')
+                                                        ->outlined()
+                                                        ->size(Size::Small)
+                                                        ->action(function () {
+                                                            [$headers, $rows] = $this->buildAbsensiMatrix();
+
+                                                            return TableExportService::streamPdfFromRows(
+                                                                $headers,
+                                                                $rows,
+                                                                'papan-absensi-' . $this->tahun . '-' . str_pad($this->bulan, 2, '0', STR_PAD_LEFT),
+                                                            );
+                                                        }),
+                                                ])
+                                                    ->alignEnd(),
+                                                TextInput::make('search')
+                                                    ->label('Cari Nama / Divisi')
+                                                    ->hiddenLabel()
+                                                    ->placeholder('Ketik nama atau divisi...')
+                                                    ->prefixIcon('heroicon-m-magnifying-glass')
+                                                    ->live()
+                                                    ->debounce(500),
+                                            ]),
                                     ]),
                                 View::make('filament.pages.manage-leaves-matrix'),
                             ]),
@@ -348,6 +391,36 @@ class ManageLeaves extends Page
                 ->icon('heroicon-o-arrow-path')
                 ->action(fn () => $this->loadData()),
         ];
+    }
+
+    /**
+     * @return array{0: array<int, string>, 1: array<int, array<int, mixed>>}
+     */
+    protected function buildAbsensiMatrix(): array
+    {
+        $headers = ['Karyawan'];
+        foreach ($this->calendar as $day) {
+            $headers[] = str_pad($day, 2, '0', STR_PAD_LEFT);
+        }
+        $headers[] = 'Sisa';
+
+        $rows = [];
+        foreach ($this->employees as $emp) {
+            $row = [$emp['nama']];
+            foreach ($this->calendar as $day) {
+                $jenis = $emp['leave_days'][$day] ?? null;
+                $row[] = match ($jenis) {
+                    'Cuti' => 'C',
+                    'Sakit' => 'S',
+                    'Izin' => 'I',
+                    default => '',
+                };
+            }
+            $row[] = $emp['sisa_cuti'];
+            $rows[] = $row;
+        }
+
+        return [$headers, $rows];
     }
 
     public static function canAccess(): bool

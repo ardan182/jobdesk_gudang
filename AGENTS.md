@@ -80,7 +80,8 @@ All XLSX exports use **ZipArchive + XML manual** (no maatwebsite/phpspreadsheet)
 |------|---------|
 | `app/Services/TaskIdGenerator.php` | Sequential counter ID generation |
 | `app/Services/TableExportService.php` | Custom XLSX/PDF export (icon-only toolbar action) |
-| `resources/views/exports/table-pdf.blade.php` | PDF HTML template |
+| `resources/views/exports/table-pdf.blade.php` | PDF HTML template (query-based) |
+| `resources/views/exports/table-pdf-rows.blade.php` | PDF HTML template (array-based, font 7px) |
 | `app/Models/Task*` | 6 task models |
 | `app/Models/WarehouseEmployee.php` | Employees + division_id |
 | `app/Models/WarehouseLeave.php` | Leave/absence tracking |

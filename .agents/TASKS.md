@@ -236,22 +236,35 @@ Plugin `occtherapist/advanced-table-export-for-filament` pernah dicoba tapi **di
 
 ## Fase 23: Custom Export — XLSX & PDF ✅
 
-Export custom tanpa plugin — 2 tombol **outlined kotak kecil** di toolbar (sejajar sebelum kolom search), langsung download sesuai filter aktif.
+Export custom tanpa plugin — 2 tombol **outlined kotak kecil** (label + icon) di toolbar, sejajar sebelum kolom search, langsung download sesuai filter aktif.
 
-### Implementasi
+### Implementasi Service (`app/Services/TableExportService.php`)
 - [x] `composer require dompdf/dompdf` (openspout sudah ada via `filament/actions`)
-- [x] `app/Services/TableExportService.php` — reusable:
-  - `streamXlsx()` — OpenSpout, chunk 500, StreamedResponse
-  - `streamPdf()` — HTML table → dompdf, A4 landscape, limit 200 baris
-  - `resolveValue()` — data_get dot-notation, format Carbon (d/m/Y, H:i), array → comma
-- [x] `resources/views/exports/table-pdf.blade.php` — template PDF
-- [x] **TaskDatangMobilSuppliers** — 2 action di `toolbarActions` (XLSX hijau, PDF merah), `exportColumns()`
-- [x] Style tombol: `->outlined()->size(Size::Small)` + label + icon (enum `Size`, bukan `ActionSize`)
-- [ ] Implementasi ke menu lain (copy pola: 2 action + exportColumns)
+- [x] `streamXlsx()` — OpenSpout, chunk 500, StreamedResponse (menu query-based)
+- [x] `streamPdf()` — HTML table → dompdf, A4 landscape, limit 200 baris
+- [x] `resolveValue()` — data_get dot-notation, format Carbon (d/m/Y, H:i), array → comma
+- [x] **`$formatters`** param — callback per kolom (helper ID → nama, status → label, computed)
+- [x] **`streamXlsxFromRows()` / `streamPdfFromRows()`** — export dari array (untuk custom Page)
+  - XLSX rows: **border semua sel + header bold** (OpenSpout Style/Border/BorderPart)
+- [x] `resources/views/exports/table-pdf.blade.php` — PDF query-based
+- [x] `resources/views/exports/table-pdf-rows.blade.php` — PDF array-based (landscape, font 7px)
+
+### Deploy ke Menu (pola: 2 action di toolbarActions + exportColumns)
+- [x] **TaskDatangMobilSuppliers** — Datang Mobil Supplier
+- [x] **TaskTerimaSuppliers** — Checker Terima Barang Supplier (+ fix duplikat Supplier di modal)
+- [x] **SupplierSj** — Input SJ Dari Supplier
+- [x] **BranchShipment** — Input Kirim Barang
+- [x] **TaskKeluarBarangs** — Checker Keluar Barang (formatter: helper → nama karyawan)
+- [x] **TaskKirimanMobils** — Kiriman Mobil (formatters: total_sj, SJ list, status & retur → label)
+- [x] **ManageLeaves** — Cuti & Absensi (Papan Absensi matrix)
+  - Export di baris filter (icon outlined kecil + label, sejajar search)
+  - `buildAbsensiMatrix()` — Karyawan × hari (C/S/I) + Sisa
+  - XLSX ber-border + header bold
 
 ### Catatan
-- Export menghormati filter AboveContent aktif + scope role (via `getFilteredTableQuery()`)
+- Export menghormati filter aktif + scope role (via `getFilteredTableQuery()`)
 - XLSX unlimited, PDF max 200 baris
+- Belum (menunggu konfirmasi): border di XLSX menu lain (masih khusus Cuti & Absensi)
 
 ## Fase 18: Fine-Grained RBAC (Per-Menu & Per-Action) 🆕
 

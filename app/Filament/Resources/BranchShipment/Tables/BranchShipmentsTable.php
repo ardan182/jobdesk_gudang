@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\BranchShipment\Tables;
 
 use App\Filament\Resources\BranchShipment\Schemas\BranchShipmentForm;
+use App\Services\TableExportService;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -12,6 +13,7 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Schemas\Components\Grid;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Section;
+use Filament\Support\Enums\Size;
 use Filament\Support\Enums\Width;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Enums\FiltersLayout;
@@ -189,6 +191,28 @@ class BranchShipmentsTable
                     }),
             ])
             ->toolbarActions([
+                Action::make('export_xlsx')
+                    ->label('Export XLSX')
+                    ->icon('heroicon-o-document-arrow-down')
+                    ->color('success')
+                    ->outlined()
+                    ->size(Size::Small)
+                    ->action(fn (Action $action) => TableExportService::streamXlsx(
+                        $action->getLivewire()->getFilteredTableQuery(),
+                        self::exportColumns(),
+                        'input-kirim-barang',
+                    )),
+                Action::make('export_pdf')
+                    ->label('Export PDF')
+                    ->icon('heroicon-o-document-text')
+                    ->color('danger')
+                    ->outlined()
+                    ->size(Size::Small)
+                    ->action(fn (Action $action) => TableExportService::streamPdf(
+                        $action->getLivewire()->getFilteredTableQuery(),
+                        self::exportColumns(),
+                        'input-kirim-barang',
+                    )),
                 BulkActionGroup::make([
                     DeleteBulkAction::make()
                         ->iconButton()
@@ -197,5 +221,24 @@ class BranchShipmentsTable
                         ->visible(fn () => auth()->user()?->hasRole('Admin') ?? false),
                 ]),
             ]);
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public static function exportColumns(): array
+    {
+        return [
+            'ID Task' => 'id_task',
+            'Kiriman' => 'pilih_kiriman',
+            'Cabang' => 'cabang',
+            'No SJ' => 'nomor_sj',
+            'No PO' => 'no_po',
+            'Qty' => 'total_qty',
+            'Tgl Buat' => 'tanggal_buat',
+            'Status' => 'status',
+            'Dibuat' => 'user.name',
+            'Keterangan' => 'keterangan',
+        ];
     }
 }

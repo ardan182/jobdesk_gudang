@@ -260,13 +260,21 @@ Export langsung tanpa plugin — 2 tombol **outlined kotak kecil** (XLSX & PDF) 
 
 ### Service: `app/Services/TableExportService.php`
 ```php
-TableExportService::streamXlsx(Builder $query, array $columns, string $fileName): StreamedResponse
-TableExportService::streamPdf(Builder $query, array $columns, string $fileName): StreamedResponse
+// Query-based (menu resource table)
+TableExportService::streamXlsx(Builder $query, array $columns, string $fileName, array $formatters = []): StreamedResponse
+TableExportService::streamPdf(Builder $query, array $columns, string $fileName, array $formatters = []): StreamedResponse
+
+// Array-based (custom page, mis. Cuti & Absensi)
+TableExportService::streamXlsxFromRows(array $headers, array $rows, string $fileName): StreamedResponse  // border + header bold
+TableExportService::streamPdfFromRows(array $headers, array $rows, string $fileName): StreamedResponse
+
 TableExportService::resolveValue($record, string $path): string
 ```
 - `columns` = `['Label' => 'kolom.path']` — dukung dot-notation relasi (`supplier.nama_supplier`)
+- **`$formatters`** = `['path' => fn($record) => string]` — konversi kolom khusus (helper → nama, status → label, computed)
 - XLSX: OpenSpout, chunk 500, stream ke `php://output`
-- PDF: HTML table (`resources/views/exports/table-pdf.blade.php`) → dompdf, A4 landscape, limit 200
+- PDF: HTML table (`table-pdf.blade.php` / `table-pdf-rows.blade.php`) → dompdf, A4 landscape, limit 200
+- XLSX array (Cuti): **border semua sel + header bold**
 
 ### Pemasangan di Table (`toolbarActions`)
 ```php
@@ -280,25 +288,34 @@ use Filament\Support\Enums\Size;
         ->outlined()->size(Size::Small)
         ->action(fn (Action $a) => TableExportService::streamXlsx(
             $a->getLivewire()->getFilteredTableQuery(),
-            self::exportColumns(), 'nama-file')),
+            self::exportColumns(), 'nama-file', self::exportFormatters())),
     Action::make('export_pdf')
         ->label('Export PDF')
         ->icon('heroicon-o-document-text')->color('danger')
         ->outlined()->size(Size::Small)
         ->action(fn (Action $a) => TableExportService::streamPdf(
             $a->getLivewire()->getFilteredTableQuery(),
-            self::exportColumns(), 'nama-file')),
+            self::exportColumns(), 'nama-file', self::exportFormatters())),
 ])
 ```
 
-### Status
-- ✅ Implementasi: **TaskDatangMobilSuppliers**
-- ⏳ Menyusul: menu lain (copy pola 2 action + `exportColumns()`)
+### Status — Menu yang Sudah Ada Export
+| Menu | Formatters |
+|------|-----------|
+| Datang Mobil Supplier | — |
+| Checker Terima Barang Supplier | — |
+| Input SJ Dari Supplier | — |
+| Input Kirim Barang | — |
+| Checker Keluar Barang | helper → nama karyawan |
+| Kiriman Mobil | total_sj, SJ list, status/retur → label |
+| Cuti & Absensi (Papan Absensi matrix) | C/S/I matrix + Sisa |
 
 ### Catatan
 - **Style tombol:** outlined kotak kecil — `->outlined()->size(Size::Small)` (enum `Filament\Support\Enums\Size`)
+- Export menghormati filter aktif + scope role (`getFilteredTableQuery()`)
 - Plugin `occtherapist/advanced-table-export-for-filament` **dibuatalkan** (UX modal tidak sesuai) — di-revert
 - Dependensi: `dompdf/dompdf` (openspout via `filament/actions`)
+- Border XLSX: khusus Cuti & Absensi dulu (menu lain menyusul jika diminta)
 
 ## 7. Deployment & Fix 403 di Production
 

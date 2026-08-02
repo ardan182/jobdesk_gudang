@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\SupplierSj\Tables;
 
 use App\Filament\Resources\SupplierSj\Schemas\SupplierSjForm;
+use App\Services\TableExportService;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -13,6 +14,7 @@ use Filament\Schemas\Components\Grid;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Notifications\Notification;
 use Filament\Schemas\Components\Section;
+use Filament\Support\Enums\Size;
 use Filament\Support\Enums\Width;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Enums\FiltersLayout;
@@ -215,10 +217,50 @@ class SupplierSjsTable
                     }),
             ])
             ->toolbarActions([
+                Action::make('export_xlsx')
+                    ->label('Export XLSX')
+                    ->icon('heroicon-o-document-arrow-down')
+                    ->color('success')
+                    ->outlined()
+                    ->size(Size::Small)
+                    ->action(fn (Action $action) => TableExportService::streamXlsx(
+                        $action->getLivewire()->getFilteredTableQuery(),
+                        self::exportColumns(),
+                        'input-sj-supplier',
+                    )),
+                Action::make('export_pdf')
+                    ->label('Export PDF')
+                    ->icon('heroicon-o-document-text')
+                    ->color('danger')
+                    ->outlined()
+                    ->size(Size::Small)
+                    ->action(fn (Action $action) => TableExportService::streamPdf(
+                        $action->getLivewire()->getFilteredTableQuery(),
+                        self::exportColumns(),
+                        'input-sj-supplier',
+                    )),
                 BulkActionGroup::make([
                     DeleteBulkAction::make()
                         ->color('danger'),
                 ]),
             ]);
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public static function exportColumns(): array
+    {
+        return [
+            'ID Task' => 'id_task',
+            'Nama Supplier' => 'nama_supplier',
+            'Tgl Datang' => 'tanggal_datang',
+            'Tgl Input' => 'tanggal_input',
+            'No PO' => 'nomor_po_referensi',
+            'Koli' => 'jumlah_koli',
+            'Faktur' => 'jumlah_faktur',
+            'Status' => 'status_input',
+            'Keterangan' => 'keterangan',
+        ];
     }
 }

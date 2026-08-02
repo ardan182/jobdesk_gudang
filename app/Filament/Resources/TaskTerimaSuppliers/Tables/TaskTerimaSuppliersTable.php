@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\TaskTerimaSuppliers\Tables;
 
 use App\Filament\Resources\TaskTerimaSuppliers\Schemas\TaskTerimaSupplierForm;
+use App\Services\TableExportService;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -12,6 +13,7 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Schemas\Components\Grid;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Section;
+use Filament\Support\Enums\Size;
 use Filament\Support\Enums\Width;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Enums\FiltersLayout;
@@ -193,7 +195,6 @@ class TaskTerimaSuppliersTable
                                         default => 'gray',
                                     }),
                                 TextEntry::make('arrivalSupplierTruck.supplier.nama_supplier')->label('Supplier'),
-                                TextEntry::make('arrivalSupplierTruck.supplier.nama_supplier')->label('Supplier'),
                                 TextEntry::make('arrivalSupplierTruck.expedition.nama_ekspedisi')->label('Ekspedisi'),
                                 TextEntry::make('no_po_referensi')->label('No PO Referensi'),
                                 TextEntry::make('jam_datang')->label('Jam Datang'),
@@ -248,6 +249,28 @@ class TaskTerimaSuppliersTable
                     }),
             ])
             ->toolbarActions([
+                Action::make('export_xlsx')
+                    ->label('Export XLSX')
+                    ->icon('heroicon-o-document-arrow-down')
+                    ->color('success')
+                    ->outlined()
+                    ->size(Size::Small)
+                    ->action(fn (Action $action) => TableExportService::streamXlsx(
+                        $action->getLivewire()->getFilteredTableQuery(),
+                        self::exportColumns(),
+                        'terima-supplier',
+                    )),
+                Action::make('export_pdf')
+                    ->label('Export PDF')
+                    ->icon('heroicon-o-document-text')
+                    ->color('danger')
+                    ->outlined()
+                    ->size(Size::Small)
+                    ->action(fn (Action $action) => TableExportService::streamPdf(
+                        $action->getLivewire()->getFilteredTableQuery(),
+                        self::exportColumns(),
+                        'terima-supplier',
+                    )),
                 BulkActionGroup::make([
                     DeleteBulkAction::make()
                         ->iconButton()
@@ -256,5 +279,26 @@ class TaskTerimaSuppliersTable
                         ->visible(fn () => auth()->user()?->hasRole('Admin') ?? false),
                 ]),
             ]);
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public static function exportColumns(): array
+    {
+        return [
+            'ID Task' => 'id_task',
+            'Supplier' => 'arrivalSupplierTruck.supplier.nama_supplier',
+            'Ekspedisi' => 'arrivalSupplierTruck.expedition.nama_ekspedisi',
+            'No PO Referensi' => 'no_po_referensi',
+            'Kolian' => 'jumlah_kolian',
+            'Jam Datang' => 'jam_datang',
+            'Jam Bongkar' => 'jam_bongkar',
+            'Selesai Bongkar' => 'selesai_bongkar',
+            'Lembar SJ' => 'lembar_sj',
+            'Sopir' => 'nama_sopir',
+            'Status' => 'status',
+            'Keterangan' => 'keterangan',
+        ];
     }
 }

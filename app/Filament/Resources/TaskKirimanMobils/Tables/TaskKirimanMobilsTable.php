@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\TaskKirimanMobils\Tables;
 
 use App\Filament\Resources\TaskKirimanMobils\Schemas\TaskKirimanMobilForm;
+use App\Services\TableExportService;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -12,6 +13,7 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Schemas\Components\Grid;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Section;
+use Filament\Support\Enums\Size;
 use Filament\Support\Enums\Width;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Enums\FiltersLayout;
@@ -272,6 +274,30 @@ class TaskKirimanMobilsTable
                     }),
             ])
             ->toolbarActions([
+                Action::make('export_xlsx')
+                    ->label('Export XLSX')
+                    ->icon('heroicon-o-document-arrow-down')
+                    ->color('success')
+                    ->outlined()
+                    ->size(Size::Small)
+                    ->action(fn (Action $action) => TableExportService::streamXlsx(
+                        $action->getLivewire()->getFilteredTableQuery(),
+                        self::exportColumns(),
+                        'kiriman-mobil',
+                        self::exportFormatters(),
+                    )),
+                Action::make('export_pdf')
+                    ->label('Export PDF')
+                    ->icon('heroicon-o-document-text')
+                    ->color('danger')
+                    ->outlined()
+                    ->size(Size::Small)
+                    ->action(fn (Action $action) => TableExportService::streamPdf(
+                        $action->getLivewire()->getFilteredTableQuery(),
+                        self::exportColumns(),
+                        'kiriman-mobil',
+                        self::exportFormatters(),
+                    )),
                 BulkActionGroup::make([
                     DeleteBulkAction::make()
                         ->iconButton()
@@ -280,5 +306,51 @@ class TaskKirimanMobilsTable
                         ->visible(fn () => auth()->user()?->hasRole('Admin') ?? false),
                 ]),
             ]);
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public static function exportColumns(): array
+    {
+        return [
+            'ID Task' => 'id_task',
+            'Cabang' => 'cabang',
+            'Total SJ' => 'total_sj',
+            'SJ' => 'branch_sj_list',
+            'Tgl Kirim' => 'tanggal_kirim',
+            'No Plat' => 'no_plat_mobil',
+            'Jam Muat' => 'jam_muat',
+            'Jam Selesai' => 'jam_selesai_muat',
+            'Berangkat' => 'jam_berangkat',
+            'Tiba' => 'jam_tiba',
+            'Status' => 'status',
+            'Retur' => 'retur_option',
+            'Supir' => 'nama_supir',
+            'Checker' => 'user.name',
+            'Tanggal' => 'created_at',
+        ];
+    }
+
+    /**
+     * @return array<string, callable>
+     */
+    public static function exportFormatters(): array
+    {
+        return [
+            'total_sj' => fn ($record) => $record->branchShipments->count(),
+            'branch_sj_list' => fn ($record) => $record->branchShipments->pluck('nomor_sj')->implode(', '),
+            'status' => fn ($record) => match ($record->status) {
+                'draft' => 'Draft',
+                'dalam pengiriman' => 'Dalam Pengiriman',
+                'selesai' => 'Selesai',
+                default => $record->status ?? '',
+            },
+            'retur_option' => fn ($record) => match ($record->retur_option) {
+                'tidak_ada_retur' => 'Tidak Ada Retur',
+                'ada_retur' => 'Ada Retur',
+                default => $record->retur_option ?? '',
+            },
+        ];
     }
 }
