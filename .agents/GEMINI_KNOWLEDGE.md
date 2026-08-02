@@ -23,7 +23,7 @@ Aplikasi web untuk digitalisasi jobdesk harian gudang — pencatatan retur, pene
 | Auth | Spatie Laravel Permission | 5 role |
 | Frontend | Tailwind CSS + Alpine.js | Bundled via Filament |
 | Assets | Vite | `npm run dev` atau `npm run build` |
-| Export/Import | ZipArchive (native PHP) | Tidak pakai maatwebsite/phpspreadsheet |
+| Export/Import | ZipArchive (native PHP) | Template master + import; Export table via TableExportService |
 | Code Graph | Graphify | `graphify-out/` |
 
 ---
@@ -263,11 +263,12 @@ Checker Kiriman input manual di menu Kiriman Mobil
 - Routes: `GET /suppliers/template`, `GET /employees/template`
 - **SupplierImport** — CSV/XLSX/XLS, auto-uppercase kode_supplier
 - **WarehouseEmployeeImport** — CSV/XLSX/XLS, auto-create Division
-- **Table Export (Postponed):** Plugin `occtherapist/advanced-table-export-for-filament` untuk export XLSX/CSV/PDF/JSON/XML dari table grid
-  - Header action: export hasil filter/sort/search
-  - Bulk action: export selected rows
-  - Column picker: user pilih kolom
-  - PDF via Dompdf, XLSX via OpenSpout
+- **Table Export (Custom):** `App\Services\TableExportService` — icon-only XLSX & PDF di toolbar (sebelum search)
+  - `streamXlsx()` — OpenSpout, chunk 500, StreamedResponse
+  - `streamPdf()` — HTML table (`exports/table-pdf`) → dompdf, A4 landscape, limit 200
+  - `resolveValue()` — data_get dot-notation, format Carbon/array/bool
+  - Pakai `getFilteredTableQuery()` → hormati filter aktif + scope role
+  - Deployment: TaskDatangMobilSuppliers (pola: 2 action + `exportColumns()`)
 
 ---
 
@@ -514,5 +515,6 @@ app/
 ├── Providers/
 │   └── Filament/AdminPanelProvider.php
 └── Services/
-    └── TaskIdGenerator.php
+    ├── TaskIdGenerator.php
+    └── TableExportService.php
 ```

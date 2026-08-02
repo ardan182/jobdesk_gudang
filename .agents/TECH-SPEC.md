@@ -15,7 +15,7 @@
 | Frontend | Tailwind CSS + Alpine.js | - | Bundled via Filament |
 | Assets | Vite | - | `npm run dev` / `npm run build` |
 | Export/Import (master) | ZipArchive + SimpleXML + DOMDocument | native PHP | Template download, import CSV/XLSX/XLS |
-| Export Table (Postponed) | `occtherapist/advanced-table-export-for-filament` + OpenSpout + Dompdf | plugin | Export filtered data via header/bulk action |
+| Export Table (custom) | `App\Services\TableExportService` + OpenSpout + Dompdf | custom | Icon-only toolbar action, XLSX & PDF sesuai filter |
 | Code Graph | Graphify | 0.9.17 | 5800+ nodes, 18000+ edges |
 
 ---
@@ -463,6 +463,46 @@ class ExpiringDocumentsWidget extends AurumValueList
 @media (min-width: 640px) { .aurum-stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (min-width: 1024px) { .aurum-stats-grid:has(.aurum-stat:nth-child(5)) { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
 ```
+
+---
+
+## 11.2 Custom Table Export (XLSX & PDF)
+
+### Service: `app/Services/TableExportService.php`
+```php
+public static function streamXlsx(Builder $query, array $columns, string $fileName): StreamedResponse
+public static function streamPdf(Builder $query, array $columns, string $fileName): StreamedResponse
+public static function resolveValue($record, string $path): string
+```
+- `columns` = `['Label' => 'kolom.path']` — dot-notation support (`supplier.nama_supplier`)
+- **XLSX:** OpenSpout `Writer\XLSX`, `openToFile('php://output')`, chunk 500
+- **PDF:** view `exports.table-pdf` → `Dompdf`, A4 landscape, `limit(200)`
+- **resolveValue:** Carbon → `d/m/Y` (atau `d/m/Y H:i` jika ada waktu), array → `"a, b"`, bool → `Ya/Tidak`
+
+### Toolbar Action (sebelum search)
+```php
+->toolbarActions([
+    Action::make('export_xlsx')
+        ->iconButton()->icon('heroicon-o-document-arrow-down')->color('success')
+        ->tooltip('Export XLSX')
+        ->action(fn (Action $a) => TableExportService::streamXlsx(
+            $a->getLivewire()->getFilteredTableQuery(),
+            self::exportColumns(), 'nama-file')),
+    Action::make('export_pdf')
+        ->iconButton()->icon('heroicon-o-document-text')->color('danger')
+        ->tooltip('Export PDF')
+        ->action(fn (Action $a) => TableExportService::streamPdf(
+            $a->getLivewire()->getFilteredTableQuery(),
+            self::exportColumns(), 'nama-file')),
+])
+```
+- `toolbarActions` render di `fi-ta-header-toolbar` (baris search) — icon sebelum search, sejajar
+- `getFilteredTableQuery()` — hormati filter aktif + scope role
+- `headerActions` TIDAK dipakai (render di baris heading, kanan atas)
+
+### Deployment
+- ✅ TaskDatangMobilSuppliers (kolom: id_task, supplier, ekspedisi, sopir, no_plat, jenis_kiriman, tanggal_datang, jam_datang, jam_selesai, status, keterangan)
+- ⏳ Copy pola ke menu lain
 
 ---
 

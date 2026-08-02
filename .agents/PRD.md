@@ -17,12 +17,10 @@ Aplikasi pencatatan jobdesk harian gudang berbasis web. Digitalisasi log harian 
 - **Divisions:** Kelola divisi via widget di Employee Gudang
 - **Import:** Supplier & Employee via upload CSV/XLSX/XLS (ZipArchive, tanpa library eksternal)
 - **Export Template:** Download template XLSX via route `suppliers/template`, `employees/template`
-- **Export Data (Postponed):** Export semua table grid ke XLSX/CSV/PDF/JSON/XML via plugin `occtherapist/advanced-table-export-for-filament`
-  - Header action: export filtered/sorted/searched data
-  - Bulk action: export selected rows
-  - Column picker: user pilih kolom sebelum export
-  - PDF via Dompdf (tambahan `dompdf/dompdf`)
-  - XLSX via OpenSpout (built-in plugin)
+- **Export Data:** Custom export XLSX & PDF — icon-only button di toolbar (sejajar sebelum search), download langsung sesuai filter aktif
+  - `TableExportService` — reusable service (OpenSpout XLSX + dompdf PDF)
+  - Menghormati filter AboveContent + scope role (`getFilteredTableQuery()`)
+  - XLSX unlimited (chunk stream), PDF max 200 baris
 
 ### 2.2 Modul Task (Log Harian) — Single Form
 
@@ -256,49 +254,47 @@ Semua modul input **satu per satu** — tidak ada Repeater multi-row.
 
 ---
 
-## 7. Export Plugin (Postponed)
+## 7. Export Custom — XLSX & PDF
 
-Gunakan `occtherapist/advanced-table-export-for-filament` untuk export data table ke XLSX, CSV, PDF, JSON, XML, clipboard.
+Export langsung tanpa plugin — 2 icon button (XLSX & PDF) di toolbar tabel, sejajar sebelum kolom search. Klik = download sesuai filter aktif.
 
-### Fitur Plugin
-- **Header action** — export hasil filter/sort/search langsung dari tabel
-- **Bulk action** — export hanya baris yang dipilih
-- **Column picker** — user milih kolom sebelum export
-- **Quick actions** — ActionGroup 1-klik per format
-- **Configurable:** batas baris, orientasi PDF, delimiter CSV, format default
-
-### PDF Driver
-- `dompdf/dompdf` — paling ringan, tanpa headless browser
-- Setup: `composer require dompdf/dompdf` + set `ADVANCED_TABLE_EXPORT_PDF_RENDERER=dompdf` di `.env`
-
-### Instalasi nanti
-```bash
-composer require occtherapist/advanced-table-export-for-filament
-composer require dompdf/dompdf
-```
-
-### Konfigurasi Panel
+### Service: `app/Services/TableExportService.php`
 ```php
-->plugins([
-    AdvancedTableExportForFilamentPlugin::make()
-        ->maxPdfRows(200)
-        ->maxExportRows(2000)
-        ->previewPerPage(25),
-])
+TableExportService::streamXlsx(Builder $query, array $columns, string $fileName): StreamedResponse
+TableExportService::streamPdf(Builder $query, array $columns, string $fileName): StreamedResponse
+TableExportService::resolveValue($record, string $path): string
 ```
+- `columns` = `['Label' => 'kolom.path']` — dukung dot-notation relasi (`supplier.nama_supplier`)
+- XLSX: OpenSpout, chunk 500, stream ke `php://output`
+- PDF: HTML table (`resources/views/exports/table-pdf.blade.php`) → dompdf, A4 landscape, limit 200
 
-### Penggunaan di Table
+### Pemasangan di Table (`toolbarActions`)
 ```php
-use OccTherapist\AdvancedTableExportForFilament\Actions\TableExportHeaderAction;
-use OccTherapist\AdvancedTableExportForFilament\Actions\TableExportBulkAction;
+use App\Services\TableExportService;
 
-->headerActions([
-    TableExportHeaderAction::make(),
-])
 ->toolbarActions([
-    TableExportBulkAction::make(),
+    Action::make('export_xlsx')
+        ->iconButton()->icon('heroicon-o-document-arrow-down')->color('success')
+        ->tooltip('Export XLSX')
+        ->action(fn (Action $a) => TableExportService::streamXlsx(
+            $a->getLivewire()->getFilteredTableQuery(),
+            self::exportColumns(), 'nama-file')),
+    Action::make('export_pdf')
+        ->iconButton()->icon('heroicon-o-document-text')->color('danger')
+        ->tooltip('Export PDF')
+        ->action(fn (Action $a) => TableExportService::streamPdf(
+            $a->getLivewire()->getFilteredTableQuery(),
+            self::exportColumns(), 'nama-file')),
 ])
 ```
+
+### Status
+- ✅ Implementasi: **TaskDatangMobilSuppliers**
+- ⏳ Menyusul: menu lain (copy pola 2 action + `exportColumns()`)
+
+### Catatan
+- Plugin `occtherapist/advanced-table-export-for-filament` **dibuatalkan** (UX modal tidak sesuai) — di-revert
+- Dependensi: `dompdf/dompdf` (openspout via `filament/actions`)
 
 ## 7. Deployment & Fix 403 di Production
 

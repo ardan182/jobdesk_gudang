@@ -79,6 +79,8 @@ All XLSX exports use **ZipArchive + XML manual** (no maatwebsite/phpspreadsheet)
 | Path | Purpose |
 |------|---------|
 | `app/Services/TaskIdGenerator.php` | Sequential counter ID generation |
+| `app/Services/TableExportService.php` | Custom XLSX/PDF export (icon-only toolbar action) |
+| `resources/views/exports/table-pdf.blade.php` | PDF HTML template |
 | `app/Models/Task*` | 6 task models |
 | `app/Models/WarehouseEmployee.php` | Employees + division_id |
 | `app/Models/WarehouseLeave.php` | Leave/absence tracking |
@@ -96,7 +98,7 @@ All XLSX exports use **ZipArchive + XML manual** (no maatwebsite/phpspreadsheet)
 - `filament/filament` — admin panel v5
 - `spatie/laravel-permission` — role middleware
 - Zero export/import libraries for master templates — all native ZipArchive + XML
-- `occtherapist/advanced-table-export-for-filament` (Postponed) — table grid export XLSX/CSV/PDF/JSON/XML via plugin
+- `dompdf/dompdf` — PDF export via `App\Services\TableExportService` (OpenSpout XLSX via `filament/actions`)
 
 ## Pull & update di PC kantor (Windows/Linux)
 ```bash

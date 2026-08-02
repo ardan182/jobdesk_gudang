@@ -25,6 +25,8 @@ class SupplierSjResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Input SJ dari Supplier';
 
+    protected static ?int $navigationSort = 3;
+
     protected static string|\UnitEnum|null $navigationGroup = 'Penerimaan';
 
     public static function form(Schema $schema): Schema

@@ -49,6 +49,12 @@ class SupplierSjsTable
                     ->sortable()
                     ->toggleable()
                     ->grow(false),
+                TextColumn::make('tanggal_input')
+                    ->label('Tgl Input')
+                    ->date('d/m/Y')
+                    ->sortable()
+                    ->toggleable()
+                    ->grow(false),
                 TextColumn::make('nomor_po_referensi')
                     ->label('No PO')
                     ->searchable()
@@ -94,12 +100,6 @@ class SupplierSjsTable
                         default => 'gray',
                     })
                     ->getStateUsing(fn ($record) => $record->tempo_display),
-                TextColumn::make('tanggal_input')
-                    ->label('Tgl Input')
-                    ->date('d/m/Y')
-                    ->sortable()
-                    ->toggleable()
-                    ->grow(false),
                 TextColumn::make('keterangan')
                     ->label('Keterangan')
                     ->limit(50)

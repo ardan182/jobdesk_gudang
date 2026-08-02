@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\TaskDatangMobilSuppliers\Tables;
 
 use App\Filament\Resources\TaskDatangMobilSuppliers\Schemas\TaskDatangMobilSupplierForm;
+use App\Services\TableExportService;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -192,11 +193,51 @@ class TaskDatangMobilSuppliersTable
                     ->form(TaskDatangMobilSupplierForm::getFormFields()),
             ])
             ->toolbarActions([
+                Action::make('export_xlsx')
+                    ->iconButton()
+                    ->icon('heroicon-o-document-arrow-down')
+                    ->color('success')
+                    ->tooltip('Export XLSX')
+                    ->action(fn (Action $action) => TableExportService::streamXlsx(
+                        $action->getLivewire()->getFilteredTableQuery(),
+                        self::exportColumns(),
+                        'datang-mobil-supplier',
+                    )),
+                Action::make('export_pdf')
+                    ->iconButton()
+                    ->icon('heroicon-o-document-text')
+                    ->color('danger')
+                    ->tooltip('Export PDF')
+                    ->action(fn (Action $action) => TableExportService::streamPdf(
+                        $action->getLivewire()->getFilteredTableQuery(),
+                        self::exportColumns(),
+                        'datang-mobil-supplier',
+                    )),
                 BulkActionGroup::make([
                     DeleteBulkAction::make()
                         ->color('danger')
                         ->visible(fn () => auth()->user()?->hasRole('Admin') ?? false),
                 ]),
             ]);
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public static function exportColumns(): array
+    {
+        return [
+            'ID Task' => 'id_task',
+            'Supplier' => 'supplier.nama_supplier',
+            'Ekspedisi' => 'expedition.nama_ekspedisi',
+            'Sopir' => 'nama_sopir',
+            'No Plat' => 'no_plat_mobil',
+            'Jenis Kiriman' => 'jenis_kiriman',
+            'Tgl Datang' => 'tanggal_datang',
+            'Jam Datang' => 'jam_datang',
+            'Jam Selesai' => 'jam_selesai',
+            'Status' => 'status',
+            'Keterangan' => 'keterangan',
+        ];
     }
 }

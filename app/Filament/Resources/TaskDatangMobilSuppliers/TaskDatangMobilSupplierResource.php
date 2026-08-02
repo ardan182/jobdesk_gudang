@@ -26,6 +26,8 @@ class TaskDatangMobilSupplierResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Datang Mobil Supplier';
 
+    protected static ?int $navigationSort = 1;
+
     protected static string|\UnitEnum|null $navigationGroup = 'Penerimaan';
 
     public static function form(Schema $schema): Schema

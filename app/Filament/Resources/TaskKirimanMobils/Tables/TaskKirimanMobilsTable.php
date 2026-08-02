@@ -40,6 +40,12 @@ class TaskKirimanMobilsTable
                     ->width('120px')
                     ->toggleable()
                     ->grow(false),
+                TextColumn::make('total_sj')
+                    ->label('Total SJ')
+                    ->numeric()
+                    ->toggleable()
+                    ->grow(false)
+                    ->getStateUsing(fn ($record) => $record->branchShipments->count()),
                 TextColumn::make('branch_sj_list')
                     ->label('SJ')
                     ->badge()
@@ -196,6 +202,9 @@ class TaskKirimanMobilsTable
                             ->schema([
                                 TextEntry::make('id_task')->label('ID Task'),
                                 TextEntry::make('cabang')->label('Cabang'),
+                                TextEntry::make('total_sj')
+                                    ->label('Total SJ')
+                                    ->state(fn ($record) => $record->branchShipments->count()),
                                 TextEntry::make('tanggal_kirim')->label('Tgl Kirim')->date('d/m/Y'),
                                 TextEntry::make('branch_sj_list')
                                      ->label('SJ')

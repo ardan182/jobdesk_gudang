@@ -230,32 +230,27 @@
 - [ ] Test semua role checker — akses sesuai role
 - [ ] Ringkasan bulanan Cuti & Absensi (PDF/print)
 
-## Fase 18: Export Table Plugin (Postponed) ⏳
+## Fase 18: Export Table Plugin — DIBATALKAN ❌
 
-Plugin `occtherapist/advanced-table-export-for-filament` untuk export data table ke XLSX/CSV/PDF/JSON/XML/clipboard dengan column picker.
+Plugin `occtherapist/advanced-table-export-for-filament` pernah dicoba tapi **di-revert** karena UX modal tidak sesuai harapan. Digantikan custom export (Fase 23).
 
-### Plugin Setup
-- [ ] Install: `composer require occtherapist/advanced-table-export-for-filament`
-- [ ] Install PDF driver: `composer require dompdf/dompdf`
-- [ ] Daftarkan plugin di AdminPanelProvider
-- [ ] Set `.env`: `ADVANCED_TABLE_EXPORT_PDF_RENDERER=dompdf`
-- [ ] Konfigurasi: max rows, preview per page, default format
+## Fase 23: Custom Export — XLSX & PDF ✅
 
-### Implementasi per Resource
-- [ ] TaskReturCabangs — header action + bulk action
-- [ ] TaskReturSuppliers — header action + bulk action
-- [ ] TaskDatangMobilSuppliers — header action + bulk action
-- [ ] TaskTerimaSuppliers — header action + bulk action
-- [ ] TaskKeluarBarangs — header action + bulk action
-- [ ] TaskKirimanMobils — header action + bulk action
-- [ ] SupplierSj — header action + bulk action
-- [ ] BranchShipment — header action + bulk action
-- [ ] KendaraanDokumen — header action + bulk action
-- [ ] SupplierReturnInbound — header action + bulk action
-- [ ] WarehouseEmployees — header action + bulk action
-- [ ] Users — header action + bulk action
-- [ ] WarehouseDocuments — header action + bulk action
-- [ ] Semua Master (Ekspedisi, Kendaraan, Sopir, Toko, Supplier) — header action + bulk action
+Export custom tanpa plugin — icon-only button di toolbar (sejajar sebelum kolom search), langsung download sesuai filter aktif.
+
+### Implementasi
+- [x] `composer require dompdf/dompdf` (openspout sudah ada via `filament/actions`)
+- [x] `app/Services/TableExportService.php` — reusable:
+  - `streamXlsx()` — OpenSpout, chunk 500, StreamedResponse
+  - `streamPdf()` — HTML table → dompdf, A4 landscape, limit 200 baris
+  - `resolveValue()` — data_get dot-notation, format Carbon (d/m/Y, H:i), array → comma
+- [x] `resources/views/exports/table-pdf.blade.php` — template PDF
+- [x] **TaskDatangMobilSuppliers** — 2 icon action di `toolbarActions` (XLSX hijau, PDF merah), `exportColumns()`
+- [ ] Implementasi ke menu lain (copy pola: 2 action + exportColumns)
+
+### Catatan
+- Export menghormati filter AboveContent aktif + scope role (via `getFilteredTableQuery()`)
+- XLSX unlimited, PDF max 200 baris
 
 ## Fase 18: Fine-Grained RBAC (Per-Menu & Per-Action) 🆕
 
