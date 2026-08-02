@@ -481,22 +481,30 @@ public static function resolveValue($record, string $path): string
 
 ### Toolbar Action (sebelum search)
 ```php
+use Filament\Support\Enums\Size;
+
 ->toolbarActions([
     Action::make('export_xlsx')
-        ->iconButton()->icon('heroicon-o-document-arrow-down')->color('success')
-        ->tooltip('Export XLSX')
+        ->label('Export XLSX')
+        ->icon('heroicon-o-document-arrow-down')
+        ->color('success')
+        ->outlined()->size(Size::Small)
         ->action(fn (Action $a) => TableExportService::streamXlsx(
             $a->getLivewire()->getFilteredTableQuery(),
             self::exportColumns(), 'nama-file')),
     Action::make('export_pdf')
-        ->iconButton()->icon('heroicon-o-document-text')->color('danger')
-        ->tooltip('Export PDF')
+        ->label('Export PDF')
+        ->icon('heroicon-o-document-text')
+        ->color('danger')
+        ->outlined()->size(Size::Small)
         ->action(fn (Action $a) => TableExportService::streamPdf(
             $a->getLivewire()->getFilteredTableQuery(),
             self::exportColumns(), 'nama-file')),
 ])
 ```
-- `toolbarActions` render di `fi-ta-header-toolbar` (baris search) — icon sebelum search, sejajar
+- `toolbarActions` render di `fi-ta-header-toolbar` (baris search) — tombol sebelum search, sejajar
+- **Style:** outlined kotak kecil (`->outlined()->size(Size::Small)`) + label + icon
+- **Enum:** `Filament\Support\Enums\Size` (bukan `ActionSize` — tidak ada di v5)
 - `getFilteredTableQuery()` — hormati filter aktif + scope role
 - `headerActions` TIDAK dipakai (render di baris heading, kanan atas)
 

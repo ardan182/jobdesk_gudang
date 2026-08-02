@@ -263,10 +263,11 @@ Checker Kiriman input manual di menu Kiriman Mobil
 - Routes: `GET /suppliers/template`, `GET /employees/template`
 - **SupplierImport** — CSV/XLSX/XLS, auto-uppercase kode_supplier
 - **WarehouseEmployeeImport** — CSV/XLSX/XLS, auto-create Division
-- **Table Export (Custom):** `App\Services\TableExportService` — icon-only XLSX & PDF di toolbar (sebelum search)
+- **Table Export (Custom):** `App\Services\TableExportService` — tombol **outlined kecil** (XLSX & PDF) di toolbar (sebelum search)
   - `streamXlsx()` — OpenSpout, chunk 500, StreamedResponse
   - `streamPdf()` — HTML table (`exports/table-pdf`) → dompdf, A4 landscape, limit 200
   - `resolveValue()` — data_get dot-notation, format Carbon/array/bool
+  - Style: `->outlined()->size(Size::Small)` + label + icon (enum `Filament\Support\Enums\Size`)
   - Pakai `getFilteredTableQuery()` → hormati filter aktif + scope role
   - Deployment: TaskDatangMobilSuppliers (pola: 2 action + `exportColumns()`)
 

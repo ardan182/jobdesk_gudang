@@ -236,7 +236,7 @@ Plugin `occtherapist/advanced-table-export-for-filament` pernah dicoba tapi **di
 
 ## Fase 23: Custom Export — XLSX & PDF ✅
 
-Export custom tanpa plugin — icon-only button di toolbar (sejajar sebelum kolom search), langsung download sesuai filter aktif.
+Export custom tanpa plugin — 2 tombol **outlined kotak kecil** di toolbar (sejajar sebelum kolom search), langsung download sesuai filter aktif.
 
 ### Implementasi
 - [x] `composer require dompdf/dompdf` (openspout sudah ada via `filament/actions`)
@@ -245,7 +245,8 @@ Export custom tanpa plugin — icon-only button di toolbar (sejajar sebelum kolo
   - `streamPdf()` — HTML table → dompdf, A4 landscape, limit 200 baris
   - `resolveValue()` — data_get dot-notation, format Carbon (d/m/Y, H:i), array → comma
 - [x] `resources/views/exports/table-pdf.blade.php` — template PDF
-- [x] **TaskDatangMobilSuppliers** — 2 icon action di `toolbarActions` (XLSX hijau, PDF merah), `exportColumns()`
+- [x] **TaskDatangMobilSuppliers** — 2 action di `toolbarActions` (XLSX hijau, PDF merah), `exportColumns()`
+- [x] Style tombol: `->outlined()->size(Size::Small)` + label + icon (enum `Size`, bukan `ActionSize`)
 - [ ] Implementasi ke menu lain (copy pola: 2 action + exportColumns)
 
 ### Catatan

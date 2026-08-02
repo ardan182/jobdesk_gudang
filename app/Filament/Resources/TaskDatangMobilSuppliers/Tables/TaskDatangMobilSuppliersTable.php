@@ -13,6 +13,7 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Schemas\Components\Grid;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Section;
+use Filament\Support\Enums\Size;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Filters\Filter;
@@ -194,20 +195,22 @@ class TaskDatangMobilSuppliersTable
             ])
             ->toolbarActions([
                 Action::make('export_xlsx')
-                    ->iconButton()
+                    ->label('Export XLSX')
                     ->icon('heroicon-o-document-arrow-down')
                     ->color('success')
-                    ->tooltip('Export XLSX')
+                    ->outlined()
+                    ->size(Size::Small)
                     ->action(fn (Action $action) => TableExportService::streamXlsx(
                         $action->getLivewire()->getFilteredTableQuery(),
                         self::exportColumns(),
                         'datang-mobil-supplier',
                     )),
                 Action::make('export_pdf')
-                    ->iconButton()
+                    ->label('Export PDF')
                     ->icon('heroicon-o-document-text')
                     ->color('danger')
-                    ->tooltip('Export PDF')
+                    ->outlined()
+                    ->size(Size::Small)
                     ->action(fn (Action $action) => TableExportService::streamPdf(
                         $action->getLivewire()->getFilteredTableQuery(),
                         self::exportColumns(),

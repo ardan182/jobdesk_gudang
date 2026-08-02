@@ -256,7 +256,7 @@ Semua modul input **satu per satu** — tidak ada Repeater multi-row.
 
 ## 7. Export Custom — XLSX & PDF
 
-Export langsung tanpa plugin — 2 icon button (XLSX & PDF) di toolbar tabel, sejajar sebelum kolom search. Klik = download sesuai filter aktif.
+Export langsung tanpa plugin — 2 tombol **outlined kotak kecil** (XLSX & PDF) di toolbar tabel, sejajar sebelum kolom search. Klik = download sesuai filter aktif.
 
 ### Service: `app/Services/TableExportService.php`
 ```php
@@ -271,17 +271,20 @@ TableExportService::resolveValue($record, string $path): string
 ### Pemasangan di Table (`toolbarActions`)
 ```php
 use App\Services\TableExportService;
+use Filament\Support\Enums\Size;
 
 ->toolbarActions([
     Action::make('export_xlsx')
-        ->iconButton()->icon('heroicon-o-document-arrow-down')->color('success')
-        ->tooltip('Export XLSX')
+        ->label('Export XLSX')
+        ->icon('heroicon-o-document-arrow-down')->color('success')
+        ->outlined()->size(Size::Small)
         ->action(fn (Action $a) => TableExportService::streamXlsx(
             $a->getLivewire()->getFilteredTableQuery(),
             self::exportColumns(), 'nama-file')),
     Action::make('export_pdf')
-        ->iconButton()->icon('heroicon-o-document-text')->color('danger')
-        ->tooltip('Export PDF')
+        ->label('Export PDF')
+        ->icon('heroicon-o-document-text')->color('danger')
+        ->outlined()->size(Size::Small)
         ->action(fn (Action $a) => TableExportService::streamPdf(
             $a->getLivewire()->getFilteredTableQuery(),
             self::exportColumns(), 'nama-file')),
@@ -293,6 +296,7 @@ use App\Services\TableExportService;
 - ⏳ Menyusul: menu lain (copy pola 2 action + `exportColumns()`)
 
 ### Catatan
+- **Style tombol:** outlined kotak kecil — `->outlined()->size(Size::Small)` (enum `Filament\Support\Enums\Size`)
 - Plugin `occtherapist/advanced-table-export-for-filament` **dibuatalkan** (UX modal tidak sesuai) — di-revert
 - Dependensi: `dompdf/dompdf` (openspout via `filament/actions`)
 
