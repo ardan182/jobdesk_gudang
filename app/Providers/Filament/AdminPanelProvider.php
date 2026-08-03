@@ -216,7 +216,6 @@ class AdminPanelProvider extends PanelProvider
             ->pages([
                 Dashboard::class,
                 \App\Filament\Pages\ManageLeaves::class,
-                \App\Filament\Pages\KomplainPo::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
