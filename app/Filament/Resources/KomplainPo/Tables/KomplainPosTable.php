@@ -34,28 +34,34 @@ class KomplainPosTable
                     ->label('ID Task')
                     ->searchable()
                     ->sortable()
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('cabang')
                     ->label('Cabang')
                     ->searchable()
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('supplier.nama_supplier')
                     ->label('Supplier')
                     ->searchable()
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('no_po')
                     ->label('No PO')
                     ->searchable()
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('nama_barang')
                     ->label('Barang')
                     ->searchable()
                     ->limit(20)
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('qty_diterima')
                     ->label('Qty Terima')
                     ->numeric()
                     ->sortable()
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('kondisi_barang')
                     ->label('Kondisi')
@@ -70,6 +76,7 @@ class KomplainPosTable
                         'tidak_lengkap' => 'Tidak Lengkap',
                         default => $state,
                     })
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('penyelesaian')
                     ->label('Penyelesaian')
@@ -86,6 +93,7 @@ class KomplainPosTable
                         'ganti_barang' => 'Ganti Barang',
                         default => $state,
                     })
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('status')
                     ->label('Status')
@@ -100,11 +108,13 @@ class KomplainPosTable
                         'selesai' => 'Selesai',
                         default => $state,
                     })
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('tanggal_datang_barang')
                     ->label('Tgl Datang')
                     ->date('d/m/Y')
                     ->sortable()
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('foto')
                     ->label('Foto')
@@ -112,11 +122,13 @@ class KomplainPosTable
                     ->color('info')
                     ->formatStateUsing(fn ($record) => count($record->foto ?? []) . ' Gambar')
                     ->tooltip(fn ($record) => implode("\n", array_map(fn ($f) => basename($f), $record->foto ?? [])))
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('user.name')
                     ->label('Dibuat')
                     ->searchable()
                     ->sortable()
+                    ->toggleable()
                     ->grow(false),
             ])
             ->filters([
@@ -127,6 +139,14 @@ class KomplainPosTable
                         'selesai' => 'Selesai',
                     ])
                     ->placeholder('Semua Status'),
+                SelectFilter::make('penyelesaian')
+                    ->label('Penyelesaian')
+                    ->options([
+                        'potong_nota' => 'Potong Nota',
+                        'retur' => 'Retur',
+                        'ganti_barang' => 'Ganti Barang',
+                    ])
+                    ->placeholder('Semua Penyelesaian'),
                 Filter::make('created_at')
                     ->label('Tanggal')
                     ->form([
@@ -140,7 +160,7 @@ class KomplainPosTable
                         ->when($data['created_until'], fn ($q, $d) => $q->whereDate('created_at', '<=', $d))
                     ),
             ], layout: FiltersLayout::AboveContent)
-            ->filtersFormColumns(2)
+            ->filtersFormColumns(4)
             ->recordAction('view')
             ->recordActions([
                 ViewAction::make()
