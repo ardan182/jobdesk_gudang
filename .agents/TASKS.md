@@ -307,7 +307,24 @@ Permission-based access control per-module & per-action, dikelola melalui UI Edi
 - [x] Grup navigasi baru **Purchasing Order** (sebelum Retur)
 - [x] Menu **Komplain PO** dengan icon `document-text`
 - [x] Halaman "Coming Soon" pending pengembangan fitur
-- [ ] Implementasi fitur Komplain PO (Gudang ↔ Admin PO)
+- [x] Implementasi modul Komplain PO lengkap (Gudang ↔ Admin PO)
+- [x] Migration `po_complaints` + model `KomplainPo` + TaskIdGenerator prefix `KMPL`
+- [x] Resource `KomplainPoResource` (grup Purchasing Order)
+- [x] Form 3 Section: PO Supplier, Barang, Status
+- [x] Foto min 1 max 5 (disk public `fotos-komplain/`, ImageEntry view + tooltip grid)
+- [x] Logika status: Selesai hanya jika `tanggal_datang_barang` terisi (select disabled)
+- [x] Export XLSX + PDF
+- [x] Akses Admin sementara (next ke RBAC)
+
+## Fase 24: Bug Fixes Menu Lain ✅
+
+- [x] Komplain PO: fix tabel model (protected $table = 'po_complaints')
+- [x] Komplain PO: fix icon barcode → qr-code
+- [x] Komplain PO: fix error container (hapus action kolom foto → ImageEntry)
+- [x] Sticky header matrix Cuti & Absensi (floating saat scroll)
+- [x] Hapus warna weekend di matrix
+- [x] Fix tempo SupplierSj stabil saat status selesai
+- [x] Fix STNK 1 tahun = 5 tahun − 4 tahun (menu Masa Berlaku)
 
 ## Fase 21: Deployment Hosting + Fix 403 ✅
 

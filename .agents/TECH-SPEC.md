@@ -592,3 +592,56 @@ Metode validasi yang terbukti bekerja di Filament v5:
 ### Activity Log — Description Length
 
 Kolom `description` diubah dari VARCHAR(255) → TEXT untuk menampung update log yang panjang (bisa berisi banyak field perubahan).
+
+---
+
+## 13. Komplain PO Module
+
+### Database (`po_complaints`)
+
+| Kolom | Tipe | Keterangan |
+|-------|------|-----------|
+| `id_task` | string 30 | Prefix `KMPL-00001`, auto via TaskIdGenerator |
+| `cabang` | string | Wajib, dropdown Master Toko |
+| `supplier_id` | FK | Wajib, dropdown Master Supplier |
+| `no_po` | string nullable | "No PO" |
+| `barcode` | string nullable | "Barcode / CodeItem" |
+| `nama_barang` | string nullable | |
+| `qty_diterima` | integer nullable | |
+| `no_surat_jalan` | string nullable | |
+| `qty_disurat_jalan` | integer nullable | |
+| `foto` | json | Min 1, max 5, disk public `fotos-komplain/` |
+| `tanggal_datang_barang` | date nullable | **Kunci status Selesai** |
+| `kondisi_barang` | enum | `tidak_sesuai` / `tidak_lengkap` |
+| `penyelesaian` | enum | `potong_nota` / `retur` / `ganti_barang` |
+| `status` | enum | `draft` / `selesai` (default draft) |
+| `keterangan` | text nullable | |
+| `user_id` | FK | Pembuat |
+
+### Logika Status
+```php
+Select::make('status')
+    ->options(['draft' => 'Draft', 'selesai' => 'Selesai'])
+    ->default('draft')
+    ->required()
+    ->live()
+    ->disabled(fn ($get) => blank($get('tanggal_datang_barang')))
+```
+- `tanggal_datang_barang` kosong → status **disabled** (terkunci draft)
+- Terisi → bisa pilih Draft/Selesai
+
+### Foto Upload (min 1, max 5)
+```php
+FileUpload::make('foto')
+    ->multiple()->minFiles(1)->maxFiles(5)->image()
+    ->disk('public')->directory('fotos-komplain')->required()
+```
+- **View di modal detail:** `ImageEntry::make('foto')->disk('public')->height(200)`
+- **Grid:** badge "X Gambar" + `->tooltip()` nama file (basename)
+- Butuh `php artisan storage:link`
+
+### Akses
+- Hanya `Admin` (sementara, diarahkan ke RBAC nanti)
+
+### Export
+- `TableExportService::streamXlsx` / `streamPdf` — formatters: kondisi, penyelesaian, status → label

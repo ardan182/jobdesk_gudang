@@ -111,11 +111,7 @@ class KomplainPosTable
                     ->badge()
                     ->color('info')
                     ->formatStateUsing(fn ($record) => count($record->foto ?? []) . ' Gambar')
-                    ->action(Action::make('viewFoto')
-                        ->modalHeading('Foto Barang')
-                        ->modalContent(fn (TextColumn $column) => self::renderFotoModal($column->getRecord()))
-                        ->modalSubmitAction(false)
-                        ->modalCancelAction(fn (Action $action) => $action->label('Tutup')))
+                    ->tooltip(fn ($record) => implode("\n", array_map(fn ($f) => basename($f), $record->foto ?? [])))
                     ->grow(false),
                 TextColumn::make('user.name')
                     ->label('Dibuat')
@@ -171,11 +167,11 @@ class KomplainPosTable
                                 TextEntry::make('kondisi_barang')->label('Kondisi')->badge(),
                                 TextEntry::make('penyelesaian')->label('Penyelesaian')->badge(),
                                 TextEntry::make('status')->label('Status')->badge(),
-                                TextEntry::make('foto')
-                                    ->label('Foto')
-                                    ->listWithLineBreaks()
-                                    ->bulleted()
-                                    ->formatStateUsing(fn ($state) => is_array($state) ? array_map(fn ($f) => basename($f), $state) : $state),
+                                ImageEntry::make('foto')
+                                    ->label('Foto Barang')
+                                    ->disk('public')
+                                    ->height(200)
+                                    ->columnSpanFull(),
                                 TextEntry::make('keterangan')->label('Keterangan')->columnSpanFull(),
                             ]),
                     ]),
@@ -219,17 +215,6 @@ class KomplainPosTable
                         ->visible(fn () => auth()->user()?->hasRole('Admin') ?? false),
                 ]),
             ]);
-    }
-
-    protected static function renderFotoModal($record): string
-    {
-        $fotos = $record->foto ?? [];
-        $html = '<div class="grid gap-3">';
-        foreach ($fotos as $foto) {
-            $url = \Illuminate\Support\Facades\Storage::disk('public')->url($foto);
-            $html .= '<img src="' . $url . '" class="w-full rounded-lg border border-gray-200" />';
-        }
-        return $html . '</div>';
     }
 
     /**

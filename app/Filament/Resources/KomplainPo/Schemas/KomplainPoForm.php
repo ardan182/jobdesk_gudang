@@ -39,7 +39,7 @@ class KomplainPoForm
                         ->prefixIcon('heroicon-m-document-text'),
                     TextInput::make('barcode')
                         ->label('Barcode / CodeItem')
-                        ->prefixIcon('heroicon-m-barcode'),
+                        ->prefixIcon('heroicon-m-qr-code'),
                 ]),
             Section::make('Barang')
                 ->description('Detail barang yang dikomplain')

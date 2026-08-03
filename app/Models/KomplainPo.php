@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class KomplainPo extends Model
 {
+    protected $table = 'po_complaints';
+
     protected $fillable = [
         'id_task',
         'cabang',

@@ -1,6 +1,6 @@
 # PRD — Jobdesk Gudang AP
 
-**Versi:** 2.5 | **Tanggal:** 31 Juli 2026
+**Versi:** 2.6 | **Tanggal:** 3 Agustus 2026
 
 ---
 
@@ -194,7 +194,18 @@ Semua punya: `id_task` (indexed), `user_id` (FK).
 | Pengiriman | Input Kirim Barang, Checker Keluar Barang, Kiriman Mobil |
 | Administrasi (Admin) | Cuti & Absensi, **Pusat Dokumen** |
 | Pengaturan (Admin) | Users |
-| (toolbar) | Export XLSX/CSV/PDF/JSON (plugin — semua halaman) |
+| (toolbar) | Export XLSX/PDF (custom service) |
+
+### 2.11 Komplain PO
+- **Grup:** Purchasing Order | **Icon:** DocumentText | **Akses:** Admin (sementara, next ke RBAC)
+- **Tabel:** `po_complaints` | **ID Task:** `KMPL-00001` (TaskIdGenerator)
+- **Tujuan:** Mencatat komplain barang tidak lengkap/tidak sesuai
+- **Form 3 Section:** PO Supplier (cabang, supplier, no_po, barcode) → Barang (nama, qty diterima, no surat jalan, qty di SJ, foto max 5, tgl datang) → Status (kondisi, penyelesaian, status, keterangan)
+- **Status:** `draft` (default) / `selesai` — status Selesai hanya bisa jika `tanggal_datang_barang` terisi
+- **Foto:** min 1, max 5, disk public `fotos-komplain/`, view di modal detail (ImageEntry), tooltip nama file di grid
+- **Kondisi:** `tidak_sesuai` / `tidak_lengkap`
+- **Penyelesaian:** `potong_nota` / `retur` / `ganti_barang`
+- **Export:** XLSX + PDF (custom TableExportService)
 
 ---
 

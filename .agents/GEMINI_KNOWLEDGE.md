@@ -1,6 +1,6 @@
 # Project Context: Jobdesk Gudang AP
 
-**Versi:** 2.2 | **Tanggal:** 31 Juli 2026
+**Versi:** 2.3 | **Tanggal:** 3 Agustus 2026
 
 ---
 
@@ -86,7 +86,7 @@ Jangan hapus `implements FilamentUser` ini saat mengubah model User!
 | | Master Toko | BuildingStorefront | Admin | Dropdown |
 | | Master Supplier | BuildingStorefront | Admin | Dropdown |
 | | Master Employee Gudang | UserGroup | Admin | Dropdown |
-| **Purchasing Order** | Komplain PO | DocumentText | Semua | — |
+| **Purchasing Order** | Komplain PO | DocumentText | Admin (sementara) | — |
 | **Retur** | Retur Masuk dari Cabang | ArrowPath | Admin, Checker Retur | Dropdown |
 | | Retur In & Out Supplier | ArrowUturnLeft | Admin, Checker Retur | Dropdown |
 | **Penerimaan** | Input SJ dari Supplier | DocumentText | Semua | **AboveContent** (3 col) |
@@ -504,6 +504,7 @@ app/
 │   ├── MasterKendaraan.php
 │   ├── MasterSopir.php
 │   ├── MasterToko.php
+│   ├── KomplainPo.php
 │   ├── Supplier.php
 │   ├── SupplierReturnInbound.php
 │   ├── SupplierSj.php
@@ -522,3 +523,16 @@ app/
     ├── TaskIdGenerator.php
     └── TableExportService.php
 ```
+
+---
+
+## 21. Komplain PO Module
+
+- **Tabel:** `po_complaints` | **Model:** `KomplainPo` | **ID:** `KMPL-00001`
+- **Grup:** Purchasing Order | **Akses:** Admin (sementara, next RBAC)
+- **Form 3 Section:** PO Supplier (cabang, supplier, no_po, barcode) → Barang (nama, qty diterima, no_surat_jalan, qty disurat_jalan, foto max 5, tgl datang) → Status (kondisi, penyelesaian, status, keterangan)
+- **Status:** `draft`/`selesai` — Selesai hanya jika `tanggal_datang_barang` terisi (select `disabled` saat kosong)
+- **Kondisi:** `tidak_sesuai`/`tidak_lengkap` | **Penyelesaian:** `potong_nota`/`retur`/`ganti_barang`
+- **Foto:** min 1, max 5, disk `public`, dir `fotos-komplain/`; view `ImageEntry` di modal, grid badge "X Gambar" + tooltip nama file
+- **Export:** XLSX + PDF (TableExportService, formatters label)
+- ⚠️ Model WAJIB `protected $table = 'po_complaints'` (bukan default `komplain_pos`)
