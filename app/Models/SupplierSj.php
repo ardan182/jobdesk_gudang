@@ -35,7 +35,10 @@ class SupplierSj extends Model
         if ($this->tempo_hari !== null) {
             $days = $this->tempo_hari;
         } else {
-            $days = abs(now()->startOfDay()->diffInDays($this->tanggal_datang));
+            $base = $this->status_input === 'selesai' && $this->tanggal_input
+                ? $this->tanggal_input
+                : now();
+            $days = abs($base->startOfDay()->diffInDays($this->tanggal_datang));
         }
 
         $prefix = in_array($this->status_input, ['belum_di_cek', 'draft']) ? 'blm input' : 'input';

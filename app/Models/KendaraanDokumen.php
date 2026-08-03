@@ -52,12 +52,14 @@ class KendaraanDokumen extends Model
             };
 
             if ($model->jenis === 'stnk' && $model->periode === '5_tahun') {
+                $masaBerlakuSatuTahun = $model->masa_berlaku?->copy()->subYears(4);
+
                 KendaraanDokumen::where('master_kendaraan_id', $model->master_kendaraan_id)
                     ->where('jenis', 'stnk')
                     ->where('periode', '1_tahun')
-                    ->update(['masa_berlaku' => $model->masa_berlaku]);
+                    ->update(['masa_berlaku' => $masaBerlakuSatuTahun]);
 
-                $kendaraan->updateQuietly(['masa_berlaku_stnk' => $model->masa_berlaku]);
+                $kendaraan->updateQuietly(['masa_berlaku_stnk' => $masaBerlakuSatuTahun]);
             }
         });
     }
