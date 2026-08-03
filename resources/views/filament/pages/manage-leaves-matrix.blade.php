@@ -2,6 +2,43 @@
     .fi-main {
         padding-inline: 0 !important;
     }
+    /* ── Sticky Header Matrix ── */
+    .leave-matrix-scroll {
+        max-height: 70vh;
+        overflow: auto;
+    }
+    .leave-matrix-table {
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+    .leave-matrix-table thead th {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        background: #f8fafc;
+        box-shadow: inset 0 -1px 0 rgba(15, 23, 42, 0.08);
+    }
+    .dark .leave-matrix-table thead th {
+        background: #1e293b;
+    }
+    .leave-matrix-table thead th.leave-corner-left {
+        left: 0;
+        z-index: 30;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+    }
+    .leave-matrix-table thead th.leave-corner-right {
+        right: 0;
+        z-index: 30;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+    }
+    .leave-matrix-table tbody td.leave-col-left {
+        left: 0;
+        z-index: 10;
+    }
+    .leave-matrix-table tbody td.leave-col-right {
+        right: 0;
+        z-index: 10;
+    }
 </style>
 @php
     $hariIni = now();
@@ -26,20 +63,19 @@
 
 {{-- Table --}}
 <div class="w-full border-t border-gray-200 dark:border-gray-700">
-    <div style="max-height:70vh;overflow:auto">
-        <table class="fi-ta-table w-full" style="table-layout:auto;width:100%">
+    <div class="leave-matrix-scroll">
+        <table class="fi-ta-table leave-matrix-table w-full" style="table-layout:auto;width:100%">
             <thead>
                 <tr>
-                    <th class="fi-ta-header-cell sticky left-0 z-20 text-left" style="min-width:165px">
+                    <th class="fi-ta-header-cell leave-corner-left text-left" style="min-width:165px">
                         <span>Karyawan</span>
                     </th>
                     @foreach ($calendar as $day)
-                        @php $isWeekend = in_array($hariIni->month($bulan)->day($day)->dayOfWeek, [0, 6]); @endphp
-                        <th class="fi-ta-header-cell text-center {{ $isWeekend ? 'fi-text-color-danger bg-red-50/30 dark:bg-red-900/10' : '' }}" style="min-width:34px;max-width:34px">
+                        <th class="fi-ta-header-cell text-center" style="min-width:34px;max-width:34px">
                             <span>{{ str_pad($day, 2, '0', STR_PAD_LEFT) }}</span>
                         </th>
                     @endforeach
-                    <th class="fi-ta-header-cell text-center sticky right-0 z-20 border-l border-gray-200 dark:border-gray-700" style="min-width:75px">
+                    <th class="fi-ta-header-cell leave-corner-right text-center border-l border-gray-200 dark:border-gray-700" style="min-width:75px">
                         <span>Sisa</span>
                     </th>
                 </tr>
@@ -47,7 +83,7 @@
             <tbody>
                 @forelse ($employees as $index => $emp)
                     <tr class="fi-ta-row {{ $index % 2 === 1 ? 'fi-striped' : '' }}">
-                        <td class="fi-ta-cell sticky left-0 z-10" style="background:inherit">
+                        <td class="fi-ta-cell leave-col-left" style="background:inherit">
                             <div class="fi-ta-col flex justify-start text-start">
                                 <div class="fi-ta-text-item fi-ta-text text-sm font-medium text-gray-800 dark:text-gray-200">{{ $emp['nama'] }}</div>
                             </div>
@@ -56,9 +92,8 @@
                             @php
                                 $jenis = $emp['leave_days'][$day] ?? null;
                                 $dateStr = $hariIni->month($bulan)->day($day)->format('Y-m-d');
-                                $isWeekend = in_array($hariIni->month($bulan)->day($day)->dayOfWeek, [0, 6]);
                             @endphp
-                            <td class="fi-ta-cell text-center align-middle {{ $isWeekend ? 'bg-red-50/40 dark:bg-red-900/5' : '' }}" style="min-width:34px;max-width:34px">
+                            <td class="fi-ta-cell text-center align-middle" style="min-width:34px;max-width:34px">
                                 <div class="fi-ta-col flex justify-center text-center items-center">
                                     @if ($jenis)
                                         <button x-on:click="if (confirm('Hapus {{ strtolower($jenis) }} tgl {{ str_pad($day, 2, '0', STR_PAD_LEFT) }}/{{ str_pad($bulan, 2, '0', STR_PAD_LEFT) }}/{{ $tahun }}?')) $wire.deleteLeave({{ $emp['id'] }}, '{{ $dateStr }}')"
@@ -72,7 +107,7 @@
                                 </div>
                             </td>
                         @endforeach
-                        <td class="fi-ta-cell text-center align-middle sticky right-0 z-10 border-l border-gray-200 dark:border-gray-700" style="background:inherit">
+                        <td class="fi-ta-cell leave-col-right text-center align-middle border-l border-gray-200 dark:border-gray-700" style="background:inherit">
                             <div class="fi-ta-col flex justify-center text-center items-center">
                                 <div class="fi-ta-text-item fi-ta-text text-sm font-semibold"
                                     style="{{ $emp['sisa_cuti'] < 3 ? 'color:#ef4444' : ($emp['sisa_cuti'] < 7 ? 'color:#f59e0b' : 'color:#22c55e') }}">
