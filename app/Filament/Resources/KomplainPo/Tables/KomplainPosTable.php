@@ -132,6 +132,11 @@ class KomplainPosTable
                     ->grow(false),
             ])
             ->filters([
+                SelectFilter::make('cabang')
+                    ->label('Cabang')
+                    ->options(fn () => \App\Models\MasterToko::pluck('nama_toko', 'nama_toko'))
+                    ->searchable()
+                    ->placeholder('Semua Cabang'),
                 SelectFilter::make('status')
                     ->label('Status')
                     ->options([
