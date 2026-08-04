@@ -21,7 +21,7 @@ class ListKomplainPos extends ListRecords
                 ->color('primary')
                 ->icon('heroicon-m-plus')
                 ->modalHeading('Tambah Komplain PO')
-                ->modalWidth(Width::Full)
+                ->modalWidth(Width::SevenExtraLarge)
                 ->form(KomplainPoForm::getFormFields())
                 ->action(function (array $data) {
                     $data['id_task'] = TaskIdGenerator::generate('komplain_po');

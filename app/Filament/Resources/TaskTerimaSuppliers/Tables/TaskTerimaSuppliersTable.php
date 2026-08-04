@@ -239,7 +239,7 @@ class TaskTerimaSuppliersTable
                     ->iconButton()
                     ->tooltip('Ubah Data')
                     ->color('warning')
-                    ->modalWidth(Width::Full)
+                    ->modalWidth(Width::SevenExtraLarge)
                     ->form(TaskTerimaSupplierForm::getFormFields())
                     ->using(function ($record, array $data) {
                         $helpers = $data['helpers'] ?? [];

@@ -204,7 +204,7 @@ class KomplainPosTable
                     ->iconButton()
                     ->tooltip('Ubah Data')
                     ->color('warning')
-                    ->modalWidth(Width::Full)
+                    ->modalWidth(Width::SevenExtraLarge)
                     ->form(KomplainPoForm::getFormFields()),
             ])
             ->toolbarActions([

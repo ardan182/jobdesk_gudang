@@ -22,7 +22,7 @@ class ListTaskTerimaSuppliers extends ListRecords
                 ->color('primary')
                 ->icon('heroicon-m-plus')
                 ->modalHeading('Tambah Task Terima Supplier')
-                ->modalWidth(Width::Full)
+                ->modalWidth(Width::SevenExtraLarge)
                 ->form(TaskTerimaSupplierForm::getFormFields())
                 ->action(function (array $data) {
                     $helpers = $data['helpers'] ?? [];

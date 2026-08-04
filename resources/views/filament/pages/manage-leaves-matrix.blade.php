@@ -14,7 +14,7 @@
     .leave-matrix-table thead th {
         position: sticky;
         top: 0;
-        z-index: 20;
+        z-index: 3;
         background: #f8fafc;
         box-shadow: inset 0 -1px 0 rgba(15, 23, 42, 0.08);
     }
@@ -23,21 +23,21 @@
     }
     .leave-matrix-table thead th.leave-corner-left {
         left: 0;
-        z-index: 30;
+        z-index: 4;
         box-shadow: 0 1px 3px rgba(0,0,0,0.15);
     }
     .leave-matrix-table thead th.leave-corner-right {
         right: 0;
-        z-index: 30;
+        z-index: 4;
         box-shadow: 0 1px 3px rgba(0,0,0,0.15);
     }
     .leave-matrix-table tbody td.leave-col-left {
         left: 0;
-        z-index: 10;
+        z-index: 2;
     }
     .leave-matrix-table tbody td.leave-col-right {
         right: 0;
-        z-index: 10;
+        z-index: 2;
     }
 </style>
 @php

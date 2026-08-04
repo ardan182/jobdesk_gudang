@@ -19,7 +19,7 @@ class KomplainPoForm
         return [
             Section::make('PO Supplier')
                 ->description('Data supplier dan nomor dokumen PO')
-                ->columns(2)
+                ->columns(3)
                 ->schema([
                     Select::make('cabang')
                         ->label('Pilih Cabang')
@@ -37,14 +37,14 @@ class KomplainPoForm
                     TextInput::make('no_po')
                         ->label('No PO')
                         ->prefixIcon('heroicon-m-document-text'),
-                    TextInput::make('barcode')
-                        ->label('Barcode / CodeItem')
-                        ->prefixIcon('heroicon-m-qr-code'),
                 ]),
             Section::make('Barang')
                 ->description('Detail barang yang dikomplain')
                 ->columns(2)
                 ->schema([
+                    TextInput::make('barcode')
+                        ->label('Barcode / CodeItem')
+                        ->prefixIcon('heroicon-m-qr-code'),
                     TextInput::make('nama_barang')
                         ->label('Nama Barang')
                         ->prefixIcon('heroicon-m-cube'),
@@ -69,12 +69,6 @@ class KomplainPoForm
                         ->directory('fotos-komplain')
                         ->required()
                         ->columnSpanFull(),
-                    DatePicker::make('tanggal_datang_barang')
-                        ->label('Tanggal Datang Barang')
-                        ->prefixIcon('heroicon-m-calendar-days')
-                        ->native(false)
-                        ->displayFormat('d/m/Y')
-                        ->live(),
                 ]),
             Section::make('Status')
                 ->description('Kondisi, penyelesaian, dan status')
@@ -108,6 +102,12 @@ class KomplainPoForm
                         ->required()
                         ->live()
                         ->disabled(fn ($get) => blank($get('tanggal_datang_barang'))),
+                    DatePicker::make('tanggal_datang_barang')
+                        ->label('Tanggal Datang Barang')
+                        ->prefixIcon('heroicon-m-calendar-days')
+                        ->native(false)
+                        ->displayFormat('d/m/Y')
+                        ->live(),
                     Textarea::make('keterangan')
                         ->label('Keterangan')
                         ->columnSpanFull()
