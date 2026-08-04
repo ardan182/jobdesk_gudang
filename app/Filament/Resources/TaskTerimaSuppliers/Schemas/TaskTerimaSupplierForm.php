@@ -24,6 +24,7 @@ class TaskTerimaSupplierForm
                     Select::make('arrival_supplier_truck_id')
                         ->label('Pilih Mobil Datang Supplier')
                         ->required()
+                        ->allowHtml()
                         ->options(function ($component) {
                             $record = $component->getRecord();
 
@@ -40,7 +41,15 @@ class TaskTerimaSupplierForm
                             }
 
                             return $query->get()->mapWithKeys(fn ($truck) => [
-                                $truck->id => "{$truck->no_plat_mobil} - {$truck->supplier?->nama_supplier} - {$truck->jenis_kiriman} - (" . ($truck->tanggal_datang?->format('d/m/Y') ?? '-') . ')',
+                                $truck->id =>
+                                    "<span style='background:#22c55e;color:#fff;padding:2px 6px;border-radius:4px;font-size:11px'>"
+                                    . "{$truck->no_plat_mobil}"
+                                    . '</span>'
+                                    . " - {$truck->supplier?->nama_supplier} - "
+                                    . "{$truck->jenis_kiriman} - TGL DATANG "
+                                    . "<span style='background:#ef4444;color:#fff;padding:2px 6px;border-radius:4px;font-size:11px'>"
+                                    . ($truck->tanggal_datang?->format('d/m/Y') ?? '-')
+                                    . '</span>',
                             ]);
                         })
                         ->searchable()

@@ -29,6 +29,7 @@ class SupplierReturnForm
                         ->searchable()
                         ->preload()
                         ->placeholder('Pilih mobil datang...')
+                        ->allowHtml()
                         ->disabled(fn ($component) => $component->getRecord() !== null)
                         ->columnSpanFull()
                         ->live()
@@ -42,7 +43,16 @@ class SupplierReturnForm
                                 $query->orWhere('id', $record->arrival_supplier_truck_id);
                             }
                             return $query->get()->mapWithKeys(fn ($truck) => [
-                                $truck->id => "{$truck->no_plat_mobil} - {$truck->supplier?->nama_supplier} - {$truck->jenis_kiriman}",
+                                $truck->id =>
+                                    "<span style='background:#22c55e;color:#fff;padding:2px 6px;border-radius:4px;font-size:11px'>"
+                                    . "{$truck->no_plat_mobil}"
+                                    . '</span>'
+                                    . " - {$truck->supplier?->nama_supplier} - "
+                                    . "{$truck->jenis_kiriman} - "
+                                    . 'TGL DATANG '
+                                    . "<span style='background:#ef4444;color:#fff;padding:2px 6px;border-radius:4px;font-size:11px'>"
+                                    . ($truck->tanggal_datang?->format('d/m/Y') ?? '-')
+                                    . '</span>',
                             ]);
                         })
                         ->afterStateUpdated(function ($state, $set) {
