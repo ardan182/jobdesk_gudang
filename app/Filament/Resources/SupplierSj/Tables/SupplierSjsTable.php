@@ -102,6 +102,11 @@ class SupplierSjsTable
                         default => 'gray',
                     })
                     ->getStateUsing(fn ($record) => $record->tempo_display),
+                TextColumn::make('catatan')
+                    ->label('Catatan Sistem')
+                    ->limit(50)
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->grow(false),
                 TextColumn::make('keterangan')
                     ->label('Keterangan')
                     ->limit(50)
@@ -168,7 +173,7 @@ class SupplierSjsTable
                                     ->badge()
                                     ->color('info')
                                     ->getStateUsing(function ($record) {
-                                        preg_match('/\bTRM-SUP-\d+\b/', $record->keterangan ?? '', $m);
+                                        preg_match('/\bTRM-SUP-\d+\b/', $record->catatan ?? '', $m);
                                         return $m[0] ?? '-';
                                     }),
                                 TextEntry::make('tempo')
@@ -189,6 +194,7 @@ class SupplierSjsTable
                                         default => 'gray',
                                     }),
                                 TextEntry::make('tanggal_input')->label('Tgl Input')->date('d/m/Y'),
+                                TextEntry::make('catatan')->label('Catatan Sistem')->columnSpanFull(),
                                 TextEntry::make('keterangan')->label('Keterangan')->columnSpanFull(),
                             ]),
                     ]),
@@ -260,6 +266,7 @@ class SupplierSjsTable
             'Koli' => 'jumlah_koli',
             'Faktur' => 'jumlah_faktur',
             'Status' => 'status_input',
+            'Catatan' => 'catatan',
             'Keterangan' => 'keterangan',
         ];
     }

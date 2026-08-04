@@ -69,7 +69,7 @@ class TaskTerimaSupplier extends Model
                         'jumlah_koli'        => $model->jumlah_kolian,
                         'jumlah_faktur'      => $model->lembar_sj ?? 1,
                         'status_input'       => 'belum_di_cek',
-                        'keterangan'         => 'Auto dari Terima Supplier: ' . $model->id_task,
+                        'catatan'            => 'Auto dari Terima Supplier: ' . $model->id_task,
                     ]);
                 }
             }
@@ -98,7 +98,7 @@ class TaskTerimaSupplier extends Model
                 'action' => 'update',
             ]);
 
-            $existingSj = \App\Models\SupplierSj::where('keterangan', 'LIKE', '%' . $model->id_task . '%')->first();
+            $existingSj = \App\Models\SupplierSj::where('catatan', 'LIKE', '%' . $model->id_task . '%')->first();
             if ($existingSj && $existingSj->nomor_po_referensi !== $model->no_po_referensi) {
                 $updateData = ['nomor_po_referensi' => $model->no_po_referensi];
 
@@ -115,7 +115,7 @@ class TaskTerimaSupplier extends Model
             }
 
             if ($model->status === 'SELESAI') {
-                $alreadyExists = \App\Models\SupplierSj::where('keterangan', 'LIKE', '%' . $model->id_task . '%')->exists();
+                $alreadyExists = \App\Models\SupplierSj::where('catatan', 'LIKE', '%' . $model->id_task . '%')->exists();
                 if (!$alreadyExists) {
                     $arrivalTruck = $model->arrivalSupplierTruck;
                     \App\Models\SupplierSj::create([
@@ -125,7 +125,7 @@ class TaskTerimaSupplier extends Model
                         'jumlah_koli'        => $model->jumlah_kolian,
                         'jumlah_faktur'      => $model->lembar_sj ?? 1,
                         'status_input'       => 'belum_di_cek',
-                        'keterangan'         => 'Auto dari Terima Supplier: ' . $model->id_task,
+                        'catatan'            => 'Auto dari Terima Supplier: ' . $model->id_task,
                     ]);
                 }
             }

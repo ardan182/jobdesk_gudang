@@ -37,7 +37,7 @@ class SupplierSjForm
                         ->prefixIcon('heroicon-m-document-text')
                         ->disabled(function ($record) {
                             if (!$record) return true;
-                            preg_match('/\bTRM-SUP-\d+\b/', $record->keterangan ?? '', $m);
+                            preg_match('/\bTRM-SUP-\d+\b/', $record->catatan ?? '', $m);
                             if (!empty($m[0])) {
                                 $terima = TaskTerimaSupplier::where('id_task', $m[0])->first();
                                 return filled($terima?->no_po_referensi);
@@ -73,11 +73,18 @@ class SupplierSjForm
                         ->dehydrated(false)
                         ->afterStateHydrated(function ($component, $state) {
                             $record = $component->getRecord();
-                            if ($record && $record->keterangan) {
-                                preg_match('/\bTRM-SUP-\d+\b/', $record->keterangan, $m);
+                            if ($record && $record->catatan) {
+                                preg_match('/\bTRM-SUP-\d+\b/', $record->catatan, $m);
                                 $component->state($m[0] ?? '-');
                             }
                         }),
+                    TextInput::make('catatan')
+                        ->label('Catatan')
+                        ->placeholder('Diisi otomatis dari Terima Supplier')
+                        ->prefixIcon('heroicon-m-information-circle')
+                        ->disabled()
+                        ->dehydrated(true)
+                        ->helperText('Referensi otomatis dari sistem, tidak dapat diubah.'),
                 ]),
             Section::make('Status Input')
                 ->description('Update status pengecekan SJ')

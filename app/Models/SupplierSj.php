@@ -20,6 +20,7 @@ class SupplierSj extends Model
         'tanggal_input',
         'tempo_hari',
         'keterangan',
+        'catatan',
     ];
 
     protected $casts = [
