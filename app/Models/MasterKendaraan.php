@@ -100,7 +100,7 @@ class MasterKendaraan extends Model
             ]);
         }
 
-        if ($this->jenis_kendaraan !== 'motor') {
+        if ($this->jenis_kendaraan !== 'motor' && filled($this->masa_berlaku_kir)) {
             KendaraanDokumen::firstOrCreate([
                 'master_kendaraan_id' => $this->id,
                 'jenis' => 'kir',

@@ -61,7 +61,7 @@ class MasterKendaraansTable
                     ->label('Masa Berlaku KIR')
                     ->date('d/m/Y')
                     ->sortable()
-                    ->visible(fn ($record) => filled($record?->masa_berlaku_kir))
+                    ->toggleable()
                     ->grow(false),
                 TextColumn::make('nomor_rangka')
                     ->label('Nomor Rangka')
