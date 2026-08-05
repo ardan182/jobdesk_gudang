@@ -61,6 +61,7 @@ class MasterKendaraansTable
                     ->label('Masa Berlaku KIR')
                     ->date('d/m/Y')
                     ->sortable()
+                    ->visible(fn ($record) => filled($record?->masa_berlaku_kir))
                     ->grow(false),
                 TextColumn::make('nomor_rangka')
                     ->label('Nomor Rangka')
@@ -81,6 +82,7 @@ class MasterKendaraansTable
                     ->label('No KIR')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true)
+                    ->visible(fn ($record) => filled($record?->masa_berlaku_kir))
                     ->grow(false),
                 TextColumn::make('keterangan')
                     ->label('Keterangan')
@@ -111,7 +113,8 @@ class MasterKendaraansTable
                                     ->formatStateUsing(fn (string $state): string => $state === 'mobil' ? 'Mobil' : 'Motor'),
                                 TextEntry::make('merek_dan_model')->label('Merek dan Model'),
                                 TextEntry::make('masa_berlaku_stnk')->label('STNK 1 Thn')->date('d/m/Y'),
-                                TextEntry::make('masa_berlaku_kir')->label('Masa Berlaku KIR')->date('d/m/Y'),
+                                TextEntry::make('masa_berlaku_kir')->label('Masa Berlaku KIR')->date('d/m/Y')
+                                    ->visible(fn ($record) => filled($record?->masa_berlaku_kir)),
                                 TextEntry::make('stnk_5_tahun_sampai')->label('STNK 5 Thn')->date('d/m/Y')
                                     ->badge()
                                     ->color(function ($record): string {
@@ -124,7 +127,8 @@ class MasterKendaraansTable
                                 TextEntry::make('nomor_rangka')->label('Nomor Rangka'),
                                 TextEntry::make('nomor_mesin')->label('Nomor Mesin'),
                                 TextEntry::make('no_stnk')->label('No STNK'),
-                                TextEntry::make('no_kir')->label('No KIR'),
+                                TextEntry::make('no_kir')->label('No KIR')
+                                    ->visible(fn ($record) => filled($record?->masa_berlaku_kir)),
                                 TextEntry::make('keterangan')->label('Keterangan')->columnSpanFull(),
                             ]),
                     ]),

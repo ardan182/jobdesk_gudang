@@ -349,3 +349,19 @@ Permission-based access control per-module & per-action, dikelola melalui UI Edi
 - [x] **LeavesTodayWidget** (AurumValueList) — Cuti/Sakit/Izin hari ini
   - Admin only, half width, tampil divisi, klik → Cuti & Absensi
 - [x] Layout dashboard: Stats (full) → [Expiring | Cuti] → RecentActivity (full)
+
+## Fase 25: Fix KIR + Filter & Badge Retur Toko ✅
+
+### Masa Berlaku STNK/KIR — aturan KIR
+- [x] **Grid Masa Berlaku:** KIR hanya tampil jika `masa_berlaku` terisi (`modifyQueryUsing` → `where jenis != kir OR masa_berlaku != null`)
+  - Motor → KIR tersembunyi (tidak ada perpanjang KIR)
+  - Mobil pribadi (tidak isi masa_berlaku_kir) → KIR tersembunyi
+  - Mobil isi masa_berlaku_kir → KIR otomatis muncul
+- [x] **Form Master Kendaraan:** field `no_kir` & `masa_berlaku_kir` hanya utk **mobil** (`->visible(fn ($get) => $get('jenis_kendaraan') !== 'motor')`, `jenis_kendaraan` → `->live()`)
+- [x] **Grid Master Kendaraan:** kolom `no_kir`/`masa_berlaku_kir` + modal hidden jika `masa_berlaku_kir` kosong (`$record?->` null-safe)
+- [x] **Model MasterKendaraan:** `createDokumenRecords()` & `saved` hook — tidak buat/sync KIR utk motor
+- [x] Fix error: `visible()` column null-safe (`$record?->masa_berlaku_kir`), type-hint `Get` dihapus (Filament v5 pakai `Schemas\Utilities\Get`)
+
+### Retur Masuk dari Toko
+- [x] **Filter AboveContent 1 baris:** Toko, Jenis Retur (+ opsi RB dan RJ), Status, Tanggal (Grid Dari/Sampai) — `filtersFormColumns(4)`
+- [x] **Dropdown Kiriman Mobil badge pill** (gaya Checker Terima): toko pill hijau `#22c55e`, "tgl kirim : ..." pill merah `#ef4444`, `->allowHtml()`

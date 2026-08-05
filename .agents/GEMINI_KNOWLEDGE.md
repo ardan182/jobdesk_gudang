@@ -87,7 +87,7 @@ Jangan hapus `implements FilamentUser` ini saat mengubah model User!
 | | Master Supplier | BuildingStorefront | Admin | Dropdown |
 | | Master Employee Gudang | UserGroup | Admin | Dropdown |
 | **Purchasing Order** | Komplain PO | DocumentText | Admin (sementara) | — |
-| **Retur** | Retur Masuk dari Cabang | ArrowPath | Admin, Checker Retur | Dropdown |
+| **Retur** | Retur Masuk dari Toko | ArrowUturnLeft | Admin, Checker Retur | **AboveContent** (4 col) |
 | | Retur In & Out Supplier | ArrowUturnLeft | Admin, Checker Retur | Dropdown |
 | **Penerimaan** | Input SJ dari Supplier | DocumentText | Semua | **AboveContent** (3 col) |
 | | Datang Mobil Supplier | Truck | Admin, Checker Terima | **AboveContent** (5 col) |
@@ -169,6 +169,12 @@ Same as before — expeditions, master_kendaraans, master_sopirs, master_tokos, 
 `task_id_counters` (global counter)
 `branch_shipment_kiriman_mobil` (pivot: task_kiriman_mobils ↔ branch_shipments)
 `warehouse_documents` (Pusat Dokumen)
+
+### Aturan KIR (Masa Berlaku STNK/KIR)
+- KIR hanya tampil jika `masa_berlaku_kir` terisi (grid Masa Berlaku: `where jenis != kir OR masa_berlaku != null`)
+- **Motor** → tanpa KIR: field `no_kir`/`masa_berlaku_kir` tersembunyi di form (visible by `jenis_kendaraan !== 'motor'`), tidak auto-create/sync KIR di model
+- **Mobil pribadi** (kosong) → KIR tersembunyi; **mobil isi masa_berlaku_kir** → KIR muncul
+- Grid Master Kendaraan: kolom KIR `->visible(fn ($record) => filled($record?->masa_berlaku_kir))`
 
 ---
 

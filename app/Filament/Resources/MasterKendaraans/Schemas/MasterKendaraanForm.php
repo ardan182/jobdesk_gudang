@@ -29,7 +29,8 @@ class MasterKendaraanForm
                             'mobil' => 'Mobil',
                             'motor' => 'Motor',
                         ])
-                        ->required(),
+                        ->required()
+                        ->live(),
                     TextInput::make('merek_dan_model')
                         ->label('Merek dan Model')
                         ->prefixIcon('heroicon-m-tag'),
@@ -44,13 +45,15 @@ class MasterKendaraanForm
                         ->prefixIcon('heroicon-m-document-text'),
                     TextInput::make('no_kir')
                         ->label('No KIR')
-                        ->prefixIcon('heroicon-m-document-text'),
+                        ->prefixIcon('heroicon-m-document-text')
+                        ->visible(fn ($get) => $get('jenis_kendaraan') !== 'motor'),
                     DatePicker::make('masa_berlaku_stnk')
                         ->label('STNK 1 Tahun')
                         ->prefixIcon('heroicon-m-calendar-days'),
                     DatePicker::make('masa_berlaku_kir')
                         ->label('Masa Berlaku KIR')
-                        ->prefixIcon('heroicon-m-calendar-days'),
+                        ->prefixIcon('heroicon-m-calendar-days')
+                        ->visible(fn ($get) => $get('jenis_kendaraan') !== 'motor'),
                     DatePicker::make('stnk_5_tahun_sampai')
                         ->label('STNK 5 Tahun Sampai')
                         ->prefixIcon('heroicon-m-calendar-days')

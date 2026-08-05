@@ -64,7 +64,7 @@ class MasterKendaraan extends Model
                 }
             }
 
-            if (isset($changes['masa_berlaku_kir'])) {
+            if (isset($changes['masa_berlaku_kir']) && $model->jenis_kendaraan !== 'motor') {
                 $dok = KendaraanDokumen::firstOrCreate([
                     'master_kendaraan_id' => $model->id, 'jenis' => 'kir',
                 ], ['masa_berlaku' => $changes['masa_berlaku_kir']]);
@@ -100,15 +100,17 @@ class MasterKendaraan extends Model
             ]);
         }
 
-        KendaraanDokumen::firstOrCreate([
-            'master_kendaraan_id' => $this->id,
-            'jenis' => 'kir',
-        ], [
-            'nomor_dokumen' => $this->no_kir,
-            'tanggal_terbit' => $this->masa_berlaku_kir ?: now(),
-            'masa_berlaku' => $this->masa_berlaku_kir,
-            'user_perpanjang' => 'System',
-        ]);
+        if ($this->jenis_kendaraan !== 'motor') {
+            KendaraanDokumen::firstOrCreate([
+                'master_kendaraan_id' => $this->id,
+                'jenis' => 'kir',
+            ], [
+                'nomor_dokumen' => $this->no_kir,
+                'tanggal_terbit' => $this->masa_berlaku_kir ?: now(),
+                'masa_berlaku' => $this->masa_berlaku_kir,
+                'user_perpanjang' => 'System',
+            ]);
+        }
     }
 
     public function stnkTerbaru(): HasOne

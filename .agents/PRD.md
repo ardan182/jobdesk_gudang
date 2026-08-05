@@ -149,6 +149,7 @@ getEloquentQuery() → filter own data untuk non-Admin (via permission check)
 | Checker Terima Supplier | 3 (Supplier, Status, Tanggal) | 4 kolom |
 | Datang Mobil Supplier | 5 (Supplier, Ekspedisi, Jenis Kiriman, Tgl Datang, Status) | 5 kolom |
 | Input SJ Supplier | 3 (Nama Supplier, Tgl Input, Status) | 3 kolom |
+| Retur Masuk dari Toko | 4 (Toko, Jenis Retur, Status, Tanggal) | 4 kolom |
 
 **Aturan:**
 - `SelectFilter` → auto-apply saat dipilih
@@ -156,6 +157,12 @@ getEloquentQuery() → filter own data untuk non-Admin (via permission check)
 - Date inline: `Grid::make(2)` untuk Dari + Sampai
 - Helper text: lowercase ("tgl mulai", "tgl akhir")
 - Semua kolom tabel: `->toggleable()` untuk show/hide kolom
+
+### 2.13 Aturan KIR (Masa Berlaku STNK/KIR)
+- **KIR hanya tampil jika `masa_berlaku_kir` terisi** (grid Masa Berlaku & Master Kendaraan)
+- **Motor** → tidak ada KIR (tidak perpanjang KIR) — field KIR di form tersembunyi, tidak auto-create
+- **Mobil pribadi** (tidak isi `masa_berlaku_kir`) → KIR tersembunyi
+- **Mobil isi `masa_berlaku_kir`** → KIR otomatis muncul di grid Masa Berlaku
 
 ---
 

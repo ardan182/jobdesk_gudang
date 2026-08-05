@@ -10,14 +10,16 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Infolists\Components\TextEntry;
+use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Support\Enums\Size;
 use Filament\Support\Enums\Width;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Table;
+use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Table;
 use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Select;
 use Illuminate\Database\Eloquent\Builder;
 
 class TaskReturCabangsTable
@@ -140,68 +142,41 @@ class TaskReturCabangsTable
                     ->grow(false),
             ])
             ->filters([
-                Filter::make('cabang')
+                SelectFilter::make('cabang')
                     ->label('Toko')
-                    ->form([
-                        Select::make('cabang')
-                            ->label('Toko')
-                            ->options(fn () => \App\Models\TaskKirimanMobil::whereIn('retur_option', ['ada_retur'])
-                                ->pluck('cabang', 'cabang')->unique())
-                            ->placeholder('Semua Toko'),
-                    ])
-                    ->query(fn (Builder $query, array $data): Builder => $query->when(
-                        $data['cabang'] ?? null,
-                        fn (Builder $query, $cabang): Builder => $query->where('cabang', $cabang),
-                    )),
-                Filter::make('jenis_retur')
+                    ->options(fn () => \App\Models\TaskKirimanMobil::whereIn('retur_option', ['ada_retur'])
+                        ->pluck('cabang', 'cabang')->unique())
+                    ->searchable()
+                    ->placeholder('Semua Toko'),
+                SelectFilter::make('jenis_retur')
                     ->label('Jenis Retur')
-                    ->form([
-                        Select::make('jenis_retur')
-                            ->label('Jenis Retur')
-                            ->options([
-                                'retur_bagus' => 'Retur Bagus',
-                                'retur_jelek' => 'Retur Jelek',
-                            ])
-                            ->placeholder('Semua'),
+                    ->options([
+                        'retur_bagus' => 'Retur Bagus',
+                        'retur_jelek' => 'Retur Jelek',
+                        'rb_dan_rj' => 'RB dan RJ',
                     ])
-                    ->query(fn (Builder $query, array $data): Builder => $query->when(
-                        $data['jenis_retur'] ?? null,
-                        fn (Builder $query, $j): Builder => $query->where('jenis_retur', $j),
-                    )),
-                Filter::make('status')
+                    ->placeholder('Semua'),
+                SelectFilter::make('status')
                     ->label('Status')
-                    ->form([
-                        Select::make('status')
-                            ->label('Status')
-                            ->options([
-                                'draft' => 'Draft',
-                                'selesai' => 'Selesai',
-                            ])
-                            ->placeholder('Semua Status'),
+                    ->options([
+                        'draft' => 'Draft',
+                        'selesai' => 'Selesai',
                     ])
-                    ->query(fn (Builder $query, array $data): Builder => $query->when(
-                        $data['status'] ?? null,
-                        fn (Builder $query, $s): Builder => $query->where('status', $s),
-                    )),
+                    ->placeholder('Semua Status'),
                 Filter::make('created_at')
+                    ->label('Tanggal')
                     ->form([
-                        DatePicker::make('created_from')
-                            ->label('Dari Tanggal'),
-                        DatePicker::make('created_until')
-                            ->label('Sampai Tanggal'),
+                        Grid::make(2)->schema([
+                            DatePicker::make('created_from')->label('Dari'),
+                            DatePicker::make('created_until')->label('Sampai'),
+                        ]),
                     ])
-                    ->query(function (Builder $query, array $data): Builder {
-                        return $query
-                            ->when(
-                                $data['created_from'],
-                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
-                            )
-                            ->when(
-                                $data['created_until'],
-                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
-                            );
-                    }),
-            ])
+                    ->query(fn (Builder $query, array $data) => $query
+                        ->when($data['created_from'], fn ($q, $d) => $q->whereDate('created_at', '>=', $d))
+                        ->when($data['created_until'], fn ($q, $d) => $q->whereDate('created_at', '<=', $d))
+                    ),
+            ], layout: FiltersLayout::AboveContent)
+            ->filtersFormColumns(4)
             ->recordAction('view')
             ->recordActions([
                 ViewAction::make()

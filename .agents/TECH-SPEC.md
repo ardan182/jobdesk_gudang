@@ -366,6 +366,33 @@ use Filament\Tables\Filters\SelectFilter;
 | Checker Terima Supplier | 4 | Supplier, Status, Tanggal |
 | Datang Mobil Supplier | 5 | Supplier, Ekspedisi, Jenis Kiriman, Tgl Datang, Status |
 | Input SJ Supplier | 3 | Nama Supplier, Tgl Input, Status |
+| Retur Masuk dari Toko | 4 | Toko, Jenis Retur, Status, Tanggal |
+
+### 11.2 Select Dropdown Badge (allowHtml)
+
+Dropdown opsi berwarna/badge pill — pola Checker Terima & Retur Toko:
+```php
+Select::make('kiriman_mobil_id')
+    ->allowHtml()
+    ->options(function () {
+        return TaskKirimanMobil::where('status', 'selesai')->get()
+            ->mapWithKeys(fn ($k) => [
+                $k->id => "<span style='background:#22c55e;color:#fff;padding:2px 6px;border-radius:4px;font-size:11px'>{$k->cabang}</span>"
+                    . " - {$k->no_plat_mobil} - {$k->jam_tiba?->format('H:i')} - "
+                    . "<span style='background:#ef4444;color:#fff;padding:2px 6px;border-radius:4px;font-size:11px'>tgl kirim : {$k->tanggal_kirim?->format('d/m/Y')}</span>",
+            ]);
+    })
+```
+- hijau `#22c55e`, merah `#ef4444` — badge pill (bg, white, rounded 4px, font 11px)
+
+### 11.3 Aturan KIR (Masa Berlaku STNK/KIR)
+
+- Grid Masa Berlaku: `->modifyQueryUsing(fn (Builder $q) => $q->where(fn ($q) => $q->where('jenis', '!=', 'kir')->orWhereNotNull('masa_berlaku')))`
+- Form master: field KIR `->visible(fn ($get) => $get('jenis_kendaraan') !== 'motor')` (`jenis_kendaraan` → `->live()`)
+- Grid master: kolom KIR `->visible(fn ($record) => filled($record?->masa_berlaku_kir))` (null-safe!)
+- Model: `createDokumenRecords()` / `saved` hook — blok KIR hanya jika `jenis_kendaraan !== 'motor'`
+- **Catatan Filament v5:** closure `visible()` kolom dapat dievaluasi saat `$record = null` → wajib `?->`
+- **Catatan Filament v5:** type-hint `$get` closure = `Filament\Schemas\Components\Utilities\Get` (jangan pakai `Filament\Forms\Components\Get`)
 
 ### 11.1 UI/UX Patterning
 

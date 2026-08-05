@@ -12,9 +12,10 @@ use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Section;
 use Filament\Support\Enums\Width;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Grouping\Group;
 use Filament\Tables\Table;
-use Filament\Tables\Filters\SelectFilter;
+use Illuminate\Database\Eloquent\Builder;
 
 class KendaraanDokumensTable
 {
@@ -24,6 +25,10 @@ class KendaraanDokumensTable
             ->defaultSort('created_at', 'desc')
             ->defaultGroup('periode')
             ->description('Dibuat otomatis, jika tidak muncul lengkapi data di master kendaraan')
+            ->modifyQueryUsing(fn (Builder $query) => $query->where(function (Builder $q) {
+                $q->where('jenis', '!=', 'kir')
+                    ->orWhereNotNull('masa_berlaku');
+            }))
             ->groups([
                 Group::make('periode')
                     ->getTitleFromRecordUsing(fn ($record) => match ($record->periode) {

@@ -25,6 +25,7 @@ class TaskReturCabangForm
                         ->label('Kiriman Mobil')
                         ->prefixIcon('heroicon-m-truck')
                         ->searchable()
+                        ->allowHtml()
                         ->disabled(fn ($component) => $component->getRecord() !== null)
                         ->required()
                         ->live()
@@ -34,7 +35,14 @@ class TaskReturCabangForm
                                 ->whereIn('retur_option', ['ada_retur'])
                                 ->get()
                                 ->mapWithKeys(fn ($k) => [
-                                    $k->id => "{$k->cabang} - {$k->no_plat_mobil} - {$k->jam_tiba?->format('H:i')} - tgl kirim : {$k->tanggal_kirim?->format('d/m/Y')}",
+                                    $k->id =>
+                                        "<span style='background:#22c55e;color:#fff;padding:2px 6px;border-radius:4px;font-size:11px'>"
+                                        . $k->cabang
+                                        . '</span>'
+                                        . " - {$k->no_plat_mobil} - {$k->jam_tiba?->format('H:i')} - "
+                                        . "<span style='background:#ef4444;color:#fff;padding:2px 6px;border-radius:4px;font-size:11px'>"
+                                        . 'tgl kirim : ' . ($k->tanggal_kirim?->format('d/m/Y') ?? '-')
+                                        . '</span>',
                                 ]);
                         })
                         ->afterStateHydrated(function ($component, $state, $set) {
