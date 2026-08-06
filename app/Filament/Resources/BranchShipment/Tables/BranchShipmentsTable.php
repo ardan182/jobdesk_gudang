@@ -184,7 +184,7 @@ class BranchShipmentsTable
                     ->tooltip('Ubah Data')
                     ->color('warning')
                     ->modalHeading('Edit Kirim Barang')
-                    ->modalWidth(Width::Full)
+                    ->modalWidth(Width::SevenExtraLarge)
                     ->form(BranchShipmentForm::getFormFields())
                     ->using(function ($record, array $data) {
                         $record->update($data);

@@ -17,7 +17,7 @@ class SupplierSjForm
         return [
             Section::make('Data Dokumen')
                 ->description('Referensi dari Terima Supplier')
-                ->columns(2)
+                ->columns(3)
                 ->schema([
                     TextInput::make('id_task')
                         ->label('ID Task')

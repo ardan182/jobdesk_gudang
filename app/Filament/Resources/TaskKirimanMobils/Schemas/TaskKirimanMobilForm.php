@@ -12,6 +12,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TimePicker;
+use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 
@@ -24,40 +25,42 @@ class TaskKirimanMobilForm
                 ->description('Pilih cabang tujuan dan Surat Jalan')
                 ->columns(2)
                 ->schema([
-                    Select::make('cabang')
-                        ->label('Nama Cabang')
-                        ->prefixIcon('heroicon-m-building-storefront')
-                        ->options(MasterToko::pluck('nama_toko', 'nama_toko'))
-                        ->searchable()
-                        ->required()
-                        ->disabled(fn ($state, $component) => $component?->getRecord() !== null)
-                        ->live()
-                        ->afterStateUpdated(function ($state, $set) {
-                            $set('branch_shipments', []);
-                            $set('total_sj_tampil', 0);
-                             $tersedia = BranchShipment::whereHas('keluarBarangs', fn ($q) => $q->where('status', 'selesai'))
-                                 ->where('cabang', $state)
-                                ->whereNotIn('id', fn ($q) =>
-                                    $q->select('branch_shipment_id')->from('branch_shipment_kiriman_mobil'))
-                                ->count();
-                            $set('sisa_sj_tampil', $tersedia ?? 0);
-                        }),
-                    DatePicker::make('tanggal_kirim')
-                        ->label('Tanggal Kirim')
-                        ->prefixIcon('heroicon-m-calendar-days')
-                        ->minDate(today())
-                        ->native(false)
-                        ->displayFormat('d/m/Y')
-                        ->rules(['nullable', 'date', 'after_or_equal:today']),
-                    Select::make('branch_shipments')
-                        ->label('Pilih SJ')
-                        ->prefixIcon('heroicon-m-document-text')
-                        ->multiple()
-                        ->searchable()
-                        ->preload()
-                        ->live()
+                    Grid::make(3)
                         ->columnSpanFull()
-                        ->options(function ($get, $record) {
+                        ->schema([
+                            Select::make('cabang')
+                                ->label('Nama Cabang')
+                                ->prefixIcon('heroicon-m-building-storefront')
+                                ->options(MasterToko::pluck('nama_toko', 'nama_toko'))
+                                ->searchable()
+                                ->required()
+                                ->disabled(fn ($state, $component) => $component?->getRecord() !== null)
+                                ->live()
+                                ->afterStateUpdated(function ($state, $set) {
+                                    $set('branch_shipments', []);
+                                    $set('total_sj_tampil', 0);
+                                     $tersedia = BranchShipment::whereHas('keluarBarangs', fn ($q) => $q->where('status', 'selesai'))
+                                         ->where('cabang', $state)
+                                        ->whereNotIn('id', fn ($q) =>
+                                            $q->select('branch_shipment_id')->from('branch_shipment_kiriman_mobil'))
+                                        ->count();
+                                    $set('sisa_sj_tampil', $tersedia ?? 0);
+                                }),
+                            DatePicker::make('tanggal_kirim')
+                                ->label('Tanggal Kirim')
+                                ->prefixIcon('heroicon-m-calendar-days')
+                                ->minDate(today())
+                                ->native(false)
+                                ->displayFormat('d/m/Y')
+                                ->rules(['nullable', 'date', 'after_or_equal:today']),
+                            Select::make('branch_shipments')
+                                ->label('Pilih SJ')
+                                ->prefixIcon('heroicon-m-document-text')
+                                ->multiple()
+                                ->searchable()
+                                ->preload()
+                                ->live()
+                                ->options(function ($get, $record) {
                             $cabang = $get('cabang') ?? $record?->cabang;
                             if (!$cabang) return [];
 
@@ -122,6 +125,7 @@ class TaskKirimanMobilForm
                               $set('total_sj_tampil', $selected);
                               $set('sisa_sj_tampil', max(0, $tersedia - $selected));
                           }),
+                        ]),
                     TextInput::make('total_sj_tampil')
                         ->label('Total SJ Dipilih')
                         ->disabled()
@@ -191,8 +195,8 @@ class TaskKirimanMobilForm
                         ->disabled()
                         ->dehydrated(false),
                 ]),
-            Section::make('Kendaraan & Sopir')
-                ->columns(2)
+            Section::make('Kiriman & Status')
+                ->columns(3)
                 ->schema([
                     Select::make('no_plat_mobil')
                         ->label('No Plat Mobil')
@@ -208,10 +212,6 @@ class TaskKirimanMobilForm
                         ->options(MasterSopir::pluck('nama_sopir', 'nama_sopir'))
                         ->searchable()
                         ->preload(),
-                ]),
-            Section::make('Status & Catatan')
-                ->columns(2)
-                ->schema([
                     Select::make('status')
                         ->label('Status')
                         ->prefixIcon('heroicon-m-check-badge')

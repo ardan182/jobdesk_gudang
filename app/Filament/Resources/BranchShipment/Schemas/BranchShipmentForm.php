@@ -7,6 +7,7 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 
@@ -36,28 +37,31 @@ class BranchShipmentForm
                         ->searchable()
                         ->disabled(fn ($component) => $component->getRecord() !== null)
                         ->required(),
-                    TextInput::make('nomor_sj')
-                        ->label('Nomor SJ')
-                        ->prefixIcon('heroicon-m-document-text')
-                        ->placeholder('Masukkan nomor surat jalan')
-                        ->helperText('Wajib jika status "Selesai"')
-                        ->requiredIf('status', 'selesai')
-                        ->maxLength(100)
-                        ->columnSpanFull(),
-                    TextInput::make('total_qty')
-                        ->label('Total Qty')
-                        ->prefixIcon('heroicon-m-cube')
-                        ->placeholder('0')
-                        ->helperText('Total barang/koli dikirim')
-                        ->numeric()
-                        ->minValue(1)
-                        ->required(),
-                    TextInput::make('no_po')
-                        ->label('No PO')
-                        ->prefixIcon('heroicon-m-receipt-percent')
-                        ->placeholder('Kosongkan jika dari stock')
-                        ->helperText('Nomor PO pembelian (opsional)')
-                        ->maxLength(100),
+                    Grid::make(3)
+                        ->columnSpanFull()
+                        ->schema([
+                            TextInput::make('nomor_sj')
+                                ->label('Nomor SJ')
+                                ->prefixIcon('heroicon-m-document-text')
+                                ->placeholder('Masukkan nomor surat jalan')
+                                ->helperText('Wajib jika status "Selesai"')
+                                ->requiredIf('status', 'selesai')
+                                ->maxLength(100),
+                            TextInput::make('total_qty')
+                                ->label('Total Qty')
+                                ->prefixIcon('heroicon-m-cube')
+                                ->placeholder('0')
+                                ->helperText('Total barang/koli dikirim')
+                                ->numeric()
+                                ->minValue(1)
+                                ->required(),
+                            TextInput::make('no_po')
+                                ->label('No PO')
+                                ->prefixIcon('heroicon-m-receipt-percent')
+                                ->placeholder('Kosongkan jika dari stock')
+                                ->helperText('Nomor PO pembelian (opsional)')
+                                ->maxLength(100),
+                        ]),
                 ]),
             Section::make('Status & Tanggal')
                 ->columns(2)

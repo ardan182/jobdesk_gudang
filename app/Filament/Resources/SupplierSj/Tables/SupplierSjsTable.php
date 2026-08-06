@@ -203,7 +203,7 @@ class SupplierSjsTable
                     ->iconButton()
                     ->tooltip('Ubah Data')
                     ->modalHeading('Edit Input SJ')
-                    ->modalWidth(Width::Full)
+                    ->modalWidth(Width::SevenExtraLarge)
                     ->form(SupplierSjForm::getFormFields())
                     ->action(function ($record, array $data) {
                         if (($data['status_input'] ?? null) === 'selesai' && blank($data['nomor_po_referensi'] ?? null)) {

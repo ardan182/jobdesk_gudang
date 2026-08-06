@@ -199,7 +199,7 @@ class TaskKeluarBarangsTable
                     ->iconButton()
                     ->tooltip('Ubah Data')
                     ->color('warning')
-                    ->modalWidth(Width::Full)
+                    ->modalWidth(Width::SevenExtraLarge)
                     ->form(TaskKeluarBarangForm::getFormFields()),
             ])
             ->toolbarActions([

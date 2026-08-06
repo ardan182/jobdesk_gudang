@@ -259,7 +259,7 @@ class TaskKirimanMobilsTable
                     ->iconButton()
                     ->tooltip('Ubah Data')
                     ->color('warning')
-                    ->modalWidth(Width::Full)
+                    ->modalWidth(Width::SevenExtraLarge)
                     ->form(TaskKirimanMobilForm::getFormFields())
                     ->using(function ($record, array $data) {
                         $sjs = $data['branch_shipments'] ?? [];

@@ -16,8 +16,8 @@ class TaskTerimaSupplierForm
     public static function getFormFields(): array
     {
         return [
-            Section::make('Informasi Penerimaan Barang Supplier')
-                ->description('Pilih mobil datang lalu isi data bongkar barang.')
+            Section::make('Data Mobil & Supplier')
+                ->description('Pilih mobil datang, data terisi otomatis dari modul mobil datang.')
                 ->icon('heroicon-o-truck')
                 ->columns(3)
                 ->schema([
@@ -94,6 +94,12 @@ class TaskTerimaSupplierForm
                         ->placeholder('Terisi otomatis')
                         ->disabled()
                         ->dehydrated(true),
+                ]),
+            Section::make('Data Bongkar & Barang')
+                ->description('Isi detail proses bongkar dan barang yang diterima.')
+                ->icon('heroicon-o-cube')
+                ->columns(3)
+                ->schema([
                     TextInput::make('no_po_referensi')
                         ->label('No PO Referensi')
                         ->prefixIcon('heroicon-m-document-text')
@@ -105,6 +111,12 @@ class TaskTerimaSupplierForm
                         ->prefixIcon('heroicon-m-cube')
                         ->placeholder('0')
                         ->helperText('Total barang/koli diterima')
+                        ->numeric(),
+                    TextInput::make('lembar_sj')
+                        ->label('Lembar SJ')
+                        ->prefixIcon('heroicon-m-document-duplicate')
+                        ->placeholder('0')
+                        ->helperText('Jumlah lembar surat jalan')
                         ->numeric(),
                     TimePicker::make('jam_bongkar')
                         ->label('Jam Bongkar')
@@ -136,12 +148,12 @@ class TaskTerimaSupplierForm
                                 $component->state($h > 0 ? "{$h}j {$m}m" : "{$m}m");
                             }
                         }),
-                    TextInput::make('lembar_sj')
-                        ->label('Lembar SJ')
-                        ->prefixIcon('heroicon-m-document-duplicate')
-                        ->placeholder('0')
-                        ->helperText('Jumlah lembar surat jalan')
-                        ->numeric(),
+                ]),
+            Section::make('Tim & Status')
+                ->description('Pilih status bongkar dan tim helpers yang bertugas.')
+                ->icon('heroicon-o-users')
+                ->columns(2)
+                ->schema([
                     Select::make('status')
                         ->label('Status Bongkar')
                         ->prefixIcon('heroicon-m-check-badge')

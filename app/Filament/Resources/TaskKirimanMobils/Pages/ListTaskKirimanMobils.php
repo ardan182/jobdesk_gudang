@@ -21,7 +21,7 @@ class ListTaskKirimanMobils extends ListRecords
                 ->color('primary')
                 ->icon('heroicon-m-plus')
                 ->modalHeading('Tambah Kiriman Mobil')
-                ->modalWidth(Width::Full)
+                ->modalWidth(Width::SevenExtraLarge)
                 ->form(TaskKirimanMobilForm::getFormFields())
                 ->action(function (array $data) {
                     $sjs = $data['branch_shipments'] ?? [];

@@ -20,7 +20,7 @@ class ListBranchShipments extends ListRecords
                 ->icon('heroicon-m-plus')
                 ->modalHeading('Tambah Kirim Barang')
                 ->form(BranchShipmentForm::getFormFields())
-                ->modalWidth(Width::Full),
+                ->modalWidth(Width::SevenExtraLarge),
         ];
     }
 }
