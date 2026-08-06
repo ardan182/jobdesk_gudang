@@ -157,6 +157,12 @@ class AdminPanelProvider extends PanelProvider
                         border-color: rgba(128, 128, 128, 0.25);
                     }
 
+                    /* ─── Focus ring input: pertebal ─── */
+                    .fi-input-wrp:focus-within {
+                        border-color: var(--aurum-accent-400);
+                        box-shadow: 0 0 0 4px rgba(var(--aurum-accent-rgb), 0.25);
+                    }
+
                     /* ─── Sidebar: teks tidak terpotong ─── */
                     .fi-sidebar-item-label {
                         white-space: normal !important;
