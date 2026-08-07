@@ -3,6 +3,8 @@
 namespace App\Filament\Support;
 
 use Filament\Forms\Components\Checkbox;
+use Filament\Schemas\Components\Fieldset;
+use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 
 class PermissionMenu
@@ -68,39 +70,27 @@ class PermissionMenu
     }
 
     /**
-     * Bangun tree checkbox flat (Group header + menu) untuk form.
+     * Bangun seluruh tree (global + menu + widgets) untuk form.
      *
-     * @param  callable(object|null): array<int, string>  $granted  callable(record): daftar nama permission yang aktif
+     * @param  callable(object|null): array<int, string>  $granted
      * @return array<int, Section>
      */
     public static function buildTree(callable $granted): array
     {
-        $sections = [
+        return [
             self::globalSection($granted),
+            ...self::menuSections($granted),
+            ...self::widgetsSections($granted),
         ];
-
-        foreach (self::groups() as $group => $modules) {
-            $sections[] = Section::make("Group: {$group}")
-                ->collapsible(false)
-                ->compact()
-                ->schema(array_map(
-                    fn (array $m) => self::moduleSection($m['label'], $m['key'], $granted),
-                    $modules
-                ));
-        }
-
-        $sections[] = Section::make('Group: Dashboard & Widgets')
-            ->collapsible(false)
-            ->compact()
-            ->schema(array_map(
-                fn (array $w) => self::widgetSection($w['label'], $w['permission'], $granted),
-                self::widgets()
-            ));
-
-        return $sections;
     }
 
-    protected static function globalSection(callable $granted): Section
+    /**
+     * Section akses global (lihat semua data).
+     *
+     * @param  callable(object|null): array<int, string>  $granted
+     * @return Section
+     */
+    public static function globalSection(callable $granted): Section
     {
         return Section::make('Akses Global')
             ->description('Centang untuk melihat semua data di semua modul yang bisa diakses.')
@@ -108,7 +98,6 @@ class PermissionMenu
             ->schema([
                 Checkbox::make('perm_view_all_data')
                     ->label('Lihat Semua Data')
-                    ->dehydrated(false)
                     ->live()
                     ->afterStateHydrated(function ($component, $record) use ($granted) {
                         if (!$record) return;
@@ -117,44 +106,104 @@ class PermissionMenu
             ]);
     }
 
-    protected static function moduleSection(string $label, string $key, callable $granted): Section
+    /**
+     * Matriks permission per group (akordeon, 2 kolom).
+     *
+     * @param  callable(object|null): array<int, string>  $granted
+     * @return array<int, Section>
+     */
+    public static function menuSections(callable $granted): array
     {
-        return Section::make($label)
-            ->compact()
+        $sections = [];
+
+        foreach (self::groups() as $group => $modules) {
+            $sections[] = Section::make("Group: {$group}")
+                ->collapsible()
+                ->collapsed()
+                ->compact()
+                ->schema([
+                    Grid::make(2)
+                        ->schema(array_map(
+                            fn (array $m) => self::moduleMatrix($m['label'], $m['key'], $granted),
+                            $modules
+                        )),
+                ]);
+        }
+
+        return $sections;
+    }
+
+    /**
+     * Widget dashboard.
+     *
+     * @param  callable(object|null): array<int, string>  $granted
+     * @return array<int, Section>
+     */
+    public static function widgetsSections(callable $granted): array
+    {
+        return [
+            Section::make('Group: Dashboard & Widgets')
+                ->collapsible(false)
+                ->compact()
+                ->schema(array_map(
+                    fn (array $w) => self::widgetSection($w['label'], $w['permission'], $granted),
+                    self::widgets()
+                )),
+        ];
+    }
+
+    /**
+     * Kotak matriks satu modul: Pilih Semua + View/Create/Update/Delete.
+     *
+     * @param  callable(object|null): array<int, string>  $granted
+     */
+    protected static function moduleMatrix(string $label, string $key, callable $granted): Fieldset
+    {
+        return Fieldset::make($label)
             ->columns(5)
             ->schema([
-                Checkbox::make("select_all_{$key}")
-                    ->label('Pilih Semua')
-                    ->dehydrated(false)
-                    ->live()
-                    ->afterStateHydrated(function ($component, $record) use ($key, $granted) {
-                        if (!$record) return;
-                        $g = $granted($record);
-                        $component->state(
-                            in_array("view_{$key}", $g)
-                            && in_array("create_{$key}", $g)
-                            && in_array("update_{$key}", $g)
-                            && in_array("delete_{$key}", $g)
-                        );
-                    })
-                    ->afterStateUpdated(function ($state, $set) use ($key) {
-                        $set("perm_view_{$key}", $state);
-                        $set("perm_create_{$key}", $state);
-                        $set("perm_update_{$key}", $state);
-                        $set("perm_delete_{$key}", $state);
-                    }),
-                self::permCheckbox('Lihat (View)', "perm_view_{$key}", "view_{$key}", $key, $granted),
-                self::permCheckbox('Tambah (Create)', "perm_create_{$key}", "create_{$key}", $key, $granted),
-                self::permCheckbox('Ubah (Update)', "perm_update_{$key}", "update_{$key}", $key, $granted),
-                self::permCheckbox('Hapus (Delete)', "perm_delete_{$key}", "delete_{$key}", $key, $granted),
+                self::selectAllCheckbox($key, $granted),
+                self::permCheckbox('View', "perm_view_{$key}", "view_{$key}", $key, $granted),
+                self::permCheckbox('Create', "perm_create_{$key}", "create_{$key}", $key, $granted),
+                self::permCheckbox('Update', "perm_update_{$key}", "update_{$key}", $key, $granted),
+                self::permCheckbox('Delete', "perm_delete_{$key}", "delete_{$key}", $key, $granted),
             ]);
     }
 
+    /**
+     * @param  callable(object|null): array<int, string>  $granted
+     */
+    protected static function selectAllCheckbox(string $key, callable $granted): Checkbox
+    {
+        return Checkbox::make("select_all_{$key}")
+            ->label('Pilih Semua')
+            ->dehydrated(false)
+            ->live()
+            ->afterStateHydrated(function ($component, $record) use ($key, $granted) {
+                if (!$record) return;
+                $g = $granted($record);
+                $component->state(
+                    in_array("view_{$key}", $g)
+                    && in_array("create_{$key}", $g)
+                    && in_array("update_{$key}", $g)
+                    && in_array("delete_{$key}", $g)
+                );
+            })
+            ->afterStateUpdated(function ($state, $set) use ($key) {
+                $set("perm_view_{$key}", $state);
+                $set("perm_create_{$key}", $state);
+                $set("perm_update_{$key}", $state);
+                $set("perm_delete_{$key}", $state);
+            });
+    }
+
+    /**
+     * @param  callable(object|null): array<int, string>  $granted
+     */
     protected static function permCheckbox(string $label, string $field, string $permission, string $key, callable $granted): Checkbox
     {
         return Checkbox::make($field)
             ->label($label)
-            ->dehydrated(false)
             ->live()
             ->afterStateHydrated(function ($component, $record) use ($permission, $granted) {
                 if (!$record) return;
@@ -171,6 +220,9 @@ class PermissionMenu
             });
     }
 
+    /**
+     * @param  callable(object|null): array<int, string>  $granted
+     */
     protected static function widgetSection(string $label, string $permission, callable $granted): Section
     {
         return Section::make($label)
@@ -179,7 +231,6 @@ class PermissionMenu
             ->schema([
                 Checkbox::make("perm_{$permission}")
                     ->label('Aktif')
-                    ->dehydrated(false)
                     ->afterStateHydrated(function ($component, $record) use ($permission, $granted) {
                         if (!$record) return;
                         $component->state(in_array($permission, $granted($record)));

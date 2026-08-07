@@ -54,6 +54,7 @@
                         </td>
                         <td class="fi-ta-cell text-center">
                             <div class="fi-ta-col flex justify-center text-center">
+                                @if (auth()->user()?->can('update_cuti_absensi'))
                                 <button
                                     x-on:click="
                                         let val = prompt('Jatah cuti untuk {{ $item['nama'] }}:', '{{ $item['jatah_cuti'] }}');
@@ -70,6 +71,9 @@
                                     </svg>
                                     Adjust
                                 </button>
+                                @else
+                                    <span class="text-gray-400 text-xs">-</span>
+                                @endif
                             </div>
                         </td>
                     </tr>

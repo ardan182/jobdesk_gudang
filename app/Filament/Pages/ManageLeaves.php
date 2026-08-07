@@ -196,6 +196,15 @@ class ManageLeaves extends Page
 
     public function adjustJatahCuti(int $employeeId, int $jatahBaru): void
     {
+        if (! auth()->user()?->can('update_cuti_absensi')) {
+            Notification::make()
+                ->title('Tidak punya izin')
+                ->body('Anda tidak memiliki otoritas untuk mengatur saldo cuti.')
+                ->danger()
+                ->send();
+            return;
+        }
+
         $emp = WarehouseEmployee::find($employeeId);
         if ($emp) {
             $emp->update(['jatah_cuti' => $jatahBaru]);
@@ -299,6 +308,7 @@ class ManageLeaves extends Page
                             ]),
                         Tab::make('Atur Saldo Cuti')
                             ->icon('heroicon-o-adjustments-horizontal')
+                            ->visible(fn () => auth()->user()?->can('update_cuti_absensi') ?? false)
                             ->schema([
                                 View::make('filament.pages.manage-leaves-saldo'),
                             ]),
