@@ -140,7 +140,7 @@ class TaskKirimanMobilsTable
                     ->label('Checker')
                     ->searchable()
                     ->sortable()
-                    ->visible(fn () => auth()->user()?->hasRole('Admin') ?? false)
+                    ->visible(fn () => auth()->user()?->isSuperAdmin() ?? false)
                     ->toggleable()
                     ->grow(false),
                 TextColumn::make('created_at')
@@ -303,7 +303,7 @@ class TaskKirimanMobilsTable
                         ->iconButton()
                         ->tooltip('Hapus Data')
                         ->color('danger')
-                        ->visible(fn () => auth()->user()?->hasRole('Admin') ?? false),
+                        ->visible(fn () => auth()->user()?->isSuperAdmin() ?? false),
                 ]),
             ]);
     }

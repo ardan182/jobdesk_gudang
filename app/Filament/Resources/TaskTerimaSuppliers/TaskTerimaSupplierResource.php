@@ -57,7 +57,7 @@ class TaskTerimaSupplierResource extends Resource
     {
         $query = parent::getEloquentQuery()->with('helpers');
 
-        if (auth()->user()?->hasRole('Admin')) {
+        if (auth()->user()?->can('view_all_data')) {
             return $query;
         }
 

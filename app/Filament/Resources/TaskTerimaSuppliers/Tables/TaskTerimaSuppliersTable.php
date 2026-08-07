@@ -115,7 +115,7 @@ class TaskTerimaSuppliersTable
                     ->label('Checker')
                     ->searchable()
                     ->sortable()
-                    ->visible(fn () => auth()->user()?->hasRole('Admin') ?? false)
+                    ->visible(fn () => auth()->user()?->isSuperAdmin() ?? false)
                     ->grow(false),
                 TextColumn::make('helpers_names')
                     ->label('Helpers')
@@ -276,7 +276,7 @@ class TaskTerimaSuppliersTable
                         ->iconButton()
                         ->tooltip('Hapus Data')
                         ->color('danger')
-                        ->visible(fn () => auth()->user()?->hasRole('Admin') ?? false),
+                        ->visible(fn () => auth()->user()?->isSuperAdmin() ?? false),
                 ]),
             ]);
     }

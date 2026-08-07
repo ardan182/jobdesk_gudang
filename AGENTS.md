@@ -48,14 +48,17 @@ composer dev           # concurrently: artisan serve + queue:listen + pail + vit
 - Navigation groups collapsed by default via Alpine + localStorage
 
 ### 5 roles (Spatie Permission)
-`Admin | Checker Retur | Checker Terima | Checker Keluar | Checker Kiriman`
+`Admin | Checker Retur | Checker Terima | Checker Keluar | Checker Kiriman` — **dinamis**: bisa dibuat/diedit via UI `Pengaturan → Roles` (RoleResource).
 
-### RBAC fine-grained (permission-based)
-Authorization sekarang berbasis **permission** Spatie, bukan hardcoded role:
-- **84 permission** di-seed oleh `database/seeders/PermissionSeeder.php`: 20 modul × 4 action (`view/create/update/delete_{module_key}`) + 4 widget (`view_widget_*`)
-- **Admin bypass:** `AppServiceProvider::boot()` → `Gate::before` return `true` untuk role Admin
-- **UI kelola:** Edit/Create User → Section "Akses Menu & Fitur" (Group → Menu → Actions + Select All + widget checkbox). State field `perm_*` → `syncPermissions()`; load via `hasDirectPermission()`
-- **Default role permissions:** di-set di `PermissionSeeder::assignRoleDefaults()` (Admin=84, Terima=19, Retur/Keluar=11, Kiriman=7)
+### RBAC fine-grained (permission-based, akses nempel di user)
+Authorization berbasis **permission langsung di user** (bukan role):
+- **85 permission** di-seed oleh `database/seeders/PermissionSeeder.php`: 20 modul × 4 action (`view/create/update/delete_{module_key}`) + 4 widget (`view_widget_*`) + `view_all_data` (lihat semua data)
+- **Role = label + `is_super_admin` (bool) + `permission_template` (json)** — template hanya untuk pre-fill checkbox saat pilih role di form user; role **TIDAK** mewariskan akses (`role_has_permissions` kosong)
+- **Super Admin bypass:** `AppServiceProvider::boot()` → `Gate::before` return `true` jika `$user->isSuperAdmin()` (User model punya method `isSuperAdmin()`: punya role dengan `is_super_admin=true`)
+- **UI kelola:** Edit/Create User → Section "Akses Menu & Fitur" (flat tree via `App\Filament\Support\PermissionMenu`: Akses Global `view_all_data` → Group header → Menu → Pilih Semua + View/Create/Update/Delete → Widget Aktif). Role Select `live()` → pre-fill dari `role.permission_template`. State field `perm_*` → `syncPermissions()`; load via `getDirectPermissions()`
+- **RoleResource** (`Pengaturan → Roles`): CRUD role dinamis — nama, toggle super admin, permission template (hanya super admin yang bisa akses)
+- **Default role:** `PermissionSeeder::setRoleDefaults()` → Admin super_admin + template=85; Checker Terima=19, Retur/Keluar=11, Kiriman=7
+- **Migrasi penting:** `decouple_role_permissions_to_user` menyalin permission role → direct user lama, lalu mengosongkan `role_has_permissions`
 
 Access pattern (dipakai di semua resource):
 ```php
@@ -64,10 +67,10 @@ canCreate()             → auth()->user()->can('create_{module}')
 canEdit($record)        → auth()->user()->can('update_{module}')
 canDelete($record)      → auth()->user()->can('delete_{module}')
 shouldRegisterNavigation() → auth()->user()->can('view_{module}')
-getEloquentQuery()      → where('user_id', auth()->id()) for non-Admin (kondisi hasRole('Admin') dipertahankan)
+getEloquentQuery()      → where('user_id', auth()->id()) for non-Admin; if can('view_all_data') → lihat semua
 ```
 
-Guard UI yang TETAP role-based: `DeleteBulkAction` + kolom "Checker"/"Dibuat" → `hasRole('Admin')`; `StatsOverviewWidget::getStats()` per-role.
+Guard UI yang TETAP super-admin: `DeleteBulkAction` + kolom "Checker"/"Dibuat" → `isSuperAdmin()`; `StatsOverviewWidget` → generik per-modul (kartu per modul yang bisa di-view user, count all jika `view_all_data` else own).
 
 ### 6 task tables (one per module)
 `task_retur_suppliers | task_retur_cabangs | task_datang_mobil_suppliers | task_terima_suppliers | task_keluar_barangs | task_kiriman_mobils`
@@ -106,7 +109,9 @@ All XLSX exports use **ZipArchive + XML manual** (no maatwebsite/phpspreadsheet)
 | `app/Imports/SupplierImport.php` | Supplier CSV/XLSX/XLS import |
 | `app/Imports/WarehouseEmployeeImport.php` | Employee CSV/XLSX/XLS import |
 | `database/seeders/RoleSeeder.php` | Seed 5 roles |
-| `database/seeders/PermissionSeeder.php` | Seed 84 permission + default per role |
+| `database/seeders/PermissionSeeder.php` | Seed 85 permission + default per role (template) |
+| `app/Filament/Resources/Roles/` | CRUD role dinamis (RoleResource) |
+| `app/Filament/Support/PermissionMenu.php` | Flat tree checkbox (dipakai UserForm & RoleForm) |
 
 ## Dependencies
 - `filament/filament` — admin panel v5

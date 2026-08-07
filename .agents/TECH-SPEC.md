@@ -11,7 +11,7 @@
 | Backend | Laravel | 13 | PHP 8.5.8 |
 | Admin Panel | Filament | v5 | Auto-discover resources/pages/widgets |
 | Database | MySQL / MariaDB | 8.0+ | Wajib `mysql`, bukan sqlite |
-| Auth | Spatie Laravel Permission | - | 5 role + 84 permission (RBAC fine-grained, `{action}_{module_key}`) |
+| Auth | Spatie Laravel Permission | - | 5 role dinamis + 85 permission (RBAC fine-grained, `{action}_{module_key}`) |
 | Frontend | Tailwind CSS + Alpine.js | - | Bundled via Filament |
 | Assets | Vite | - | `npm run dev` / `npm run build` |
 | Export/Import (master) | ZipArchive + SimpleXML + DOMDocument | native PHP | Template download, import CSV/XLSX/XLS |
@@ -120,9 +120,11 @@ ActivityLog → belongsTo: User
 
 ### 5.0 Roles & Permissions (Overview)
 
-- **5 role** (Spatie): `Admin`, `Checker Retur`, `Checker Terima`, `Checker Keluar`, `Checker Kiriman` (`RoleSeeder`)
-- **84 permission** (`PermissionSeeder`): 20 modul × 4 aksi (`view/create/update/delete`) = 80 + 4 widget permission
+- **5 role** (Spatie, **dinamis via RoleResource**): `Admin`, `Checker Retur`, `Checker Terima`, `Checker Keluar`, `Checker Kiriman` (`RoleSeeder`)
+- **85 permission** (`PermissionSeeder`): 20 modul × 4 aksi (`view/create/update/delete`) = 80 + 4 widget + `view_all_data`
 - Format: `{action}_{module_key}` — mis. `view_task_retur_cabangs`, `create_master_suppliers`, `update_komplain_pos`, `delete_warehouse_documents`
+- **Akses = direct permission user** (`model_has_permissions`). Role TIDAK mewariskan akses (`role_has_permissions` kosong). Role hanya label + `is_super_admin` + `permission_template` (json) untuk pre-fill saat pilih role di form user.
+- Migrasi `decouple_role_permissions_to_user` menyalin permission role → direct user lama lalu mengosongkan `role_has_permissions`.
 - Register seeder: `DatabaseSeeder` → `RoleSeeder`, lalu `PermissionSeeder`
 
 ### 5.0.1 Module Keys (20)
@@ -136,6 +138,7 @@ ActivityLog → belongsTo: User
 | Pengiriman | `branch_shipments`, `task_keluar_barangs`, `task_kiriman_mobils` |
 | Administrasi | `warehouse_documents`, `kendaraan_dokumens`, `cuti_absensi` (page) |
 | Pengaturan | `users`, `board_tv_settings` (page) |
+| Global | `view_all_data` (lihat semua data lintas modul) |
 | Widget (view-only) | `view_widget_stats_overview`, `view_widget_recent_activity`, `view_widget_expiring_documents`, `view_widget_leaves_today` |
 
 ### 5.1 Default Role-Based Access (Legacy)
@@ -166,32 +169,39 @@ canCreate()      → auth()->user()->can('create_{module}')
 canEdit($record) → auth()->user()->can('update_{module}')
 canDelete($record)→ auth()->user()->can('delete_{module}')
 shouldRegisterNavigation() → auth()->user()->can('view_{module}')
-getEloquentQuery() → filter own data jika user non-Admin (kondisi hasRole('Admin') dipertahankan)
+getEloquentQuery() → filter own data jika user non-Admin; `can('view_all_data')` → lihat semua
 ```
 
-### 5.4 Admin Bypass
+### 5.4 Super Admin Bypass
 
 `app/Providers/AppServiceProvider.php`:
 ```php
 Gate::before(function ($user, $ability) {
-    return $user->hasRole('Admin') ? true : null;
+    return $user->isSuperAdmin() ? true : null;
 });
 ```
+- `User::isSuperAdmin()` → user punya role dengan `is_super_admin = true`
 
 ### 5.5 UI Akses Menu (Edit User)
 
-`app/Filament/Resources/Users/Schemas/UserForm.php` — Section **"Akses Menu & Fitur"**:
-- Helper `group()` → Section per nav-group (Master, Purchasing Order, Retur, Penerimaan, Pengiriman, Administrasi, Pengaturan, Dashboard & Widgets)
-- Helper `module($label, $key)` → Section per modul, 5 kolom: **Pilih Semua** + View + Create + Update + Delete
-- Helper `widget($label, $permission)` → Section per widget, checkbox **Aktif**
-- Helper `permCheckbox(...)` → checkbox `perm_{permission}`, `dehydrated(false)`, state di-load via `hasDirectPermission()` (try/catch), live sync ke `select_all_{key}`
-- Penyimpanan: `CreateUser::afterCreate()` / `EditUser::afterSave()` iterasi `$this->data` field berprefix `perm_*` → `syncPermissions()`
+`app/Filament/Support/PermissionMenu.php` (shared, dipakai UserForm & RoleForm) — Section **"Akses Menu & Fitur"**:
+- `buildTree($granted)` → Akses Global (`view_all_data`) + Group header (non-collapsible) + module section per menu (5 kolom: **Pilih Semua** + View + Create + Update + Delete) + widget section (checkbox **Aktif**)
+- Checkbox `perm_{permission}`, `dehydrated(false)`, live sync ke `select_all_{key}`
+- `$granted` callable: UserForm → `$record->getDirectPermissions()`; RoleForm → `json_decode($record->permission_template)`
+- Penyimpanan: `CreateUser::afterCreate()` / `EditUser::afterSave()` iterasi `$this->data` field berprefix `perm_*` → `syncPermissions()` (direct permission user)
+- Role Select `live()` → `afterStateUpdated` pre-fill checkbox dari `role.permission_template`
 
-### 5.6 Guard UI (tetap role-based)
+### 5.6 RoleResource (Role dinamis)
 
-- `DeleteBulkAction` di semua tabel → `visible(fn) => hasRole('Admin')`
-- Kolom "Checker"/"Dibuat" → `visible(fn) => hasRole('Admin')`
-- `StatsOverviewWidget::getStats()` → statistik disaring per-role
+`app/Filament/Resources/Roles/` — grup Pengaturan, hanya super admin (`isSuperAdmin()`):
+- CRUD role: `name`, toggle `is_super_admin`, `permission_template` (pakai `PermissionMenu::buildTree`)
+- `CreateRole::afterCreate()` / `EditRole::afterSave()` → tulis `is_super_admin` + `permission_template` (json)
+- Role super admin tidak bisa dihapus (guard di tabel)
+
+### 5.7 Guard UI (tetap super-admin / permission)
+
+- `DeleteBulkAction` + kolom "Checker"/"Dibuat" → `isSuperAdmin()`
+- `StatsOverviewWidget::getStats()` → generik: kartu per modul yang user bisa `view_{module}`; count all jika `view_all_data` else own; modul tanpa kepemilikan (SJ, dokumen) hanya untuk user `view_all_data`
 - `getEloquentQuery()` task module → non-Admin hanya data sendiri
 
 ---

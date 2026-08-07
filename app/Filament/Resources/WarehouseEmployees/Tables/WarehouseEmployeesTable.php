@@ -60,7 +60,7 @@ class WarehouseEmployeesTable
                         ->iconButton()
                         ->tooltip('Hapus Data')
                         ->color('danger')
-                        ->visible(fn () => auth()->user()?->hasRole('Admin') ?? false),
+                        ->visible(fn () => auth()->user()?->isSuperAdmin() ?? false),
                 ]),
             ]);
     }

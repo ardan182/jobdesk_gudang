@@ -110,22 +110,23 @@ Jangan hapus `implements FilamentUser` ini saat mengubah model User!
 
 | Role | Hak Akses |
 |------|-----------|
-| **Admin** | Full — semua menu, semua data semua user, CRUD user, delete all records (bypass implicit) |
+| **Admin** | Full — semua menu, semua data semua user, CRUD user, delete all records (super admin bypass) |
 | **Checker Retur** | Retur Masuk Cabang, Retur Keluar Supplier — hanya data sendiri, tidak bisa delete |
 | **Checker Terima** | Datang Mobil, Terima Barang Supplier, Input SJ, Komplain PO — hanya data sendiri |
 | **Checker Keluar** | Keluar Barang, Input Kirim Barang — hanya data sendiri |
 | **Checker Kiriman** | Kiriman Mobil — hanya data sendiri |
 
-### 5.2 Fine-Grained Permission (Per-Menu & Per-Action)
+### 5.2 Fine-Grained Permission (Akses Nempel di User)
 
-Di atas role, Admin bisa kustomisasi akses per-user via UI Edit User:
+**Akses = direct permission user.** Role dinamis (CRUD via `Pengaturan → Roles`) = label + `is_super_admin` + `permission_template` (pre-fill saat pilih role di form user); role TIDAK mewariskan akses (`role_has_permissions` kosong).
 
 - Format permission: `{action}_{module_key}` — view/create/update/delete
-- **84 permission total** (20 modul × 4 + 4 widget `view_widget_*`), di-seed oleh `database/seeders/PermissionSeeder.php`
+- **85 permission total** (20 modul × 4 + 4 widget `view_widget_*` + `view_all_data`), di-seed `database/seeders/PermissionSeeder.php`
 - Semua modul: task, master, non-task (Input SJ, BranchShipment, Retur, Pusat Dokumen, Cuti & Absensi, Users, TvBoard, KendaraanDokumen)
-- UI checkbox tree di **Section "Akses Menu & Fitur"** (UserForm): Group → Menu → Actions (view/create/update/delete) + Select All per modul + checkbox widget "Aktif"
-- State field `perm_*` → `syncPermissions()` (afterCreate/afterSave); load via `hasDirectPermission()`
-- **Admin bypass:** `Gate::before` return `true` untuk Admin (di `AppServiceProvider`)
+- UI flat tree di **Section "Akses Menu & Fitur"** (shared `App\Filament\Support\PermissionMenu`): Akses Global → Group header → Menu (Pilih Semua + view/create/update/delete) + widget Aktif
+- State field `perm_*` → `syncPermissions()` (afterCreate/afterSave); load via `getDirectPermissions()`
+- **Super Admin bypass:** `Gate::before` return `true` jika `$user->isSuperAdmin()` (punya role `is_super_admin=true`)
+- **`view_all_data`** → lihat semua data lintas modul (scoping `getEloquentQuery` + statistik dashboard)
 
 ### Pattern Authorization
 ```php
@@ -133,9 +134,9 @@ canViewAny()     → auth()->user()->can('view_{module}')
 canCreate()      → auth()->user()->can('create_{module}')
 canEdit($record) → auth()->user()->can('update_{module}')
 canDelete($record)→ auth()->user()->can('delete_{module}')
-getEloquentQuery() → filter own data jika non-Admin
+getEloquentQuery() → filter own data jika non-Admin; `can('view_all_data')` → semua
 ```
-Diterapkan di 18 resource + 2 custom page (ManageLeaves `view_cuti_absensi`, ManageTvBoard `view_board_tv_settings`) + 4 widget (`view_widget_*`). Guard UI (bulk-delete, kolom Checker, statistik) tetap role-based.
+Diterapkan di 18 resource + 2 custom page (ManageLeaves `view_cuti_absensi`, ManageTvBoard `view_board_tv_settings`) + 4 widget (`view_widget_*`). Guard UI (bulk-delete, kolom Checker) → `isSuperAdmin()`; dashboard stats generik per-modul.
 
 ---
 

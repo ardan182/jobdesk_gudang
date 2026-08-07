@@ -4,12 +4,13 @@ namespace App\Filament\Widgets;
 
 use App\Models\ArrivalSupplierTruck;
 use App\Models\KendaraanDokumen;
+use App\Models\KomplainPo;
 use App\Models\SupplierSj;
 use App\Models\TaskKeluarBarang;
 use App\Models\TaskKirimanMobil;
 use App\Models\TaskReturCabang;
-use App\Models\SupplierReturn;
 use App\Models\TaskTerimaSupplier;
+use App\Models\SupplierReturn;
 use ThalysJuvenal\Aurum\Widgets\AurumStat;
 use ThalysJuvenal\Aurum\Widgets\AurumStatsOverview;
 
@@ -25,86 +26,113 @@ class StatsOverviewWidget extends AurumStatsOverview
     protected function getStats(): array
     {
         $user = auth()->user();
+        $viewAll = (bool) ($user?->can('view_all_data') ?? false);
 
-        if ($user?->hasRole('Admin')) {
-            return [
-                AurumStat::make('Retur ke Supplier', (string) SupplierReturn::where('jenis_pengiriman', 'retur_keluar')->count())
-                    ->icon('heroicon-o-arrow-left-on-rectangle')
-                    ->description('Total retur keluar ke supplier'),
-                AurumStat::make('Retur dari Supplier', (string) SupplierReturn::where('jenis_pengiriman', 'retur_masuk')->count())
-                    ->icon('heroicon-o-arrow-right-on-rectangle')
-                    ->description('Total retur masuk dari supplier'),
-                AurumStat::make('Terima Barang', (string) TaskTerimaSupplier::count())
-                    ->icon('heroicon-o-arrow-down-tray')
-                    ->description('Total barang diterima'),
-                AurumStat::make('Keluar Barang', (string) TaskKeluarBarang::count())
-                    ->icon('heroicon-o-arrow-up-tray')
-                    ->description('Total barang keluar'),
-                AurumStat::make('Kiriman Mobil', (string) TaskKirimanMobil::count())
-                    ->icon('heroicon-o-truck')
-                    ->description('Total pengiriman mobil'),
-                AurumStat::make('Retur Masuk Cabang', (string) TaskReturCabang::count())
-                    ->icon('heroicon-o-arrow-path')
-                    ->description('Total retur dari cabang'),
-                AurumStat::make('Datang Mobil', (string) ArrivalSupplierTruck::count())
-                    ->icon('heroicon-o-truck')
-                    ->description('Total mobil supplier'),
-                AurumStat::make('SJ Belum Di Cek', (string) SupplierSj::where('status_input', 'belum_di_cek')->count())
-                    ->icon('heroicon-o-document-magnifying-glass')
-                    ->description('SJ pending cek'),
-                AurumStat::make('STNK/KIR ≤ 30 hari', (string) KendaraanDokumen::whereNotNull('masa_berlaku')
-                    ->where('masa_berlaku', '<=', now()->addDays(30))
-                    ->count())
-                    ->icon('heroicon-o-exclamation-triangle')
-                    ->description('Dokumen expired / akan expired'),
-            ];
-        }
-
-        if ($user?->hasRole('Checker Retur')) {
-            return [
-                AurumStat::make('Retur ke Supplier', (string) SupplierReturn::where('jenis_pengiriman', 'retur_keluar')->where('user_id', $user->id)->count())
-                    ->icon('heroicon-o-arrow-left-on-rectangle')
-                    ->description('Retur keluar Anda'),
-                AurumStat::make('Retur dari Supplier', (string) SupplierReturn::where('jenis_pengiriman', 'retur_masuk')->where('user_id', $user->id)->count())
-                    ->icon('heroicon-o-arrow-right-on-rectangle')
-                    ->description('Retur masuk Anda'),
-            ];
-        }
-
-        if ($user?->hasRole('Checker Terima')) {
-            $count = TaskTerimaSupplier::where('user_id', $user->id)->count();
-
-            return [
-                AurumStat::make('Total Terima Barang', (string) $count)
-                    ->icon('heroicon-o-arrow-down-tray')
-                    ->description('Total terima barang Anda'),
-            ];
-        }
-
-        if ($user?->hasRole('Checker Keluar')) {
-            $count = TaskKeluarBarang::where('user_id', $user->id)->count();
-
-            return [
-                AurumStat::make('Total Keluar Barang', (string) $count)
-                    ->icon('heroicon-o-arrow-up-tray')
-                    ->description('Total keluar barang Anda'),
-            ];
-        }
-
-        if ($user?->hasRole('Checker Kiriman')) {
-            $count = TaskKirimanMobil::where('user_id', $user->id)->count();
-
-            return [
-                AurumStat::make('Total Kiriman', (string) $count)
-                    ->icon('heroicon-o-truck')
-                    ->description('Total kiriman Anda'),
-            ];
-        }
-
-        return [
-            AurumStat::make('Total Task', '0')
-                ->icon('heroicon-o-clipboard-document-check')
-                ->description('Belum ada task'),
+        $config = [
+            'supplier_returns' => [
+                'ownable' => true,
+                'model' => SupplierReturn::class,
+                'cards' => [
+                    ['label' => 'Retur ke Supplier', 'icon' => 'heroicon-o-arrow-left-on-rectangle', 'desc' => 'Total retur keluar ke supplier', 'scope' => ['jenis_pengiriman' => 'retur_keluar']],
+                    ['label' => 'Retur dari Supplier', 'icon' => 'heroicon-o-arrow-right-on-rectangle', 'desc' => 'Total retur masuk dari supplier', 'scope' => ['jenis_pengiriman' => 'retur_masuk']],
+                ],
+            ],
+            'task_datang_mobil_suppliers' => [
+                'ownable' => true,
+                'model' => ArrivalSupplierTruck::class,
+                'cards' => [
+                    ['label' => 'Datang Mobil', 'icon' => 'heroicon-o-truck', 'desc' => 'Total mobil supplier', 'scope' => []],
+                ],
+            ],
+            'task_terima_suppliers' => [
+                'ownable' => true,
+                'model' => TaskTerimaSupplier::class,
+                'cards' => [
+                    ['label' => 'Terima Barang', 'icon' => 'heroicon-o-arrow-down-tray', 'desc' => 'Total barang diterima', 'scope' => []],
+                ],
+            ],
+            'task_keluar_barangs' => [
+                'ownable' => true,
+                'model' => TaskKeluarBarang::class,
+                'cards' => [
+                    ['label' => 'Keluar Barang', 'icon' => 'heroicon-o-arrow-up-tray', 'desc' => 'Total barang keluar', 'scope' => []],
+                ],
+            ],
+            'task_kiriman_mobils' => [
+                'ownable' => true,
+                'model' => TaskKirimanMobil::class,
+                'cards' => [
+                    ['label' => 'Kiriman Mobil', 'icon' => 'heroicon-o-truck', 'desc' => 'Total pengiriman mobil', 'scope' => []],
+                ],
+            ],
+            'task_retur_cabangs' => [
+                'ownable' => true,
+                'model' => TaskReturCabang::class,
+                'cards' => [
+                    ['label' => 'Retur Masuk Cabang', 'icon' => 'heroicon-o-arrow-path', 'desc' => 'Total retur dari cabang', 'scope' => []],
+                ],
+            ],
+            'komplain_pos' => [
+                'ownable' => true,
+                'model' => KomplainPo::class,
+                'cards' => [
+                    ['label' => 'Komplain PO', 'icon' => 'heroicon-o-document-text', 'desc' => 'Total komplain PO', 'scope' => []],
+                ],
+            ],
+            'supplier_sjs' => [
+                'ownable' => false,
+                'model' => SupplierSj::class,
+                'cards' => [
+                    ['label' => 'SJ Belum Di Cek', 'icon' => 'heroicon-o-document-magnifying-glass', 'desc' => 'SJ pending cek', 'scope' => ['status_input' => 'belum_di_cek']],
+                ],
+            ],
+            'kendaraan_dokumens' => [
+                'ownable' => false,
+                'model' => KendaraanDokumen::class,
+                'cards' => [
+                    ['label' => 'STNK/KIR ≤ 30 hari', 'icon' => 'heroicon-o-exclamation-triangle', 'desc' => 'Dokumen expired / akan expired', 'scope' => ['masa_berlaku' => ['notNull' => true, 'max' => now()->addDays(30)]]],
+                ],
+            ],
         ];
+
+        $stats = [];
+
+        foreach ($config as $module => $cfg) {
+            if (!$user?->can("view_{$module}")) {
+                continue;
+            }
+
+            // Modul tanpa kepemilikan (SJ/dokumen global) hanya untuk user yang bisa lihat semua data
+            if (!($cfg['ownable'] ?? true) && !$viewAll) {
+                continue;
+            }
+
+            foreach ($cfg['cards'] as $card) {
+                $query = $cfg['model']::query();
+
+                foreach ($card['scope'] ?? [] as $field => $value) {
+                    if (is_array($value)) {
+                        if (!empty($value['notNull'])) {
+                            $query->whereNotNull($field);
+                        }
+                        if (isset($value['max'])) {
+                            $query->where($field, '<=', $value['max']);
+                        }
+                    } else {
+                        $query->where($field, $value);
+                    }
+                }
+
+                if (($cfg['ownable'] ?? true) && !$viewAll) {
+                    $query->where('user_id', $user->id);
+                }
+
+                $stats[] = AurumStat::make($card['label'], (string) $query->count())
+                    ->icon($card['icon'])
+                    ->description($card['desc']);
+            }
+        }
+
+        return $stats;
     }
 }

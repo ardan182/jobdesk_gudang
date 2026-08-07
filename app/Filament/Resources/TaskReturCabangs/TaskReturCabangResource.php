@@ -41,7 +41,7 @@ class TaskReturCabangResource extends Resource
     {
         $query = parent::getEloquentQuery();
 
-        if (auth()->user()?->hasRole('Admin')) {
+        if (auth()->user()?->can('view_all_data')) {
             return $query;
         }
 

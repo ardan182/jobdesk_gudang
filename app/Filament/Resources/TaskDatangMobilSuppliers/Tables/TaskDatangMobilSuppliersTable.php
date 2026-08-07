@@ -219,7 +219,7 @@ class TaskDatangMobilSuppliersTable
                 BulkActionGroup::make([
                     DeleteBulkAction::make()
                         ->color('danger')
-                        ->visible(fn () => auth()->user()?->hasRole('Admin') ?? false),
+                        ->visible(fn () => auth()->user()?->isSuperAdmin() ?? false),
                 ]),
             ]);
     }

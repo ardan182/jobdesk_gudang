@@ -25,6 +25,11 @@ class User extends Authenticatable implements FilamentUser
         return true;
     }
 
+    public function isSuperAdmin(): bool
+    {
+        return $this->roles()->where('is_super_admin', true)->exists();
+    }
+
     /**
      * Get the attributes that should be cast.
      *

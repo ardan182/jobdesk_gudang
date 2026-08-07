@@ -291,6 +291,22 @@ Permission-based access control per-module & per-action, dikelola melalui UI Edi
 - [x] **Admin bypass** — `AppServiceProvider::boot()`: `Gate::before` return `true` untuk role Admin
 - [x] **Test semua role + custom user** — smoke test: Admin full, Checker Terima hanya modulnya, widget Admin-only deny untuk checker; panel boot OK
 
+## Fase 25: Role Dinamis + Akses Nempel di User ✅
+
+### Ringkasan
+Role menjadi **dinamis** (CRUD via UI) dan berhenti mewariskan akses. **Akses = 100% direct permission user** (role = label + `is_super_admin` + `permission_template` untuk pre-fill saat pilih role).
+
+### Tasks
+
+- [x] **Migrasi** — `roles` + `is_super_admin` (bool) + `permission_template` (json); `decouple_role_permissions_to_user`: salin permission role → template + direct user lama, kosongkan `role_has_permissions`
+- [x] **Seeder** — +`view_all_data` (total 85), `setRoleDefaults()` → template per role + `is_super_admin` Admin
+- [x] **`User::isSuperAdmin()`** + `Gate::before` → `isSuperAdmin()` (bukan `hasRole('Admin')`)
+- [x] **`PermissionMenu`** (shared helper) — flat tree: Akses Global + Group header non-collapsible + menu (Pilih Semua + 4 action) + widget Aktif; dipakai UserForm & RoleForm
+- [x] **RoleResource** — CRUD role dinamis (nama, super admin toggle, permission template); hanya super admin
+- [x] **UserForm** — role Select `live()` pre-fill dari template; menu flat (bukan group collapsible); `view_all_data`; widget per-widget
+- [x] **Decouple hardcode** — `getEloquentQuery()` → `can('view_all_data')`; `StatsOverviewWidget` generik per-modul (own vs all); `DeleteBulkAction`/kolom Checker → `isSuperAdmin()`
+- [x] **Verifikasi** — 85 permission, role_has_permissions=0, admin super_admin + direct 84, terima direct 19, panel boot OK
+
 ## Fase 20: Filter AboveContent + UI Polish ✅
 
 - [x] **BranchShipment (Input Kirim Barang)** — filter AboveContent: Kiriman, Cabang, Tanggal, Status; 5 kolom
