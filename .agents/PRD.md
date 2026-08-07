@@ -98,11 +98,13 @@ Layout: Stats (full) → [Expiring | Cuti] → RecentActivity (full)
 
 | Role | Hak |
 |------|-----|
-| **Admin** | Full — semua menu, semua data, CRUD user, delete semua |
+| **Admin** | Full — semua menu, semua data, CRUD user, delete semua (bypass implicit via `Gate::before`) |
 | **Checker Retur** | Retur Masuk Cabang, Retur Keluar Supplier — data sendiri |
-| **Checker Terima** | Datang Mobil, Terima Supplier — data sendiri |
-| **Checker Keluar** | Keluar Barang — data sendiri |
+| **Checker Terima** | Datang Mobil, Terima Supplier, Input SJ, Komplain PO — data sendiri |
+| **Checker Keluar** | Keluar Barang, Input Kirim Barang — data sendiri |
 | **Checker Kiriman** | Kiriman Mobil — data sendiri |
+
+Default permission per role di-set di `PermissionSeeder::assignRoleDefaults()` (Admin = 84, Terima = 19, Retur/Keluar = 11, Kiriman = 7).
 
 #### 2.10.2 Fine-Grained Permission (Per-Menu & Per-Action)
 
@@ -110,14 +112,19 @@ Di atas role default, Admin bisa kustomisasi akses **per-user** melalui UI Edit 
 
 - **Permission names:** `{action}_{module_key}` — contoh: `view_task_retur_cabangs`, `create_task_retur_cabangs`, `update_task_retur_cabangs`, `delete_task_retur_cabangs`
 - **4 actions per module:** view, create, update, delete
-- **Coverage:** Semua modul task, master data, non-task (Input SJ, BranchShipment, Retur Masuk/Keluar, Pusat Dokumen, Cuti & Absensi, Users, TvBoard)
+- **Total 84 permission** (20 modul × 4 = 80 + 4 widget `view_widget_*`)
+- **Coverage:** Semua modul task, master data, non-task (Input SJ, BranchShipment, Retur Masuk/Keluar, Pusat Dokumen, Cuti & Absensi, Users, TvBoard, KendaraanDokumen)
 
 #### 2.10.3 UI Akses Menu (di Edit User)
 
+Section **"Akses Menu & Fitur"** di form Create/Edit User:
+
 - **Checkbox tree** dengan struktur: **Group → Menu → Actions**
-- Toggle per action (view/create/update/delete) — centang "Menu" = auto-centang view+create+update
-- **Select All** per group — centang sekali, semua menu dalam grup terpilih
-- Default permissions dari role tetap ada, UI menambahkan/mencabut permission tambahan
+- Per modul: 5 kolom = **Pilih Semua** + View + Create + Update + Delete (checkbox terpisah per action)
+- **Select All** per modul — centang sekali, 4 action terpilih
+- **Widget:** checkbox "Aktif" mandiri per widget (Stats Overview, Aktivitas Terakhir, Dokumen Expired, Cuti Hari Ini)
+- State: field `perm_{permission}` → `syncPermissions()` ke Spatie `model_has_permissions` (via `afterCreate`/`afterSave`)
+- Load state saat edit: `hasDirectPermission()` (permission langsung user, terpisah dari permission role)
 - **Admin bypass:** Admin tetap punya akses penuh implicit (Spatie gate `before`)
 
 #### 2.10.4 Resource Authorization Pattern
@@ -204,7 +211,7 @@ Semua punya: `id_task` (indexed), `user_id` (FK).
 | (toolbar) | Export XLSX/PDF (custom service) |
 
 ### 2.11 Komplain PO
-- **Grup:** Purchasing Order | **Icon:** DocumentText | **Akses:** Admin (sementara, next ke RBAC)
+- **Grup:** Purchasing Order | **Icon:** DocumentText | **Akses:** RBAC `komplain_pos` (default Admin + Checker Terima)
 - **Tabel:** `po_complaints` | **ID Task:** `KMPL-00001` (TaskIdGenerator)
 - **Tujuan:** Mencatat komplain barang tidak lengkap/tidak sesuai
 - **Form 3 Section:** PO Supplier (cabang, supplier, no_po, barcode) → Barang (nama, qty diterima, no surat jalan, qty di SJ, foto max 5, tgl datang) → Status (kondisi, penyelesaian, status, keterangan)

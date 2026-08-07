@@ -11,7 +11,7 @@
 | Backend | Laravel | 13 | PHP 8.5.8 |
 | Admin Panel | Filament | v5 | Auto-discover resources/pages/widgets |
 | Database | MySQL / MariaDB | 8.0+ | Wajib `mysql`, bukan sqlite |
-| Auth | Spatie Laravel Permission | - | 5 role: Admin, Checker Retur/Terima/Keluar/Kiriman |
+| Auth | Spatie Laravel Permission | - | 5 role + 84 permission (RBAC fine-grained, `{action}_{module_key}`) |
 | Frontend | Tailwind CSS + Alpine.js | - | Bundled via Filament |
 | Assets | Vite | - | `npm run dev` / `npm run build` |
 | Export/Import (master) | ZipArchive + SimpleXML + DOMDocument | native PHP | Template download, import CSV/XLSX/XLS |
@@ -116,13 +116,35 @@ ActivityLog → belongsTo: User
 
 ## 5. Role & Permission Access Pattern
 
-### 5.1 Default Role-Based Access
+> **Status: Terimplementasi penuh (Fase 18).** Resource authorization sekarang berbasis **permission** Spatie, bukan hardcoded role.
+
+### 5.0 Roles & Permissions (Overview)
+
+- **5 role** (Spatie): `Admin`, `Checker Retur`, `Checker Terima`, `Checker Keluar`, `Checker Kiriman` (`RoleSeeder`)
+- **84 permission** (`PermissionSeeder`): 20 modul × 4 aksi (`view/create/update/delete`) = 80 + 4 widget permission
+- Format: `{action}_{module_key}` — mis. `view_task_retur_cabangs`, `create_master_suppliers`, `update_komplain_pos`, `delete_warehouse_documents`
+- Register seeder: `DatabaseSeeder` → `RoleSeeder`, lalu `PermissionSeeder`
+
+### 5.0.1 Module Keys (20)
+
+| Group | Module Keys |
+|-------|-------------|
+| Master | `master_suppliers`, `master_tokos`, `master_kendaraans`, `master_sopirs`, `expeditions`, `warehouse_employees` |
+| Purchasing Order | `komplain_pos` |
+| Retur | `supplier_returns`, `task_retur_cabangs` |
+| Penerimaan | `task_datang_mobil_suppliers`, `task_terima_suppliers`, `supplier_sjs` |
+| Pengiriman | `branch_shipments`, `task_keluar_barangs`, `task_kiriman_mobils` |
+| Administrasi | `warehouse_documents`, `kendaraan_dokumens`, `cuti_absensi` (page) |
+| Pengaturan | `users`, `board_tv_settings` (page) |
+| Widget (view-only) | `view_widget_stats_overview`, `view_widget_recent_activity`, `view_widget_expiring_documents`, `view_widget_leaves_today` |
+
+### 5.1 Default Role-Based Access (Legacy)
 
 ```php
-canViewAny()           → hasRole('Admin') || hasRole('Checker X')
-canDelete()            → only Admin
-getEloquentQuery()     → where('user_id', auth()->id()) for non-Admin
-shouldRegisterNavigation() → hasRole('Admin') || hasRole('Checker X')
+canViewAny()           → hasRole('Admin') || hasRole('Checker X')   // digantikan permission
+canDelete()            → only Admin                                 // digantikan permission
+getEloquentQuery()     → where('user_id', auth()->id()) for non-Admin  // dipertahankan
+shouldRegisterNavigation() → hasRole('Admin') || hasRole('Checker X')  // digantikan permission
 ```
 
 ### 5.2 Fine-Grained Permission (Per-Menu & Per-Action)
@@ -144,24 +166,33 @@ canCreate()      → auth()->user()->can('create_{module}')
 canEdit($record) → auth()->user()->can('update_{module}')
 canDelete($record)→ auth()->user()->can('delete_{module}')
 shouldRegisterNavigation() → auth()->user()->can('view_{module}')
-getEloquentQuery() → filter own data jika user tidak punya akses global (via permission atau gate)
+getEloquentQuery() → filter own data jika user non-Admin (kondisi hasRole('Admin') dipertahankan)
 ```
 
 ### 5.4 Admin Bypass
 
+`app/Providers/AppServiceProvider.php`:
 ```php
-// Di AppServiceProvider atau AuthServiceProvider
-Gate::before(function ($user) {
+Gate::before(function ($user, $ability) {
     return $user->hasRole('Admin') ? true : null;
 });
 ```
 
 ### 5.5 UI Akses Menu (Edit User)
 
-- Section "Akses Menu" di form Edit User
-- Checkbox tree: Group → Menu → Actions (view/create/update/delete)
-- Select All per group
-- State disimpan ke Spatie `model_has_permissions`
+`app/Filament/Resources/Users/Schemas/UserForm.php` — Section **"Akses Menu & Fitur"**:
+- Helper `group()` → Section per nav-group (Master, Purchasing Order, Retur, Penerimaan, Pengiriman, Administrasi, Pengaturan, Dashboard & Widgets)
+- Helper `module($label, $key)` → Section per modul, 5 kolom: **Pilih Semua** + View + Create + Update + Delete
+- Helper `widget($label, $permission)` → Section per widget, checkbox **Aktif**
+- Helper `permCheckbox(...)` → checkbox `perm_{permission}`, `dehydrated(false)`, state di-load via `hasDirectPermission()` (try/catch), live sync ke `select_all_{key}`
+- Penyimpanan: `CreateUser::afterCreate()` / `EditUser::afterSave()` iterasi `$this->data` field berprefix `perm_*` → `syncPermissions()`
+
+### 5.6 Guard UI (tetap role-based)
+
+- `DeleteBulkAction` di semua tabel → `visible(fn) => hasRole('Admin')`
+- Kolom "Checker"/"Dibuat" → `visible(fn) => hasRole('Admin')`
+- `StatsOverviewWidget::getStats()` → statistik disaring per-role
+- `getEloquentQuery()` task module → non-Admin hanya data sendiri
 
 ---
 
@@ -668,7 +699,8 @@ FileUpload::make('foto')
 - Butuh `php artisan storage:link`
 
 ### Akses
-- Hanya `Admin` (sementara, diarahkan ke RBAC nanti)
+- Permission RBAC: `view_komplain_pos`, `create_komplain_pos`, `update_komplain_pos`, `delete_komplain_pos`
+- Default: Admin + Checker Terima (via `PermissionSeeder::assignRoleDefaults()`)
 
 ### Export
 - `TableExportService::streamXlsx` / `streamPdf` — formatters: kondisi, penyelesaian, status → label

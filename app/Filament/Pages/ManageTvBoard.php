@@ -31,6 +31,11 @@ class ManageTvBoard extends Page
         return 'Pengaturan';
     }
 
+    public static function canAccess(): bool
+    {
+        return auth()->user()?->can('view_board_tv_settings') ?? false;
+    }
+
     public int $refresh_interval = 60;
     public int $max_items = 15;
     public bool $show_supplier_arrivals = true;

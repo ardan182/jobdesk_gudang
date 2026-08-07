@@ -425,6 +425,6 @@ class ManageLeaves extends Page
 
     public static function canAccess(): bool
     {
-        return auth()->user()?->hasRole('Admin') ?? false;
+        return auth()->user()?->can('view_cuti_absensi') ?? false;
     }
 }

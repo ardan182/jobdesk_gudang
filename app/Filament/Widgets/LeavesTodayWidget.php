@@ -39,6 +39,6 @@ class LeavesTodayWidget extends AurumValueList
 
     public static function canView(): bool
     {
-        return auth()->user()?->hasRole('Admin') ?? false;
+        return auth()->user()?->can('view_widget_leaves_today') ?? false;
     }
 }

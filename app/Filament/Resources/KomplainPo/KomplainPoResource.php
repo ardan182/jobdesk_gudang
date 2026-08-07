@@ -9,6 +9,7 @@ use App\Models\KomplainPo;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
 
 class KomplainPoResource extends Resource
 {
@@ -47,5 +48,30 @@ class KomplainPoResource extends Resource
         return [
             'index' => ListKomplainPos::route('/'),
         ];
+    }
+
+    public static function canViewAny(): bool
+    {
+        return auth()->user()?->can('view_komplain_pos') ?? false;
+    }
+
+    public static function canCreate(): bool
+    {
+        return auth()->user()?->can('create_komplain_pos') ?? false;
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return auth()->user()?->can('update_komplain_pos') ?? false;
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        return auth()->user()?->can('delete_komplain_pos') ?? false;
+    }
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return auth()->user()?->can('view_komplain_pos') ?? false;
     }
 }

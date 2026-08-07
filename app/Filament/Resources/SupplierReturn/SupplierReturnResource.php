@@ -9,6 +9,7 @@ use App\Models\SupplierReturn;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
 
 class SupplierReturnResource extends Resource
 {
@@ -47,5 +48,30 @@ class SupplierReturnResource extends Resource
         return [
             'index' => ListSupplierReturns::route('/'),
         ];
+    }
+
+    public static function canViewAny(): bool
+    {
+        return auth()->user()?->can('view_supplier_returns') ?? false;
+    }
+
+    public static function canCreate(): bool
+    {
+        return auth()->user()?->can('create_supplier_returns') ?? false;
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return auth()->user()?->can('update_supplier_returns') ?? false;
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        return auth()->user()?->can('delete_supplier_returns') ?? false;
+    }
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return auth()->user()?->can('view_supplier_returns') ?? false;
     }
 }

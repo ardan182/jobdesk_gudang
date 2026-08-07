@@ -65,8 +65,6 @@ class RecentActivityWidget extends BaseWidget
 
     public static function canView(): bool
     {
-        $user = auth()->user();
-        if (! $user) return false;
-        return $user->hasAnyRole(['Admin', 'Checker Retur', 'Checker Terima', 'Checker Keluar', 'Checker Kiriman']);
+        return auth()->user()?->can('view_widget_recent_activity') ?? false;
     }
 }

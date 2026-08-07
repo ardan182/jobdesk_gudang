@@ -50,12 +50,24 @@ composer dev           # concurrently: artisan serve + queue:listen + pail + vit
 ### 5 roles (Spatie Permission)
 `Admin | Checker Retur | Checker Terima | Checker Keluar | Checker Kiriman`
 
-Role-based access pattern:
+### RBAC fine-grained (permission-based)
+Authorization sekarang berbasis **permission** Spatie, bukan hardcoded role:
+- **84 permission** di-seed oleh `database/seeders/PermissionSeeder.php`: 20 modul × 4 action (`view/create/update/delete_{module_key}`) + 4 widget (`view_widget_*`)
+- **Admin bypass:** `AppServiceProvider::boot()` → `Gate::before` return `true` untuk role Admin
+- **UI kelola:** Edit/Create User → Section "Akses Menu & Fitur" (Group → Menu → Actions + Select All + widget checkbox). State field `perm_*` → `syncPermissions()`; load via `hasDirectPermission()`
+- **Default role permissions:** di-set di `PermissionSeeder::assignRoleDefaults()` (Admin=84, Terima=19, Retur/Keluar=11, Kiriman=7)
+
+Access pattern (dipakai di semua resource):
 ```php
-canViewAny()        → hasRole('Admin') || hasRole('Checker X')
-canDelete()         → only Admin
-getEloquentQuery()  → where('user_id', auth()->id()) for non-Admin
+canViewAny()            → auth()->user()->can('view_{module}')
+canCreate()             → auth()->user()->can('create_{module}')
+canEdit($record)        → auth()->user()->can('update_{module}')
+canDelete($record)      → auth()->user()->can('delete_{module}')
+shouldRegisterNavigation() → auth()->user()->can('view_{module}')
+getEloquentQuery()      → where('user_id', auth()->id()) for non-Admin (kondisi hasRole('Admin') dipertahankan)
 ```
+
+Guard UI yang TETAP role-based: `DeleteBulkAction` + kolom "Checker"/"Dibuat" → `hasRole('Admin')`; `StatsOverviewWidget::getStats()` per-role.
 
 ### 6 task tables (one per module)
 `task_retur_suppliers | task_retur_cabangs | task_datang_mobil_suppliers | task_terima_suppliers | task_keluar_barangs | task_kiriman_mobils`
@@ -94,6 +106,7 @@ All XLSX exports use **ZipArchive + XML manual** (no maatwebsite/phpspreadsheet)
 | `app/Imports/SupplierImport.php` | Supplier CSV/XLSX/XLS import |
 | `app/Imports/WarehouseEmployeeImport.php` | Employee CSV/XLSX/XLS import |
 | `database/seeders/RoleSeeder.php` | Seed 5 roles |
+| `database/seeders/PermissionSeeder.php` | Seed 84 permission + default per role |
 
 ## Dependencies
 - `filament/filament` — admin panel v5

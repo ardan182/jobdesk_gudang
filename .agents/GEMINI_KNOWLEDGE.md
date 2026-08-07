@@ -20,7 +20,7 @@ Aplikasi web untuk digitalisasi jobdesk harian gudang — pencatatan retur, pene
 | Backend | Laravel 13 | PHP 8.5.8 |
 | Admin Panel | Filament v5 | Auto-discover resources, pages, widgets |
 | Database | MySQL / MariaDB | Wajib `mysql`, bukan sqlite |
-| Auth | Spatie Laravel Permission | 5 role |
+| Auth | Spatie Laravel Permission | 5 role + 84 permission (RBAC fine-grained) |
 | Frontend | Tailwind CSS + Alpine.js | Bundled via Filament |
 | Assets | Vite | `npm run dev` atau `npm run build` |
 | Export/Import | ZipArchive (native PHP) | Template master + import; Export table via TableExportService |
@@ -77,7 +77,7 @@ Jangan hapus `implements FilamentUser` ini saat mengubah model User!
 
 ## 4. Navigation Groups
 
-| Group | Menu | Ikon | Role Access | Filter Layout |
+| Group | Menu | Ikon | Role Access (default) | Filter Layout |
 |-------|------|------|-------------|---------------|
 | **Dashboard** (no group) | Dasbor | home | Semua role | — |
 | **Master** | Master Ekspedisi | BuildingOffice2 | Admin | Dropdown |
@@ -86,10 +86,10 @@ Jangan hapus `implements FilamentUser` ini saat mengubah model User!
 | | Master Toko | BuildingStorefront | Admin | Dropdown |
 | | Master Supplier | BuildingStorefront | Admin | Dropdown |
 | | Master Employee Gudang | UserGroup | Admin | Dropdown |
-| **Purchasing Order** | Komplain PO | DocumentText | Admin (sementara) | — |
+| **Purchasing Order** | Komplain PO | DocumentText | Admin, Checker Terima | — |
 | **Retur** | Retur Masuk dari Toko | ArrowUturnLeft | Admin, Checker Retur | **AboveContent** (4 col) |
 | | Retur In & Out Supplier | ArrowUturnLeft | Admin, Checker Retur | Dropdown |
-| **Penerimaan** | Input SJ dari Supplier | DocumentText | Semua | **AboveContent** (3 col) |
+| **Penerimaan** | Input SJ dari Supplier | DocumentText | Admin, Checker Terima | **AboveContent** (3 col) |
 | | Datang Mobil Supplier | Truck | Admin, Checker Terima | **AboveContent** (5 col) |
 | | Checker Terima Barang Supplier | ClipboardDocumentList | Admin, Checker Terima | **AboveContent** (4 col) |
 | **Pengiriman** | Input Kirim Barang | PaperAirplane | Admin, Checker Keluar | **AboveContent** (5 col) |
@@ -100,6 +100,8 @@ Jangan hapus `implements FilamentUser` ini saat mengubah model User!
 | **Pengaturan** | Users | RectangleStack | Admin | Dropdown |
 | | Pengaturan Board TV | tv | Admin | — |
 
+> Kolom "Role Access" = **default** role. Semua menu kini di-gate **permission RBAC** (`{action}_{module_key}`, 84 total) — Admin bisa kustomisasi per-user via Edit User → Section "Akses Menu & Fitur". Admin selalu full access (bypass).
+
 ---
 
 ## 5. Roles & Access
@@ -108,21 +110,22 @@ Jangan hapus `implements FilamentUser` ini saat mengubah model User!
 
 | Role | Hak Akses |
 |------|-----------|
-| **Admin** | Full — semua menu, semua data semua user, CRUD user, delete all records |
+| **Admin** | Full — semua menu, semua data semua user, CRUD user, delete all records (bypass implicit) |
 | **Checker Retur** | Retur Masuk Cabang, Retur Keluar Supplier — hanya data sendiri, tidak bisa delete |
-| **Checker Terima** | Datang Mobil, Terima Barang Supplier — hanya data sendiri, tidak bisa delete |
-| **Checker Keluar** | Keluar Barang — hanya data sendiri, tidak bisa delete |
-| **Checker Kiriman** | Kiriman Mobil — hanya data sendiri, tidak bisa delete |
+| **Checker Terima** | Datang Mobil, Terima Barang Supplier, Input SJ, Komplain PO — hanya data sendiri |
+| **Checker Keluar** | Keluar Barang, Input Kirim Barang — hanya data sendiri |
+| **Checker Kiriman** | Kiriman Mobil — hanya data sendiri |
 
 ### 5.2 Fine-Grained Permission (Per-Menu & Per-Action)
 
 Di atas role, Admin bisa kustomisasi akses per-user via UI Edit User:
 
 - Format permission: `{action}_{module_key}` — view/create/update/delete
-- Semua modul: task, master, non-task (Input SJ, BranchShipment, Retur, Pusat Dokumen, Cuti & Absensi, Users, TvBoard)
-- UI checkbox tree: Group → Menu → Actions (view/create/update/delete)
-- Select All per group
-- **Admin bypass:** Gate `before` return `true` untuk Admin
+- **84 permission total** (20 modul × 4 + 4 widget `view_widget_*`), di-seed oleh `database/seeders/PermissionSeeder.php`
+- Semua modul: task, master, non-task (Input SJ, BranchShipment, Retur, Pusat Dokumen, Cuti & Absensi, Users, TvBoard, KendaraanDokumen)
+- UI checkbox tree di **Section "Akses Menu & Fitur"** (UserForm): Group → Menu → Actions (view/create/update/delete) + Select All per modul + checkbox widget "Aktif"
+- State field `perm_*` → `syncPermissions()` (afterCreate/afterSave); load via `hasDirectPermission()`
+- **Admin bypass:** `Gate::before` return `true` untuk Admin (di `AppServiceProvider`)
 
 ### Pattern Authorization
 ```php
@@ -132,6 +135,7 @@ canEdit($record) → auth()->user()->can('update_{module}')
 canDelete($record)→ auth()->user()->can('delete_{module}')
 getEloquentQuery() → filter own data jika non-Admin
 ```
+Diterapkan di 18 resource + 2 custom page (ManageLeaves `view_cuti_absensi`, ManageTvBoard `view_board_tv_settings`) + 4 widget (`view_widget_*`). Guard UI (bulk-delete, kolom Checker, statistik) tetap role-based.
 
 ---
 
@@ -535,7 +539,7 @@ app/
 ## 21. Komplain PO Module
 
 - **Tabel:** `po_complaints` | **Model:** `KomplainPo` | **ID:** `KMPL-00001`
-- **Grup:** Purchasing Order | **Akses:** Admin (sementara, next RBAC)
+- **Grup:** Purchasing Order | **Akses:** RBAC `komplain_pos` (default Admin + Checker Terima via PermissionSeeder)
 - **Form 3 Section:** PO Supplier (cabang, supplier, no_po, barcode) → Barang (nama, qty diterima, no_surat_jalan, qty disurat_jalan, foto max 5, tgl datang) → Status (kondisi, penyelesaian, status, keterangan)
 - **Status:** `draft`/`selesai` — Selesai hanya jika `tanggal_datang_barang` terisi (select `disabled` saat kosong)
 - **Kondisi:** `tidak_sesuai`/`tidak_lengkap` | **Penyelesaian:** `potong_nota`/`retur`/`ganti_barang`

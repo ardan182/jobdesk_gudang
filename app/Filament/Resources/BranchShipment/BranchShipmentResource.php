@@ -52,19 +52,27 @@ class BranchShipmentResource extends Resource
 
     public static function canViewAny(): bool
     {
-        $user = auth()->user();
-        return $user?->hasRole('Admin') || $user?->hasRole('Checker Keluar');
+        return auth()->user()?->can('view_branch_shipments') ?? false;
+    }
+
+    public static function canCreate(): bool
+    {
+        return auth()->user()?->can('create_branch_shipments') ?? false;
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return auth()->user()?->can('update_branch_shipments') ?? false;
     }
 
     public static function canDelete(Model $record): bool
     {
-        return auth()->user()?->hasRole('Admin') ?? false;
+        return auth()->user()?->can('delete_branch_shipments') ?? false;
     }
 
     public static function shouldRegisterNavigation(): bool
     {
-        $user = auth()->user();
-        return $user?->hasRole('Admin') || $user?->hasRole('Checker Keluar');
+        return auth()->user()?->can('view_branch_shipments') ?? false;
     }
 
     public static function getPages(): array

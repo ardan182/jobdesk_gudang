@@ -266,30 +266,30 @@ Export custom tanpa plugin — 2 tombol **outlined kotak kecil** (label + icon) 
 - XLSX unlimited, PDF max 200 baris
 - Belum (menunggu konfirmasi): border di XLSX menu lain (masih khusus Cuti & Absensi)
 
-## Fase 18: Fine-Grained RBAC (Per-Menu & Per-Action) 🆕
+## Fase 18: Fine-Grained RBAC (Per-Menu & Per-Action) ✅
 
 ### Ringkasan
-Permission-based access control per-module & per-action, dikelola melalui UI Edit User. Admin bisa menentukan menu mana yang bisa diakses user berikut capability (view/create/update/delete) tanpa tergantung role.
+Permission-based access control per-module & per-action, dikelola melalui UI Edit User. Admin bisa menentukan menu mana yang bisa diakses user berikut capability (view/create/update/delete) tanpa tergantung role. **Terimplementasi penuh & terverifikasi.**
 
 ### Tasks
 
-- [ ] **Permission Seeder** — seed semua permission `{view|create|update|delete}_{module_key}` untuk semua modul task + master + non-task
-- [ ] **UI Edit User — Section "Akses Menu"** — checkbox tree (Group → Menu → Actions) dengan toggle per action
-  - Checkbox per menu (centang = view+create+update)
-  - Checkbox per action (view/create/update/delete) untuk fine-tuning
-  - Select All per group
-  - State: permission names tersimpan di Spatie `model_has_permissions`
-- [ ] **ListAkses User** — halaman grid/list permission yang sudah diset per user
-- [ ] **Update Semua Resource** — ganti hardcoded role check dengan `auth()->user()->can('{action}_{module}')`:
+- [x] **Permission Seeder** — `database/seeders/PermissionSeeder.php`: 84 permission (`view|create|update|delete_{module_key}` = 80 + 4 widget), terdaftar di `DatabaseSeeder` setelah `RoleSeeder`
+- [x] **UI Edit User — Section "Akses Menu & Fitur"** — checkbox tree (Group → Menu → Actions) dengan toggle per action:
+  - Section group per nav-group (Master, Purchasing Order, Retur, Penerimaan, Pengiriman, Administrasi, Pengaturan, Dashboard & Widgets)
+  - Per modul: 5 kolom = **Pilih Semua** + View + Create + Update + Delete
+  - Widget: checkbox "Aktif" mandiri per widget
+  - State disimpan sebagai permission langsung user di Spatie `model_has_permissions` via `syncPermissions()` (field berprefix `perm_*`)
+- [ ] **ListAkses User** — halaman grid/list permission yang sudah diset per user *(belum dibuat — optional/future)*
+- [x] **Update Semua Resource** — ganti hardcoded role check dengan `auth()->user()->can('{action}_{module}')` di 18 resource + 2 custom page (ManageLeaves, ManageTvBoard) + 4 widget:
   - `canViewAny()` → `can('view_*')`
   - `canCreate()` → `can('create_*')`
   - `canEdit()` → `can('update_*')`
   - `canDelete()` → `can('delete_*')`
   - `shouldRegisterNavigation()` → `can('view_*')`
-  - `getEloquentQuery()` → tetap filter own data untuk non-Admin (tapi Admin bisa lihat semua via permission)
-- [ ] **Default Role Permissions** — update RoleSeeder: setiap role punya permission default sesuai fungsinya
-- [ ] **Admin bypass** — Admin tetap punya semua permission implicit (Spatie `Super Admin` atau `*` wildcard)
-- [ ] **Test semua role + custom user** — verifikasi akses sesuai permission yang diset
+  - `getEloquentQuery()` → tetap filter own data untuk non-Admin (kondisi `hasRole('Admin')` dipertahankan)
+- [x] **Default Role Permissions** — `PermissionSeeder::assignRoleDefaults()`: Admin = semua 84, checker sesuai fungsinya (Terima=19, Retur/Keluar=11, Kiriman=7)
+- [x] **Admin bypass** — `AppServiceProvider::boot()`: `Gate::before` return `true` untuk role Admin
+- [x] **Test semua role + custom user** — smoke test: Admin full, Checker Terima hanya modulnya, widget Admin-only deny untuk checker; panel boot OK
 
 ## Fase 20: Filter AboveContent + UI Polish ✅
 
@@ -314,7 +314,7 @@ Permission-based access control per-module & per-action, dikelola melalui UI Edi
 - [x] Foto min 1 max 5 (disk public `fotos-komplain/`, ImageEntry view + tooltip grid)
 - [x] Logika status: Selesai hanya jika `tanggal_datang_barang` terisi (select disabled)
 - [x] Export XLSX + PDF
-- [x] Akses Admin sementara (next ke RBAC)
+- [x] Akses RBAC: permission `komplain_pos` (default Admin + Checker Terima, via PermissionSeeder)
 
 ## Fase 24: Bug Fixes Menu Lain ✅
 

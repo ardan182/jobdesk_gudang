@@ -41,17 +41,27 @@ class SupplierResource extends Resource
 
     public static function canViewAny(): bool
     {
-        return auth()->user()?->hasRole('Admin') ?? false;
+        return auth()->user()?->can('view_master_suppliers') ?? false;
+    }
+
+    public static function canCreate(): bool
+    {
+        return auth()->user()?->can('create_master_suppliers') ?? false;
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return auth()->user()?->can('update_master_suppliers') ?? false;
     }
 
     public static function canDelete(Model $record): bool
     {
-        return auth()->user()?->hasRole('Admin') ?? false;
+        return auth()->user()?->can('delete_master_suppliers') ?? false;
     }
 
     public static function shouldRegisterNavigation(): bool
     {
-        return auth()->user()?->hasRole('Admin') ?? false;
+        return auth()->user()?->can('view_master_suppliers') ?? false;
     }
 
     public static function getPages(): array

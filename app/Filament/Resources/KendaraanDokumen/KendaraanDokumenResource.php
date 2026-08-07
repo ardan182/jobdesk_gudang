@@ -9,6 +9,7 @@ use App\Models\KendaraanDokumen;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
 
 class KendaraanDokumenResource extends Resource
 {
@@ -47,5 +48,30 @@ class KendaraanDokumenResource extends Resource
         return [
             'index' => ListKendaraanDokumens::route('/'),
         ];
+    }
+
+    public static function canViewAny(): bool
+    {
+        return auth()->user()?->can('view_kendaraan_dokumens') ?? false;
+    }
+
+    public static function canCreate(): bool
+    {
+        return auth()->user()?->can('create_kendaraan_dokumens') ?? false;
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return auth()->user()?->can('update_kendaraan_dokumens') ?? false;
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        return auth()->user()?->can('delete_kendaraan_dokumens') ?? false;
+    }
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return auth()->user()?->can('view_kendaraan_dokumens') ?? false;
     }
 }

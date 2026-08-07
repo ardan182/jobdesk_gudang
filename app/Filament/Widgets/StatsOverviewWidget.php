@@ -17,6 +17,11 @@ class StatsOverviewWidget extends AurumStatsOverview
 {
     protected int | string | array $columnSpan = 'full';
 
+    public static function canView(): bool
+    {
+        return auth()->user()?->can('view_widget_stats_overview') ?? false;
+    }
+
     protected function getStats(): array
     {
         $user = auth()->user();
