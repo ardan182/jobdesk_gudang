@@ -32,6 +32,7 @@ class MasterTokosTable
             ])
             ->recordActions([
                 EditAction::make()
+                    ->visible(fn () => auth()->user()?->can('update_master_tokos') ?? false)
                     ->iconButton()
                     ->tooltip('Ubah Data')
                     ->color('warning')
@@ -44,7 +45,7 @@ class MasterTokosTable
                         ->iconButton()
                         ->tooltip('Hapus Data')
                         ->color('danger')
-                        ->visible(fn () => auth()->user()?->isSuperAdmin() ?? false),
+                        ->visible(fn () => auth()->user()?->can('delete_master_tokos') ?? false),
                 ]),
             ]);
     }

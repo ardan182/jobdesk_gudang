@@ -79,6 +79,7 @@ class SuppliersTable
                         TextEntry::make('keterangan')->label('Keterangan'),
                     ]),
                 EditAction::make()
+                    ->visible(fn () => auth()->user()?->can('update_master_suppliers') ?? false)
                     ->iconButton()
                     ->tooltip('Ubah Data')
                     ->color('warning')
@@ -91,7 +92,7 @@ class SuppliersTable
                         ->iconButton()
                         ->tooltip('Hapus Data')
                         ->color('danger')
-                        ->visible(fn () => auth()->user()?->isSuperAdmin() ?? false),
+                        ->visible(fn () => auth()->user()?->can('delete_master_suppliers') ?? false),
                 ]),
             ]);
     }

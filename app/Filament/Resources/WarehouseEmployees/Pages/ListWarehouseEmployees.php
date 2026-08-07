@@ -40,6 +40,7 @@ class ListWarehouseEmployees extends ListRecords
                                 Section::make('Daftar Employee')
                                     ->headerActions([
                                         Action::make('importEmployee')
+                                            ->visible(fn () => auth()->user()?->can('create_warehouse_employees') ?? false)
                                             ->label('Import Employee')
                                             ->color('primary')
                                             ->icon('heroicon-o-arrow-up-tray')
@@ -94,6 +95,7 @@ class ListWarehouseEmployees extends ListRecords
                                                     ->send();
                                             }),
                                         Action::make('create')
+                                            ->visible(fn () => auth()->user()?->can('create_warehouse_employees') ?? false)
                                             ->label('Buat Master Employee Gudang')
                                             ->color('primary')
                                             ->icon('heroicon-m-plus')

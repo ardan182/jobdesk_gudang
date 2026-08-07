@@ -57,6 +57,7 @@ class MasterSopirsTable
                             ->iconColor('success'),
                     ]),
                 EditAction::make()
+                    ->visible(fn () => auth()->user()?->can('update_master_sopirs') ?? false)
                     ->iconButton()
                     ->tooltip('Ubah Data')
                     ->color('warning')
@@ -69,7 +70,7 @@ class MasterSopirsTable
                         ->iconButton()
                         ->tooltip('Hapus Data')
                         ->color('danger')
-                        ->visible(fn () => auth()->user()?->isSuperAdmin() ?? false),
+                        ->visible(fn () => auth()->user()?->can('delete_master_sopirs') ?? false),
                 ]),
             ]);
     }

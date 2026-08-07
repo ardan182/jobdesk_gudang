@@ -133,6 +133,7 @@ class MasterKendaraansTable
                             ]),
                     ]),
                 EditAction::make()
+                    ->visible(fn () => auth()->user()?->can('update_master_kendaraans') ?? false)
                     ->iconButton()
                     ->tooltip('Ubah Data')
                     ->color('warning')
@@ -146,7 +147,7 @@ class MasterKendaraansTable
                         ->iconButton()
                         ->tooltip('Hapus Data')
                         ->color('danger')
-                        ->visible(fn () => auth()->user()?->isSuperAdmin() ?? false),
+                        ->visible(fn () => auth()->user()?->can('delete_master_kendaraans') ?? false),
                 ]),
             ]);
     }

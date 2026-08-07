@@ -135,6 +135,7 @@ class KendaraanDokumensTable
                             ]),
                     ]),
                 EditAction::make()
+                    ->visible(fn () => auth()->user()?->can('update_kendaraan_dokumens') ?? false)
                     ->iconButton()
                     ->tooltip('Ubah Data')
                     ->color('warning')
@@ -148,7 +149,7 @@ class KendaraanDokumensTable
                         ->iconButton()
                         ->tooltip('Hapus Data')
                         ->color('danger')
-                        ->visible(fn () => auth()->user()?->isSuperAdmin() ?? false),
+                        ->visible(fn () => auth()->user()?->can('delete_kendaraan_dokumens') ?? false),
                 ]),
             ]);
     }

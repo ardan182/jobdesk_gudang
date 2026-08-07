@@ -15,6 +15,7 @@ class ListWarehouseDocuments extends ListRecords
     {
         return [
             Action::make('create')
+                ->visible(fn () => auth()->user()?->can('create_warehouse_documents') ?? false)
                 ->label('Tambah Dokumen')
                 ->color('primary')
                 ->icon('heroicon-m-plus')

@@ -35,6 +35,7 @@ class UsersTable
             ])
             ->recordActions([
                 EditAction::make()
+                    ->visible(fn () => auth()->user()?->isSuperAdmin() ?? false)
                     ->iconButton()
                     ->tooltip('Ubah Data')
                     ->color('warning'),

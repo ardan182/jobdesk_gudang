@@ -118,7 +118,7 @@ class TaskKeluarBarangsTable
                     ->label('Checker')
                     ->searchable()
                     ->sortable()
-                    ->visible(fn () => auth()->user()?->isSuperAdmin() ?? false)
+->visible(fn () => auth()->user()?->isSuperAdmin() ?? false)
                     ->toggleable()
                     ->grow(false),
                 TextColumn::make('created_at')
@@ -196,6 +196,7 @@ class TaskKeluarBarangsTable
                             ]),
                     ]),
                 EditAction::make()
+                    ->visible(fn () => auth()->user()?->can('update_task_keluar_barangs') ?? false)
                     ->iconButton()
                     ->tooltip('Ubah Data')
                     ->color('warning')
@@ -232,7 +233,7 @@ class TaskKeluarBarangsTable
                         ->iconButton()
                         ->tooltip('Hapus Data')
                         ->color('danger')
-                        ->visible(fn () => auth()->user()?->isSuperAdmin() ?? false),
+                        ->visible(fn () => auth()->user()?->can('delete_task_keluar_barangs') ?? false),
                 ]),
             ]);
     }

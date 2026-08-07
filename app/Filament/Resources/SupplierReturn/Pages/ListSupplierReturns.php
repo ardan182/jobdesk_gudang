@@ -17,6 +17,7 @@ class ListSupplierReturns extends ListRecords
     {
         return [
             Action::make('create')
+                ->visible(fn () => auth()->user()?->can('create_supplier_returns') ?? false)
                 ->label('Tambah')
                 ->color('primary')
                 ->icon('heroicon-m-plus')

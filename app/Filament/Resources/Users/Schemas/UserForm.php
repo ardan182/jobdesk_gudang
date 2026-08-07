@@ -45,7 +45,7 @@ class UserForm
                         foreach (PermissionMenu::groups() as $group => $modules) {
                             foreach ($modules as $m) {
                                 $key = $m['key'];
-                                $set("select_all_{$key}", $this->moduleAllChecked($key, $template));
+                                $set("select_all_{$key}", self::moduleAllChecked($key, $template));
                             }
                         }
                     }),

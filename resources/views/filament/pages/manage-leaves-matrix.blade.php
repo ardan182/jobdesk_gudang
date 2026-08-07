@@ -48,11 +48,14 @@
     $calendar = $this->calendar;
     $bulan = (int) $this->bulan;
     $tahun = (int) $this->tahun;
+    $canDeleteAbsen = auth()->user()?->can('delete_cuti_absensi') ?? false;
 @endphp
 {{-- Legend --}}
 <div class="flex flex-wrap items-center gap-3 pb-2 text-xs text-gray-400">
-    <span class="italic">klik badge hapus</span>
-    <span class="text-gray-300 dark:text-gray-600">|</span>
+    @if ($canDeleteAbsen)
+        <span class="italic">klik badge hapus</span>
+        <span class="text-gray-300 dark:text-gray-600">|</span>
+    @endif
     @foreach (['Cuti' => '#f43f5e', 'Sakit' => '#eab308', 'Izin' => '#3b82f6'] as $label => $warna)
     <span class="flex items-center gap-1">
         <span class="inline-flex items-center justify-center w-4 h-4 rounded text-white text-[10px] font-bold" style="background:{{ $warna }}">{{ substr($label, 0, 1) }}</span>
@@ -96,11 +99,16 @@
                             <td class="fi-ta-cell text-center align-middle" style="min-width:34px;max-width:34px">
                                 <div class="fi-ta-col flex justify-center text-center items-center">
                                     @if ($jenis)
-                                        <button x-on:click="if (confirm('Hapus {{ strtolower($jenis) }} tgl {{ str_pad($day, 2, '0', STR_PAD_LEFT) }}/{{ str_pad($bulan, 2, '0', STR_PAD_LEFT) }}/{{ $tahun }}?')) $wire.deleteLeave({{ $emp['id'] }}, '{{ $dateStr }}')"
-                                            class="inline-flex items-center justify-center w-6 h-6 rounded text-white text-xs font-bold cursor-pointer hover:opacity-80 hover:scale-110 transition-all shadow-sm"
-                                            style="background:{{ $jenisWarna[$jenis] ?? '#6b7280' }}" title="{{ $jenis }}">
-                                            {{ $jenisLabel[$jenis] ?? '?' }}
-                                        </button>
+                                        @if ($canDeleteAbsen)
+                                            <button x-on:click="if (confirm('Hapus {{ strtolower($jenis) }} tgl {{ str_pad($day, 2, '0', STR_PAD_LEFT) }}/{{ str_pad($bulan, 2, '0', STR_PAD_LEFT) }}/{{ $tahun }}?')) $wire.deleteLeave({{ $emp['id'] }}, '{{ $dateStr }}')"
+                                                class="inline-flex items-center justify-center w-6 h-6 rounded text-white text-xs font-bold cursor-pointer hover:opacity-80 hover:scale-110 transition-all shadow-sm"
+                                                style="background:{{ $jenisWarna[$jenis] ?? '#6b7280' }}" title="{{ $jenis }}">
+                                                {{ $jenisLabel[$jenis] ?? '?' }}
+                                            </button>
+                                        @else
+                                            <span class="inline-flex items-center justify-center w-6 h-6 rounded text-white text-xs font-bold"
+                                                style="background:{{ $jenisWarna[$jenis] ?? '#6b7280' }}">{{ $jenisLabel[$jenis] ?? '?' }}</span>
+                                        @endif
                                     @else
                                         <span class="fi-ta-text-item fi-ta-text text-gray-200 dark:text-gray-600 select-none">·</span>
                                     @endif

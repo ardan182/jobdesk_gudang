@@ -62,6 +62,7 @@ class ExpeditionsTable
                         TextEntry::make('alamat')->label('Alamat'),
                     ]),
                 EditAction::make()
+                    ->visible(fn () => auth()->user()?->can('update_expeditions') ?? false)
                     ->iconButton()
                     ->tooltip('Ubah Data')
                     ->color('warning')
@@ -74,7 +75,7 @@ class ExpeditionsTable
                         ->iconButton()
                         ->tooltip('Hapus Data')
                         ->color('danger')
-                        ->visible(fn () => auth()->user()?->isSuperAdmin() ?? false),
+                        ->visible(fn () => auth()->user()?->can('delete_expeditions') ?? false),
                 ]),
             ]);
     }

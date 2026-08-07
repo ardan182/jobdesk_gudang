@@ -140,7 +140,7 @@ class TaskKirimanMobilsTable
                     ->label('Checker')
                     ->searchable()
                     ->sortable()
-                    ->visible(fn () => auth()->user()?->isSuperAdmin() ?? false)
+->visible(fn () => auth()->user()?->isSuperAdmin() ?? false)
                     ->toggleable()
                     ->grow(false),
                 TextColumn::make('created_at')
@@ -256,6 +256,7 @@ class TaskKirimanMobilsTable
                             ]),
                     ]),
                 EditAction::make()
+                    ->visible(fn () => auth()->user()?->can('update_task_kiriman_mobils') ?? false)
                     ->iconButton()
                     ->tooltip('Ubah Data')
                     ->color('warning')
@@ -303,7 +304,7 @@ class TaskKirimanMobilsTable
                         ->iconButton()
                         ->tooltip('Hapus Data')
                         ->color('danger')
-                        ->visible(fn () => auth()->user()?->isSuperAdmin() ?? false),
+                        ->visible(fn () => auth()->user()?->can('delete_task_kiriman_mobils') ?? false),
                 ]),
             ]);
     }

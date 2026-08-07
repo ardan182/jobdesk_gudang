@@ -15,6 +15,7 @@ class ListMasterTokos extends ListRecords
     {
         return [
             CreateAction::make()
+                ->visible(fn () => auth()->user()?->can('create_master_tokos') ?? false)
                 ->color("primary")
                 ->icon('heroicon-m-plus')
                 ->modalHeading('Tambah Master Toko')

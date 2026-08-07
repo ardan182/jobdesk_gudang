@@ -15,6 +15,7 @@ class ListExpeditions extends ListRecords
     {
         return [
             CreateAction::make()
+                ->visible(fn () => auth()->user()?->can('create_expeditions') ?? false)
                 ->color("primary")
                 ->icon('heroicon-m-plus')
                 ->modalHeading('Tambah Ekspedisi')

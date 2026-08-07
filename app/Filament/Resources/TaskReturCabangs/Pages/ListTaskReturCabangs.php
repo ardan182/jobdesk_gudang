@@ -17,6 +17,7 @@ class ListTaskReturCabangs extends ListRecords
     {
         return [
             Action::make('createTask')
+                ->visible(fn () => auth()->user()?->can('create_task_retur_cabangs') ?? false)
                 ->label('Tambah')
                 ->color('primary')
                 ->icon('heroicon-m-plus')

@@ -14,6 +14,7 @@ class ListRoles extends ListRecords
     {
         return [
             CreateAction::make()
+                ->visible(fn () => auth()->user()?->isSuperAdmin() ?? false)
                 ->label('Tambah Role')
                 ->icon('heroicon-m-plus'),
         ];

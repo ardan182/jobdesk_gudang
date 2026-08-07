@@ -186,6 +186,7 @@ class TaskDatangMobilSuppliersTable
                             ]),
                     ]),
                 EditAction::make()
+                    ->visible(fn () => auth()->user()?->can('update_task_datang_mobil_suppliers') ?? false)
                     ->color('warning')
                     ->iconButton()
                     ->tooltip('Ubah Data')
@@ -219,7 +220,7 @@ class TaskDatangMobilSuppliersTable
                 BulkActionGroup::make([
                     DeleteBulkAction::make()
                         ->color('danger')
-                        ->visible(fn () => auth()->user()?->isSuperAdmin() ?? false),
+                        ->visible(fn () => auth()->user()?->can('delete_task_datang_mobil_suppliers') ?? false),
                 ]),
             ]);
     }

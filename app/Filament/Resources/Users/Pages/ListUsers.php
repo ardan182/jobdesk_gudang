@@ -14,6 +14,7 @@ class ListUsers extends ListRecords
     {
         return [
             CreateAction::make()
+                ->visible(fn () => auth()->user()?->isSuperAdmin() ?? false)
                 ->color("primary")
                 ->icon('heroicon-m-plus'),
         ];

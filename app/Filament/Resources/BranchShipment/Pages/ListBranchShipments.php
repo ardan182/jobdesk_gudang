@@ -16,6 +16,7 @@ class ListBranchShipments extends ListRecords
     {
         return [
             CreateAction::make()
+                ->visible(fn () => auth()->user()?->can('create_branch_shipments') ?? false)
                 ->label('Tambah')
                 ->icon('heroicon-m-plus')
                 ->modalHeading('Tambah Kirim Barang')

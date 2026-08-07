@@ -101,7 +101,7 @@ class BranchShipmentsTable
                     ->label('Dibuat')
                     ->searchable()
                     ->sortable()
-                    ->visible(fn () => auth()->user()?->isSuperAdmin() ?? false)
+->visible(fn () => auth()->user()?->isSuperAdmin() ?? false)
                     ->toggleable()
                     ->grow(false),
                 TextColumn::make('created_at')
@@ -180,6 +180,7 @@ class BranchShipmentsTable
                             ]),
                     ]),
                 EditAction::make()
+                    ->visible(fn () => auth()->user()?->can('update_branch_shipments') ?? false)
                     ->iconButton()
                     ->tooltip('Ubah Data')
                     ->color('warning')
@@ -218,7 +219,7 @@ class BranchShipmentsTable
                         ->iconButton()
                         ->tooltip('Hapus Data')
                         ->color('danger')
-                        ->visible(fn () => auth()->user()?->isSuperAdmin() ?? false),
+                        ->visible(fn () => auth()->user()?->can('delete_branch_shipments') ?? false),
                 ]),
             ]);
     }

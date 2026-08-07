@@ -23,6 +23,7 @@ class ListSuppliers extends ListRecords
     {
         return [
             Action::make('importSupplier')
+                ->visible(fn () => auth()->user()?->can('create_master_suppliers') ?? false)
                 ->label('Import Supplier')
                 ->color('primary')
                 ->icon('heroicon-o-arrow-up-tray')
@@ -76,6 +77,7 @@ class ListSuppliers extends ListRecords
                         ->send();
                 }),
             CreateAction::make()
+                ->visible(fn () => auth()->user()?->can('create_master_suppliers') ?? false)
                 ->color("primary")
                 ->icon('heroicon-m-plus')
                 ->modalHeading('Tambah Supplier')

@@ -17,6 +17,7 @@ class ListKomplainPos extends ListRecords
     {
         return [
             Action::make('create')
+                ->visible(fn () => auth()->user()?->can('create_komplain_pos') ?? false)
                 ->label('Tambah Komplain PO')
                 ->color('primary')
                 ->icon('heroicon-m-plus')

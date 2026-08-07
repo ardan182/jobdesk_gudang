@@ -199,6 +199,7 @@ class SupplierSjsTable
                             ]),
                     ]),
                 EditAction::make()
+                    ->visible(fn () => auth()->user()?->can('update_supplier_sjs') ?? false)
                     ->color('warning')
                     ->iconButton()
                     ->tooltip('Ubah Data')

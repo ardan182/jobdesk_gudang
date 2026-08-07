@@ -101,6 +101,7 @@ class WarehouseDocumentsTable
                         return Storage::disk('local')->download($record->file_path);
                     }),
                 EditAction::make()
+                    ->visible(fn () => auth()->user()?->can('update_warehouse_documents') ?? false)
                     ->iconButton()
                     ->tooltip('Ubah Data')
                     ->color('warning')

@@ -17,6 +17,7 @@ class ListTaskKirimanMobils extends ListRecords
     {
         return [
             Action::make('create')
+                ->visible(fn () => auth()->user()?->can('create_task_kiriman_mobils') ?? false)
                 ->label('Tambah')
                 ->color('primary')
                 ->icon('heroicon-m-plus')

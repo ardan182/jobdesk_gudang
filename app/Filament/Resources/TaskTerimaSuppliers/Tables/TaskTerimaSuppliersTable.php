@@ -115,7 +115,7 @@ class TaskTerimaSuppliersTable
                     ->label('Checker')
                     ->searchable()
                     ->sortable()
-                    ->visible(fn () => auth()->user()?->isSuperAdmin() ?? false)
+->visible(fn () => auth()->user()?->isSuperAdmin() ?? false)
                     ->grow(false),
                 TextColumn::make('helpers_names')
                     ->label('Helpers')
@@ -236,6 +236,7 @@ class TaskTerimaSuppliersTable
                             ]),
                     ]),
                 EditAction::make()
+                    ->visible(fn () => auth()->user()?->can('update_task_terima_suppliers') ?? false)
                     ->iconButton()
                     ->tooltip('Ubah Data')
                     ->color('warning')
@@ -276,7 +277,7 @@ class TaskTerimaSuppliersTable
                         ->iconButton()
                         ->tooltip('Hapus Data')
                         ->color('danger')
-                        ->visible(fn () => auth()->user()?->isSuperAdmin() ?? false),
+                        ->visible(fn () => auth()->user()?->can('delete_task_terima_suppliers') ?? false),
                 ]),
             ]);
     }

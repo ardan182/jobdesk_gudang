@@ -15,6 +15,7 @@ class ListMasterSopirs extends ListRecords
     {
         return [
             CreateAction::make()
+                ->visible(fn () => auth()->user()?->can('create_master_sopirs') ?? false)
                 ->color("primary")
                 ->icon('heroicon-m-plus')
                 ->modalHeading('Tambah Master Sopir')

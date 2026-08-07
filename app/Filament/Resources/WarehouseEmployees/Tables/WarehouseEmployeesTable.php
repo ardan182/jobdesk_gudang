@@ -48,6 +48,7 @@ class WarehouseEmployeesTable
             ])
             ->recordActions([
                 EditAction::make()
+                    ->visible(fn () => auth()->user()?->can('update_warehouse_employees') ?? false)
                     ->iconButton()
                     ->tooltip('Ubah Data')
                     ->color('warning')
@@ -60,7 +61,7 @@ class WarehouseEmployeesTable
                         ->iconButton()
                         ->tooltip('Hapus Data')
                         ->color('danger')
-                        ->visible(fn () => auth()->user()?->isSuperAdmin() ?? false),
+                        ->visible(fn () => auth()->user()?->can('delete_warehouse_employees') ?? false),
                 ]),
             ]);
     }

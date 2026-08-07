@@ -16,6 +16,7 @@ class ListTaskDatangMobilSuppliers extends ListRecords
     {
         return [
             Action::make('create')
+                ->visible(fn () => auth()->user()?->can('create_task_datang_mobil_suppliers') ?? false)
                 ->label('Tambah')
                 ->color('primary')
                 ->icon('heroicon-m-plus')

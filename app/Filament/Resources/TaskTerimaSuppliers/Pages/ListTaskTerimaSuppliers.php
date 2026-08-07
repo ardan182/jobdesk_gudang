@@ -18,6 +18,7 @@ class ListTaskTerimaSuppliers extends ListRecords
     {
         return [
             Action::make('createTask')
+                ->visible(fn () => auth()->user()?->can('create_task_terima_suppliers') ?? false)
                 ->label('Tambah')
                 ->color('primary')
                 ->icon('heroicon-m-plus')

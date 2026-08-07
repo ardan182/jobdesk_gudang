@@ -170,6 +170,15 @@ class ManageLeaves extends Page
 
     public function deleteLeave(int $employeeId, string $date): void
     {
+        if (! auth()->user()?->can('delete_cuti_absensi')) {
+            Notification::make()
+                ->title('Tidak punya izin')
+                ->body('Anda tidak memiliki otoritas untuk menghapus data cuti/absen.')
+                ->danger()
+                ->send();
+            return;
+        }
+
         $leave = WarehouseLeave::where('warehouse_employee_id', $employeeId)
             ->where('tanggal_mulai', '<=', $date)
             ->where('tanggal_selesai', '>=', $date)
