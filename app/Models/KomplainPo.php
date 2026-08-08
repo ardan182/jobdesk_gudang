@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\LogsActivity;
 use App\Services\TaskIdGenerator;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class KomplainPo extends Model
 {
+    use LogsActivity;
+
     protected $table = 'po_complaints';
 
     protected $fillable = [
@@ -40,7 +43,7 @@ class KomplainPo extends Model
         'status' => 'draft',
     ];
 
-    protected static function booted(): void
+    protected static function activityModule(): string { return 'komplain_pos'; } protected static function activitySummaryAttributes(): array { return ['cabang', 'no_po']; } protected static function activityReferenceField(): ?string { return 'no_po'; } protected static function booted(): void
     {
         static::creating(function ($model) {
             if (empty($model->id_task)) {

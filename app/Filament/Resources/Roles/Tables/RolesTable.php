@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Roles\Tables;
 
+use App\Services\ActivityLogger;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\DeleteAction;
@@ -50,6 +51,10 @@ class RolesTable
                     ->modalDescription('Perbarui nama / template permission role.')
                     ->modalWidth(Width::Full)
                     ->using(function (Model $record, array $data): void {
+                        $oldName = $record->name;
+                        $oldSuperAdmin = (bool) $record->is_super_admin;
+                        $oldPermissionCount = count(json_decode((string) $record->permission_template, true) ?? []);
+
                         $record->update($data);
 
                         $permissions = [];
@@ -62,6 +67,20 @@ class RolesTable
                         $record->is_super_admin = (bool) ($data['is_super_admin'] ?? false);
                         $record->permission_template = json_encode(array_values(array_unique($permissions)));
                         $record->save();
+
+                        $changes = [];
+                        if ($oldName !== $record->name) {
+                            $changes[] = 'Nama: ' . $oldName . ' → ' . $record->name;
+                        }
+                        if ($oldSuperAdmin !== (bool) $record->is_super_admin) {
+                            $changes[] = 'Super Admin: ' . ($oldSuperAdmin ? 'Ya' : 'Tidak') . ' → ' . ((bool) $record->is_super_admin ? 'Ya' : 'Tidak');
+                        }
+                        $newSuperPermissionCount = count(json_decode((string) $record->permission_template, true) ?? []);
+                        if ($oldPermissionCount !== $newSuperPermissionCount) {
+                            $changes[] = 'Jml Permission: ' . $oldPermissionCount . ' → ' . $newSuperPermissionCount;
+                        }
+
+                        ActivityLogger::log($record, 'roles', 'update', 'Role: ' . $record->name . ($changes ? '; ' . implode('; ', $changes) : ''), $record->name);
                     })
                     ->mutateRecordDataUsing(fn (Role $record): array => [
                         'name' => $record->name,
@@ -81,6 +100,7 @@ class RolesTable
                                 ->send();
                             return;
                         }
+                        ActivityLogger::log($record, 'roles', 'delete', 'Role: ' . $record->name, $record->name);
                         $record->delete();
                         Notification::make()->title('Role berhasil dihapus')->success()->send();
                     }),

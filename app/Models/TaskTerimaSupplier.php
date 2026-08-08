@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\LogsActivity;
 use App\Services\TaskIdGenerator;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -9,6 +10,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class TaskTerimaSupplier extends Model
 {
+    use LogsActivity;
+
     protected $fillable = [
         'id_task',
         'arrival_supplier_truck_id',
@@ -32,7 +35,7 @@ class TaskTerimaSupplier extends Model
         'lembar_sj' => 'integer',
     ];
 
-    protected static function booted(): void
+    protected static function activityModule(): string { return 'task_terima_suppliers'; } protected static function activitySummaryAttributes(): array { return ['nama_supplier_ekspedisi', 'status']; } protected static function activityReferenceField(): ?string { return 'no_po_referensi'; } protected static function activityTracked(): ?array { return ['status', 'nama_supplier_ekspedisi', 'no_po_referensi', 'jam_datang', 'jumlah_kolian', 'jam_bongkar', 'selesai_bongkar', 'lembar_sj', 'nama_sopir', 'keterangan']; } protected static function booted(): void
     {
         static::creating(function ($model) {
             if (empty($model->id_task)) {
@@ -44,15 +47,6 @@ class TaskTerimaSupplier extends Model
         });
 
         static::created(function ($model) {
-            ActivityLog::create([
-                'user_id' => $model->user_id,
-                'module' => 'Terima Supplier',
-                'id_task' => $model->id_task,
-                'description' => "Supplier: {$model->nama_supplier_ekspedisi} → {$model->status}",
-                'reference' => $model->no_po_referensi,
-                'action' => 'create',
-            ]);
-
             if ($model->arrival_supplier_truck_id) {
                 $truck = ArrivalSupplierTruck::find($model->arrival_supplier_truck_id);
                 $truck?->syncStatus();
@@ -76,28 +70,6 @@ class TaskTerimaSupplier extends Model
         });
 
         static::updated(function ($model) {
-            $changes = [];
-            $tracked = ['status', 'nama_supplier_ekspedisi', 'no_po_referensi', 'jam_datang', 'jumlah_kolian', 'jam_bongkar', 'selesai_bongkar', 'lembar_sj', 'nama_sopir', 'keterangan'];
-            foreach ($tracked as $field) {
-                $old = $model->getOriginal($field);
-                $new = $model->$field;
-                $oldStr = is_object($old) ? (string) $old : ($old ?? '-');
-                $newStr = is_object($new) ? (string) $new : ($new ?? '-');
-                if ($oldStr !== $newStr) {
-                    $changes[] = "$field: $oldStr → $newStr";
-                }
-            }
-            if (empty($changes)) return;
-
-            ActivityLog::create([
-                'user_id' => auth()->id() ?? $model->user_id,
-                'module' => 'Terima Supplier',
-                'id_task' => $model->id_task,
-                'description' => "Supplier: {$model->nama_supplier_ekspedisi} — " . implode('; ', $changes),
-                'reference' => $model->no_po_referensi,
-                'action' => 'update',
-            ]);
-
             $existingSj = \App\Models\SupplierSj::where('catatan', 'LIKE', '%' . $model->id_task . '%')->first();
             if ($existingSj && $existingSj->nomor_po_referensi !== $model->no_po_referensi) {
                 $updateData = ['nomor_po_referensi' => $model->no_po_referensi];

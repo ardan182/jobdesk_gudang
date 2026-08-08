@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\LogsActivity;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class MasterKendaraan extends Model
 {
+    use LogsActivity;
+
     protected $table = 'master_kendaraans';
 
     protected $fillable = [
@@ -28,7 +31,7 @@ class MasterKendaraan extends Model
         'stnk_5_tahun_sampai' => 'date:Y-m-d',
     ];
 
-    protected static function booted(): void
+    protected static function activityModule(): string { return 'master_kendaraans'; } protected static function activitySummaryAttributes(): array { return ['nomor_polisi']; } protected static function activityReferenceField(): ?string { return 'nomor_polisi'; } protected static function booted(): void
     {
         static::created(function ($model) {
             $model->createDokumenRecords();

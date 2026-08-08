@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\LogsActivity;
 use App\Services\TaskIdGenerator;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class SupplierReturn extends Model
 {
+    use LogsActivity;
+
     protected $fillable = [
         'id_task',
         'arrival_supplier_truck_id',
@@ -39,7 +42,7 @@ class SupplierReturn extends Model
         'status' => 'draft',
     ];
 
-    protected static function booted(): void
+    protected static function activityModule(): string { return 'supplier_returns'; } protected static function activitySummaryAttributes(): array { return ['nama_supplier', 'jenis_pengiriman']; } protected static function activityReferenceField(): ?string { return 'no_plat_mobil'; } protected static function booted(): void
     {
         static::creating(function ($model) {
             if (empty($model->id_task)) {
@@ -48,21 +51,6 @@ class SupplierReturn extends Model
             if (empty($model->user_id)) {
                 $model->user_id = auth()->id();
             }
-        });
-
-        static::created(function ($model) {
-            ActivityLog::create([
-                'user_id' => $model->user_id,
-                'module' => 'Retur Supplier',
-                'id_task' => $model->id_task,
-                'description' => match ($model->jenis_pengiriman) {
-                    'retur_masuk' => "Retur Masuk: {$model->nama_supplier}",
-                    'retur_keluar' => "Retur Keluar: {$model->nama_supplier}",
-                    'datang_dan_keluar' => "Datang & Keluar: {$model->nama_supplier}",
-                },
-                'reference' => $model->no_plat_mobil,
-                'action' => 'create',
-            ]);
         });
     }
 

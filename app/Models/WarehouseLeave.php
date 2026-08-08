@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\LogsActivity;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class WarehouseLeave extends Model
 {
+    use LogsActivity;
+
     protected $table = 'warehouse_leaves';
 
     protected $fillable = [
@@ -23,7 +26,7 @@ class WarehouseLeave extends Model
         'tanggal_selesai' => 'date:Y-m-d',
     ];
 
-    protected static function booted(): void
+    protected static function activityModule(): string { return 'cuti_absensi'; } protected static function activitySummaryAttributes(): array { return ['jenis_absen', 'tanggal_mulai']; } protected static function booted(): void
     {
         static::creating(function ($model) {
             if (empty($model->user_id)) {

@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\LogsActivity;
 use App\Services\TaskIdGenerator;
 use Illuminate\Database\Eloquent\Model;
 
 class SupplierSj extends Model
 {
+    use LogsActivity;
+
     protected $table = 'supplier_sjs';
 
     protected $fillable = [
@@ -46,7 +49,7 @@ class SupplierSj extends Model
         return "{$prefix} {$days} hr";
     }
 
-    protected static function booted(): void
+    protected static function activityModule(): string { return 'supplier_sjs'; } protected static function activitySummaryAttributes(): array { return ['nama_supplier']; } protected static function activityReferenceField(): ?string { return 'nomor_po_referensi'; } protected static function booted(): void
     {
         static::creating(function ($model) {
             if (empty($model->id_task)) {

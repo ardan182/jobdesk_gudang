@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Roles\Pages;
 
 use App\Filament\Resources\Roles\RoleResource;
+use App\Services\ActivityLogger;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Support\Enums\Width;
@@ -27,6 +28,9 @@ class ListRoles extends ListRecords
                 ->using(function (array $data): Role {
                     $role = Role::create($data);
                     $this->saveRoleExtras($role, $data);
+
+                    ActivityLogger::log($role, 'roles', 'create', 'Role: ' . $role->name, $role->name);
+
                     return $role;
                 }),
         ];

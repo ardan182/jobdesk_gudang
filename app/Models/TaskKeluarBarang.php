@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\LogsActivity;
 use App\Services\TaskIdGenerator;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class TaskKeluarBarang extends Model
 {
+    use LogsActivity;
+
     protected $fillable = [
         'id_task',
         'branch_shipment_id',
@@ -35,7 +38,7 @@ class TaskKeluarBarang extends Model
         'status' => 'draft',
     ];
 
-    protected static function booted(): void
+    protected static function activityModule(): string { return 'task_keluar_barangs'; } protected static function activitySummaryAttributes(): array { return ['cabang', 'nomor_sj']; } protected static function activityReferenceField(): ?string { return 'nomor_sj'; } protected static function activityTracked(): ?array { return ['status', 'jam_disiapkan', 'diserahkan_kepada', 'helper', 'keterangan', 'qty_checker']; } protected static function booted(): void
     {
         static::creating(function ($model) {
             if (empty($model->id_task)) {
@@ -44,41 +47,6 @@ class TaskKeluarBarang extends Model
             if (empty($model->user_id)) {
                 $model->user_id = auth()->id();
             }
-        });
-
-        static::created(function ($model) {
-            ActivityLog::create([
-                'user_id' => $model->user_id,
-                'module' => 'Keluar Barang',
-                'id_task' => $model->id_task,
-                'description' => "Cabang: {$model->cabang} → {$model->status}",
-                'reference' => $model->nomor_sj,
-                'action' => 'create',
-            ]);
-        });
-
-        static::updated(function ($model) {
-            $changes = [];
-            $tracked = ['status', 'jam_disiapkan', 'diserahkan_kepada', 'helper', 'keterangan', 'qty_checker'];
-            foreach ($tracked as $field) {
-                $old = $model->getOriginal($field);
-                $new = $model->$field;
-                $oldStr = is_object($old) ? (string) $old : ($old ?? '-');
-                $newStr = is_object($new) ? (string) $new : ($new ?? '-');
-                if ($oldStr !== $newStr) {
-                    $changes[] = "$field: $oldStr → $newStr";
-                }
-            }
-            if (empty($changes)) return;
-
-            ActivityLog::create([
-                'user_id' => auth()->id() ?? $model->user_id,
-                'module' => 'Keluar Barang',
-                'id_task' => $model->id_task,
-                'description' => "Cabang: {$model->cabang} — " . implode('; ', $changes),
-                'reference' => $model->nomor_sj,
-                'action' => 'update',
-            ]);
         });
     }
 

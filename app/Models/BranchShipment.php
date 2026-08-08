@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\LogsActivity;
 use App\Services\TaskIdGenerator;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -9,6 +10,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class BranchShipment extends Model
 {
+    use LogsActivity;
+
     protected $fillable = [
         'id_task',
         'pilih_kiriman',
@@ -26,7 +29,7 @@ class BranchShipment extends Model
         'tanggal_buat' => 'date',
     ];
 
-    protected static function booted(): void
+    protected static function activityModule(): string { return 'branch_shipments'; } protected static function activitySummaryAttributes(): array { return ['cabang', 'nomor_sj']; } protected static function activityReferenceField(): ?string { return 'nomor_sj'; } protected static function booted(): void
     {
         static::creating(function ($model) {
             if (empty($model->id_task)) {

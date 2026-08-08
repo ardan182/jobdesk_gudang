@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\LogsActivity;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
 use Filament\Models\Contracts\FilamentUser;
@@ -18,9 +19,9 @@ use Spatie\Permission\Traits\HasRoles;
 class User extends Authenticatable implements FilamentUser
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable, HasRoles;
+    use HasFactory, Notifiable, HasRoles, LogsActivity;
 
-    public function canAccessPanel(Panel $panel): bool
+    protected static function activityModule(): string { return 'users'; } protected static function activitySummaryAttributes(): array { return ['name', 'email']; } protected static function activityReferenceField(): ?string { return 'email'; } protected static function activityTracked(): ?array { return ['name', 'email']; } public function canAccessPanel(Panel $panel): bool
     {
         return true;
     }

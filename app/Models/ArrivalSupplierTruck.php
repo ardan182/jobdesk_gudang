@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\LogsActivity;
 use App\Services\TaskIdGenerator;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -10,6 +11,8 @@ use Illuminate\Validation\ValidationException;
 
 class ArrivalSupplierTruck extends Model
 {
+    use LogsActivity;
+
     protected $table = 'arrival_supplier_trucks';
 
     protected $fillable = [
@@ -38,7 +41,7 @@ class ArrivalSupplierTruck extends Model
         'status' => 'MENGANTRI',
     ];
 
-    protected static function booted(): void
+    protected static function activityModule(): string { return 'task_datang_mobil_suppliers'; } protected static function activitySummaryAttributes(): array { return ['no_plat_mobil', 'nama_sopir']; } protected static function activityReferenceField(): ?string { return 'nama_sopir'; } protected static function booted(): void
     {
         static::creating(function ($model) {
             if (empty($model->id_task)) {
@@ -47,17 +50,6 @@ class ArrivalSupplierTruck extends Model
             if (empty($model->user_id)) {
                 $model->user_id = auth()->id();
             }
-        });
-
-        static::created(function ($model) {
-            ActivityLog::create([
-                'user_id' => $model->user_id,
-                'module' => 'Datang Mobil Supplier',
-                'id_task' => $model->id_task,
-                'description' => "Supplier: {$model->supplier?->nama_supplier} - Plat: {$model->no_plat_mobil}",
-                'reference' => $model->nama_sopir,
-                'action' => 'create',
-            ]);
         });
 
         static::deleting(function ($model) {

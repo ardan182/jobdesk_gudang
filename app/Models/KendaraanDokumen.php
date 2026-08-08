@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\LogsActivity;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class KendaraanDokumen extends Model
 {
+    use LogsActivity;
+
     protected $fillable = [
         'master_kendaraan_id',
         'jenis',
@@ -23,6 +26,11 @@ class KendaraanDokumen extends Model
         'tanggal_terbit' => 'date:Y-m-d',
         'masa_berlaku' => 'date:Y-m-d',
     ];
+
+    protected static function activityModule(): string { return 'kendaraan_dokumens'; } protected static function activitySummaryAttributes(): array { return ['nomor_dokumen']; } protected static function activityReferenceField(): ?string { return 'nomor_dokumen'; } protected static function shouldLogActivity($model, string $action): bool
+    {
+        return ($model->user_perpanjang ?? null) !== 'System';
+    }
 
     protected static function booted(): void
     {
