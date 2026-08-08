@@ -323,6 +323,7 @@ class ManageLeaves extends Page
                 ->label('Input Cuti / Absen')
                 ->color('primary')
                 ->icon('heroicon-o-plus')
+                ->visible(fn () => auth()->user()?->can('create_cuti_absensi') ?? false)
                 ->modalHeading('Input Cuti / Absen')
                 ->modalWidth('lg')
                 ->form([
@@ -350,6 +351,15 @@ class ManageLeaves extends Page
                         ->rows(3),
                 ])
                 ->action(function (array $data) {
+                    if (! auth()->user()?->can('create_cuti_absensi')) {
+                        Notification::make()
+                            ->title('Tidak punya izin')
+                            ->body('Anda tidak memiliki otoritas untuk input cuti/absen.')
+                            ->danger()
+                            ->send();
+                        return;
+                    }
+
                     $exists = WarehouseLeave::where('warehouse_employee_id', $data['warehouse_employee_id'])
                         ->where('tanggal_mulai', '<=', $data['tanggal_selesai'])
                         ->where('tanggal_selesai', '>=', $data['tanggal_mulai'])
