@@ -1,6 +1,6 @@
 # Project Context: Jobdesk Gudang AP
 
-**Versi:** 2.3 | **Tanggal:** 3 Agustus 2026
+**Versi:** 2.4 | **Tanggal:** 8 Agustus 2026
 
 ---
 
@@ -20,7 +20,7 @@ Aplikasi web untuk digitalisasi jobdesk harian gudang — pencatatan retur, pene
 | Backend | Laravel 13 | PHP 8.5.8 |
 | Admin Panel | Filament v5 | Auto-discover resources, pages, widgets |
 | Database | MySQL / MariaDB | Wajib `mysql`, bukan sqlite |
-| Auth | Spatie Laravel Permission | 5 role + 84 permission (RBAC fine-grained) |
+| Auth | Spatie Laravel Permission | 5 role dinamis + 85 permission (RBAC fine-grained) |
 | Frontend | Tailwind CSS + Alpine.js | Bundled via Filament |
 | Assets | Vite | `npm run dev` atau `npm run build` |
 | Export/Import | ZipArchive (native PHP) | Template master + import; Export table via TableExportService |
@@ -123,8 +123,10 @@ Jangan hapus `implements FilamentUser` ini saat mengubah model User!
 - Format permission: `{action}_{module_key}` — view/create/update/delete
 - **85 permission total** (20 modul × 4 + 4 widget `view_widget_*` + `view_all_data`), di-seed `database/seeders/PermissionSeeder.php`
 - Semua modul: task, master, non-task (Input SJ, BranchShipment, Retur, Pusat Dokumen, Cuti & Absensi, Users, TvBoard, KendaraanDokumen)
-- UI flat tree di **Section "Akses Menu & Fitur"** (shared `App\Filament\Support\PermissionMenu`): Akses Global → Group header → Menu (Pilih Semua + view/create/update/delete) + widget Aktif
-- State field `perm_*` → `syncPermissions()` (afterCreate/afterSave); load via `getDirectPermissions()`
+- UI akses di **modal User & Role** (tab "Akses Menu & Fitur" / "Detail Template") — shared `App\Filament\Support\PermissionMenu`:
+  - `globalSection()` Akses Global → `menuSections()` group collapsible + modul `Fieldset` 5 kolom (Pilih Semua|Lihat|Tambah|Ubah|Hapus) dalam `Grid(2)` → `widgetsSections()` widget Aktif
+  - Form dibungkus `Tabs::make()->columnSpanFull()` (anti kolom miring)
+- State field `perm_*` (dehydrated) → `syncPermissions()`; sync di **`CreateAction::using()` / `EditAction::using()`** (modal, bukan afterCreate/afterSave); load via `getDirectPermissions()`
 - **Super Admin bypass:** `Gate::before` return `true` jika `$user->isSuperAdmin()` (punya role `is_super_admin=true`)
 - **`view_all_data`** → lihat semua data lintas modul (scoping `getEloquentQuery` + statistik dashboard)
 
@@ -307,7 +309,7 @@ Checker Kiriman input manual di menu Kiriman Mobil
 | StatsOverviewWidget | `AurumStatsOverview`+`AurumStat` | Admin 9 kartu, Checker sesuai role | Semua |
 | ExpiringDocumentsWidget | `AurumValueList`+`ValueListItem` | STNK/KIR ≤7 hari / EXPIRED | Admin |
 | LeavesTodayWidget | `AurumValueList`+`ValueListItem` | Cuti/Sakit/Izin hari ini + divisi | Admin |
-| RecentActivityWidget | `TableWidget` | 10 log terakhir + filter | Semua |
+| RecentActivityWidget | `TableWidget` | Kolom Aksi (Dibuat/Diubah/Dihapus badge+ikon), Menu badge label menu, Aktivitas readable (prettify), ID, Referensi, User, Waktu; filter Menu dinamis + User + Rentang Waktu | Semua |
 
 **Stats grid responsif (CSS):** mobile 1 kolom → tablet 2 → desktop 5 per baris (jika ≥5 kartu).
 **Layout dashboard:** Stats (full) → [Expiring | Cuti] setengah-setengah → RecentActivity (full).
@@ -501,36 +503,40 @@ app/
 │       ├── ExpiringDocumentsWidget.php  # STNK/KIR ≤7 hari / EXPIRED
 │       └── LeavesTodayWidget.php        # Cuti/Sakit/Izin hari ini
 ├── Http/Middleware/
-│   └── CheckTvBoardToken.php        # (deleted)
+│   ├── CheckTvBoardToken.php        # (deleted)
+│   └── TrackLastActive.php          # penanda online (cache, 10 menit)
 ├── Imports/
 │   ├── SupplierImport.php
 │   └── WarehouseEmployeeImport.php
 ├── Models/
 │   ├── ActivityLog.php
 │   ├── ArrivalSupplierTruck.php
-│   ├── BranchReturnOutbound.php
 │   ├── BranchShipment.php
 │   ├── Division.php
 │   ├── Expedition.php
+│   ├── KendaraanDokumen.php
+│   ├── KomplainPo.php
 │   ├── MasterKendaraan.php
 │   ├── MasterSopir.php
 │   ├── MasterToko.php
-│   ├── KomplainPo.php
 │   ├── Supplier.php
-│   ├── SupplierReturnInbound.php
+│   ├── SupplierReturn.php
 │   ├── SupplierSj.php
 │   ├── TaskKeluarBarang.php
 │   ├── TaskKirimanMobil.php
 │   ├── TaskReturCabang.php
-│   ├── TaskReturSupplier.php
 │   ├── TaskTerimaSupplier.php
+│   ├── TvBoardSetting.php
 │   ├── User.php
 │   ├── WarehouseDocument.php
 │   ├── WarehouseEmployee.php
 │   └── WarehouseLeave.php
+│   └── Concerns/
+│       └── LogsActivity.php         # auto-log create/update/delete di semua model
 ├── Providers/
 │   └── Filament/AdminPanelProvider.php
 └── Services/
+    ├── ActivityLogger.php           # log + label/diff/prettify
     ├── TaskIdGenerator.php
     └── TableExportService.php
 ```
@@ -547,3 +553,50 @@ app/
 - **Foto:** min 1, max 5, disk `public`, dir `fotos-komplain/`; view `ImageEntry` di modal, grid badge "X Gambar" + tooltip nama file
 - **Export:** XLSX + PDF (TableExportService, formatters label)
 - ⚠️ Model WAJIB `protected $table = 'po_complaints'` (bukan default `komplain_pos`)
+
+---
+
+## 22. Activity Logging — Otomatis Semua Menu
+
+### Service `App\Services\ActivityLogger`
+- `created($model,$module,$desc,$ref)` / `updated($model,$module,array $changes,$ref)` / `deleted(...)` / `log(...)`
+- `changes($model, array $tracked)` → `['Label: old → new']` pakai `fieldLabel()` (mapping field → Bahasa Indonesia)
+- `moduleLabel($module)` → key menu → **label menu** via `PermissionMenu::groups()` (fallback label lama / as-is)
+- `prettifyDescription($desc)` → rapikan data lama (field Inggris → label, `—` → `;`)
+- **Skip:** tidak ada `user_id` (kolom NOT NULL) dan saat `runningInConsole()` (seeder tidak banjiri log)
+- `id_task` default `-` untuk modul tanpa id_task
+
+### Trait `App\Models\Concerns\LogsActivity`
+Auto-log `created/updated/deleted`. Config memakai **method static override** (bukan properti — hindari konflik trait):
+`activityModule()`, `activityTracked()?array`, `activitySummaryAttributes()`, `activityReferenceField()`, `shouldLogActivity()`.
+
+**Pasang di:** 6 task + `branch_shipments`, `supplier_sjs`, `komplain_pos`, `warehouse_documents`, `kendaraan_dokumens` (skip `user_perpanjang='System'`), `cuti_absensi` (WarehouseLeave), 6 master, `users`. Role di-log manual dari resource (`module='roles'`).
+
+### Widget ⚡ Aktivitas Terakhir
+Kolom: **Aksi** (badge+ikon `Dibuat`/`Diubah`/`Dihapus` warna success/warning/danger), **ID** (badge gray), **Menu** (badge+ikon, label via moduleLabel), **Aktivitas** (`prettify`+wrap), **Referensi**, **User**, **Waktu** (d/m/Y H:i). Filter: Menu (opsi dinamis dari distinct), User, Rentang Waktu (`from`/`until` DatePicker). Pagination [10,25,50], sort `created_at desc`.
+
+---
+
+## 23. Status Online User (Cache)
+
+- `TrackLastActive` middleware → `Cache::put('user-online-{id}', true, now()->addMinutes(10))` di tiap request authenticated panel
+- `User::isOnline()` → `Cache::has(...)`; tanpa migration baru
+- Kolom **Status** di menu Users: badge hijau `Online` (wifi) / abu `Offline` (signal-slash); threshold 10 menit
+
+---
+
+## 24. Modul User & Role — Modal (bukan halaman)
+
+- `UserResource`/`RoleResource` `getPages()` hanya `index`; Create/Edit via **modal** action
+- Form ber-**Tabs** (`columnSpanFull`) — mengatasi `ListRecords::getDefaultActionSchemaResolver()` yang mengepak schema `columns(2)`
+- `PermissionMenu`: `globalSection` / `menuSections` (group collapsible 2 kolom, Fieldset 5 kolom) / `widgetsSections`
+- Sync role+permission di `using()` menjadikan `$data` (checkbox `perm_*` dehydrated)
+- Kelola hanya oleh **Super Admin**; modal `Width::Full`, tanpa `createAnother`
+
+---
+
+## 25. Fixes Terakhir
+
+- Header grup Masa Berlaku STNK/KIR: mojibake emoji bersih → `STNK 1 Tahun` / `STNK 5 Tahun (Acuan)` / `KIR`; group heading **bold** (`.fi-ta-group-header .fi-ta-group-heading`)
+- Gate "Atur Saldo Cuti" di `ManageLeaves` via permission `update_cuti_absensi` (visible + guard server)
+- Sidebar lebar FIXED (`--sidebar-width` 14rem) untuk semua role; collapsed state disimpan per-browser (`localStorage`)

@@ -381,3 +381,38 @@ Role menjadi **dinamis** (CRUD via UI) dan berhenti mewariskan akses. **Akses = 
 ### Retur Masuk dari Toko
 - [x] **Filter AboveContent 1 baris:** Toko, Jenis Retur (+ opsi RB dan RJ), Status, Tanggal (Grid Dari/Sampai) — `filtersFormColumns(4)`
 - [x] **Dropdown Kiriman Mobil badge pill** (gaya Checker Terima): toko pill hijau `#22c55e`, "tgl kirim : ..." pill merah `#ef4444`, `->allowHtml()`
+
+## Fase 26: Users & Roles — Konversi ke Modal + Tabs ✅
+
+- [x] Hapus halaman Create/Edit User & Role (`getPages()` hanya `index`) → Create/Edit jadi **modal**
+- [x] `UserForm` & `RoleForm` pakai **Tabs** + `columnSpanFull()` (fix isi miring ke kiri karena resolver modal memaksa `columns(2)`)
+  - User: *Informasi* (4 kolom Name|Email|Password|Role) / *Akses Menu & Fitur* / *Dashboard & Widgets*
+  - Role: *Informasi* (Nama + Super Admin) / *Detail Template*
+- [x] `PermissionMenu` → **matriks compact**: `globalSection()` / `menuSections()` (Group collapsible default ciut, modul `Fieldset` 5 kolom: Pilih Semua|Lihat|Tambah|Ubah|Hapus, dalam `Grid(2)`) / `widgetsSections()`
+- [x] Sync permission/role dipindah ke `CreateAction::using()` + `EditAction::using()` (checkbox `perm_*` kini **dehydrated** ikut `$data`; `select_all_*` tetap UI-only)
+- [x] Modal polish: `Width::Full`, `createAnother(false)`, heading/description eksplisit
+- [x] Roles: log manual create/update/delete via `ActivityLogger`
+
+## Fase 27: Activity Log — Otomatis Semua Menu + Widget Mudah Dibaca ✅
+
+- [x] `App\Services\ActivityLogger` — `log/created/updated/deleted`; diff pakai label Bahasa Indonesia (`fieldLabel`); `moduleLabel` ikut label menu (`PermissionMenu`); `prettifyDescription` rapikan data lama; skip jika tidak ada user
+- [x] `App\Models\Concerns\LogsActivity` — trait auto-log `created/updated/deleted`; config per model via method static (`activityModule`, `activityTracked`, `activitySummaryAttributes`, `activityReferenceField`, `shouldLogActivity`)
+- [x] Pasang di semua model: 6 task (Retur Cabang, Retur Supplier, Datang, Terima, Keluar, Kiriman) + BranchShipment, SupplierSj, KomplainPo, WarehouseDocument, KendaraanDokumen (skip doc otomatis `user_perpanjang='System'`), WarehouseLeave, Master (Supplier, Toko, Kendaraan, Sopir, Ekspedisi, Employee), User
+- [x] Hapus blok `ActivityLog::create` manual di model task lama — tidak ada log ganda
+- [x] `RecentActivityWidget` — kolom **Aksi** (badge+ikon `Dibuat`/`Diubah`/`Dihapus`), **Menu** (badge+ikon label menu), **Aktivitas** (wrap + prettify), ID, Referensi, User, Waktu; filter Menu dinamis + User + Rentang Waktu; pagination [10,25,50]
+
+## Fase 28: Status Online User (cache) ✅
+
+- [x] `App\Http\Middleware\TrackLastActive` — tiap request authenticated `Cache::put('user-online-{id}', …, 10 menit)`; didaftarkan di `authMiddleware` panel
+- [x] `User::isOnline()` — baca cache (tanpa migration baru)
+- [x] Kolom **Status** di grid Users — badge hijau `Online` (+wifi) / abu `Offline` (+signal-slash)
+
+## Fase 29: Fix Header Grup Masa Berlaku STNK/KIR ✅
+
+- [x] Hapus mojibake emoji (`ðŸš—`) di group title periode (`KendaraanDokumensTable`) → label bersih `STNK 1 Tahun` / `STNK 5 Tahun (Acuan)` / `KIR`
+- [x] Group header tabel dibuat **bold** via CSS `.fi-ta-group-header .fi-ta-group-heading { font-weight: 700 }`
+
+## Fase 30: Fix Gate Atur Saldo Cuti ✅
+
+- [x] Tab "Atur Saldo Cuti" (`ManageLeaves`) + method `adjustJatahCuti` + tombol Adjust di blade — di-gate permission `update_cuti_absensi`
+

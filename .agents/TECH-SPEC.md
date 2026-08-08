@@ -1,6 +1,6 @@
 # Tech Spec — Jobdesk Gudang AP
 
-**Versi:** 1.0 | **Tanggal:** 19 Juli 2026
+**Versi:** 1.1 | **Tanggal:** 8 Agustus 2026
 
 ---
 
@@ -182,21 +182,26 @@ Gate::before(function ($user, $ability) {
 ```
 - `User::isSuperAdmin()` → user punya role dengan `is_super_admin = true`
 
-### 5.5 UI Akses Menu (Edit User)
+### 5.5 UI Akses Menu (Modal User & Role — Tabs)
 
-`app/Filament/Support/PermissionMenu.php` (shared, dipakai UserForm & RoleForm) — Section **"Akses Menu & Fitur"**:
-- `buildTree($granted)` → Akses Global (`view_all_data`) + Group header (non-collapsible) + module section per menu (5 kolom: **Pilih Semua** + View + Create + Update + Delete) + widget section (checkbox **Aktif**)
-- Checkbox `perm_{permission}`, `dehydrated(false)`, live sync ke `select_all_{key}`
+`app/Filament/Support/PermissionMenu.php` (shared, UserForm & RoleForm) — matriks akses di **Tab "Akses Menu & Fitur" / "Detail Template"**:
+
+- `globalSection($granted)` → Akses Global (`view_all_data`)
+- `menuSections($granted)` → group `Section` collapsible (default ciut) berisi modul dalam `Grid(2)`, tiap modul = `Fieldset` 5 kolom (**Pilih Semua** + **Lihat** + **Tambah** + **Ubah** + **Hapus**)
+- `widgetsSections($granted)` → checkbox "Aktif" per widget
+- Checkbox `perm_{permission}` **dehydrated** (ikut payload); `select_all_{key}` `dehydrated(false)`; `live()` untuk sinkronisasi pilih-semua
 - `$granted` callable: UserForm → `$record->getDirectPermissions()`; RoleForm → `json_decode($record->permission_template)`
-- Penyimpanan: `CreateUser::afterCreate()` / `EditUser::afterSave()` iterasi `$this->data` field berprefix `perm_*` → `syncPermissions()` (direct permission user)
-- Role Select `live()` → `afterStateUpdated` pre-fill checkbox dari `role.permission_template`
+- Form dibungkus **`Tabs::make()->columnSpanFull()`** → wajib mengatasi resolver modal yang mengepak schema dengan `columns(2)` (tanpa itu isi hanya separuh lebar)
+- **Penyimpanan:** Create/Edit hanya lewat **modal** (`getPages()` hanya `index`); sync dilakukan di `CreateAction::using()` / `EditAction::using()` (loop `$data` prefix `perm_*` → `syncPermissions()` + `syncRoles()`)
+- User tabs: *Informasi* (4 kolom Name|Email|Password|Role) / *Akses Menu & Fitur* / *Dashboard & Widgets*; Role tabs: *Informasi* / *Detail Template*
 
 ### 5.6 RoleResource (Role dinamis)
 
 `app/Filament/Resources/Roles/` — grup Pengaturan, hanya super admin (`isSuperAdmin()`):
 - CRUD role: `name`, toggle `is_super_admin`, `permission_template` (pakai `PermissionMenu::buildTree`)
-- `CreateRole::afterCreate()` / `EditRole::afterSave()` → tulis `is_super_admin` + `permission_template` (json)
-- Role super admin tidak bisa dihapus (guard di tabel)
+- Create/edit lewat **modal** (ListRoles `CreateAction::using()`, RolesTable `EditAction::using()` → tulis `is_super_admin` + `permission_template` json)
+- Logging role: `ActivityLogger` di create/update/delete (`module = roles`)
+- Role super admin tidak bisa dihapus (guard action + tabel)
 
 ### 5.7 Guard UI (tetap super-admin / permission)
 
@@ -714,3 +719,115 @@ FileUpload::make('foto')
 
 ### Export
 - `TableExportService::streamXlsx` / `streamPdf` — formatters: kondisi, penyelesaian, status → label
+
+---
+
+## 14. Activity Logging
+
+### Service: `app/Services/ActivityLogger.php`
+
+```php
+ActivityLogger::created(Model $model, string $module, string $description, ?string $reference): void
+ActivityLogger::updated(Model $model, string $module, array $changes, ?string $reference): void
+ActivityLogger::deleted(Model $model, string $module, string $description, ?string $reference): void
+ActivityLogger::log(Model|string $model, string $module, string $action, string $description, ?string $reference, ?int $userId): void
+ActivityLogger::changes(Model $model, array $tracked): array   // ['Label: old → new', ...]
+ActivityLogger::fieldLabel(string $field): string              // mapping field → label Indonesia
+ActivityLogger::moduleLabel(string $module): string           // key → label menu (PermissionMenu)
+ActivityLogger::prettifyDescription(string $desc): string     // rapikan data lama (field Inggris → label)
+```
+
+- **Skip tanpa user:** jika tidak ada `auth()->id()` / `$model->user_id` → log tidak ditulis (kolom `user_id` NOT NULL)
+- **Skip console:** `runningInConsole() && ! runningUnitTests()` → seeding tidak membanjiri log
+- `id_task` diisi `$model->id_task ?? '-'` (modul tanpa id_task menulis `-`)
+
+### Trait: `app/Models/Concerns/LogsActivity.php`
+
+Auto-register event `created/updated/deleted` (metode boot `bootLogsActivity` dipanggil otomatis oleh Eloquent). Konfigurasi per model via override **method static** (bukan properti — menghindari konflik trait):
+
+| Method | Default | Fungsi |
+|--------|---------|--------|
+| `activityModule()` | `'general'` | key modul (label via `moduleLabel`) |
+| `activityTracked()` | `null` (fillable minus id/timestamp/FK) | field didiff saat update |
+| `activitySummaryAttributes()` | `[]` (fallback id) | atribut ringkasan create/delete |
+| `activityReferenceField()` | `null` | atribut untuk kolom `reference` |
+| `shouldLogActivity($model,$action)` | `true` | filter (mis. skip dokumen `System`) |
+
+Contoh:
+```php
+use App\Models\Concerns\LogsActivity;
+
+class TaskKeluarBroelang extends Model
+{
+    use LogsActivity;
+
+    protected static function activityModule(): string { return 'task_keluar_barangs'; }
+    protected static function activitySummaryAttributes(): array { return ['cabang', 'nomor_sj']; }
+    protected static function activityReferenceField(): ?string { return 'nomor_sj'; }
+    protected static function activityTracked(): ?array { return ['status', 'qty_checker', 'keterangan']; }
+}
+```
+
+**Modul yang sudah diretas:** 6 task + `branch_shipments`, `supplier_sjs`, `komplain_pos`, `warehouse_documents`, `kendaraan_dokumens` (skip `user_perpanjang='System'`), `cuti_absensi` (WarehouseLeave), master (`expeditions`, `master_kendaraans`, `master_sopirs`, `master_tokos`, `suppliers`, `warehouse_employees`), `users`. Role: log manual via resource (`module = roles`).
+
+### Widget: `RecentActivityWidget`
+
+```php
+->query(ActivityLog::query()->with('user'))
+->columns([
+    TextColumn 'action'  → badge+icon: create→'Dibuat' (success) / update→'Diubah' (warning) / delete→'Dihapus' (danger)
+    TextColumn 'id_task' → badge gray
+    TextColumn 'module'  → badge+icon, label via `ActivityLogger::moduleLabel()`
+    TextColumn 'description' → `prettifyDescription` + wrap
+    TextColumn 'reference'
+    TextColumn 'user.name'
+    TextColumn 'created_at' → d/m/Y H:i
+])
+->filters[
+    SelectFilter 'module' → options dinamis dari `distinct module` (bukan hardcode)
+    SelectFilter 'user' → relationship user.name
+    Filter 'waktu' → form DatePicker('from'/'until') → query whereDate created_at
+]
+->paginated([10,25,50])
+```
+
+---
+
+## 15. Status Online User (Cache)
+
+- `app/Http/Middleware/TrackLastActive.php`:
+  ```php
+  public function handle(Request $request, Closure $next): mixed
+  {
+      $user = $request->user();
+      if ($user) {
+          Cache::put('user-online-' . $user->id, true, now()->addMinutes(10));
+      }
+      return $next($request);
+  }
+  ```
+- Didaftarkan di `AdminPanelProvider->authMiddleware` setelah `Authenticate::class`
+- `User::isOnline()` → `(bool) Cache::has('user-online-' . $this->getKey())`
+- Kolom grid (UsersTable):
+  ```php
+  TextColumn::make('status')->badge()->grow(false)
+      ->state(fn (User $r) => $r->isOnline() ? 'Online' : 'Offline')
+      ->color(fn (User $r) => $r->isOnline() ? 'success' : 'gray')
+      ->icon(fn (User $r) => $r->isOnline() ? 'heroicon-m-wifi' : 'heroicon-m-signal-slash')
+  ```
+- Tanpa migration — murni cache (`CACHE_STORE=file`), ambang 10 menit.
+
+---
+
+## 16. Users & Roles — Modal + Tabs (Ringkasan Teknis)
+
+- `UserResource` / `RoleResource` `getPages()` → hanya `index` (halaman create/edit dihapus)
+- Create/Edit = `CreateAction::make()` / `EditAction::make()` berbasis modal:
+  - `modalWidth(Width::Full)`, `createAnother(false)`, `modalHeading`/`modalDescription`
+  - Sync di `using()` (role + permission dari `$data`; validasi form tetap dari Filament)
+- `PermissionMenu`:
+  - `groups()` — sumber truth modul per group (label ikut label menu)
+  - `buildTree($granted)` — komposisi `globalSection + menuSections + widgetsSections` (masih dipakai RoleForm legacy)
+  - `moduleColor()` / GIF di widget RecentActivity (matcher key + label lama)
+- **Catatan Filament v5:** modal action memanggil `ListRecords::getDefaultActionSchemaResolver()` yang membungkus schema `columns(2)` bila resource form tidak set kolom → selalu bungkus root form dengan `Tabs::make()->columnSpanFull()` atau `->columns(...)`.
+- Group title mojibake (Masa Berlaku) diperbaiki → label bersih; `.fi-ta-group-header .fi-ta-group-heading` di-bold via `renderHook('panels::head.end')` di `AdminPanelProvider`.

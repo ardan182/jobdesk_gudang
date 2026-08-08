@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Cache;
 use Spatie\Permission\Traits\HasRoles;
 
 #[Fillable(['name', 'email', 'password'])]
@@ -24,6 +25,11 @@ class User extends Authenticatable implements FilamentUser
     protected static function activityModule(): string { return 'users'; } protected static function activitySummaryAttributes(): array { return ['name', 'email']; } protected static function activityReferenceField(): ?string { return 'email'; } protected static function activityTracked(): ?array { return ['name', 'email']; } public function canAccessPanel(Panel $panel): bool
     {
         return true;
+    }
+
+    public function isOnline(): bool
+    {
+        return (bool) Cache::has('user-online-' . $this->getKey());
     }
 
     public function isSuperAdmin(): bool

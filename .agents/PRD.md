@@ -1,6 +1,6 @@
 # PRD — Jobdesk Gudang AP
 
-**Versi:** 2.6 | **Tanggal:** 3 Agustus 2026
+**Versi:** 2.7 | **Tanggal:** 8 Agustus 2026
 
 ---
 
@@ -88,7 +88,7 @@ Semua modul: **single form modal** (tanpa Repeater multi-row), **ID_TASK** auto 
   - Grid responsif: mobile 1 kolom, tablet 2, desktop 5 per baris
 - **ExpiringDocumentsWidget** — AurumValueList, STNK/KIR ≤7 hari atau EXPIRED (Admin only, setengah halaman, klik → menu STNK/KIR)
 - **LeavesTodayWidget** — AurumValueList, Cuti/Sakit/Izin hari ini + divisi (Admin only, setengah halaman, klik → Cuti & Absensi)
-- **RecentActivityWidget:** 10 log terakhir, filter module, pagination
+- **RecentActivityWidget:** kolom Aksi (Dibuat/Diubah/Dihapus) + Menu + Aktivitas (readable), filter Menu dinamis + User + Rentang Waktu, pagination
 
 Layout: Stats (full) → [Expiring | Cuti] → RecentActivity (full)
 
@@ -112,19 +112,22 @@ Di atas role default, Admin bisa kustomisasi akses **per-user** melalui UI Edit 
 
 - **Permission names:** `{action}_{module_key}` — contoh: `view_task_retur_cabangs`, `create_task_retur_cabangs`, `update_task_retur_cabangs`, `delete_task_retur_cabangs`
 - **4 actions per module:** view, create, update, delete
-- **Total 84 permission** (20 modul × 4 = 80 + 4 widget `view_widget_*`)
+- **Total 85 permission** (20 modul × 4 = 80 + 4 widget `view_widget_*` + `view_all_data`)
 - **Coverage:** Semua modul task, master data, non-task (Input SJ, BranchShipment, Retur Masuk/Keluar, Pusat Dokumen, Cuti & Absensi, Users, TvBoard, KendaraanDokumen)
 
-#### 2.10.3 UI Akses Menu (di Edit User)
+#### 2.10.3 UI Akses Menu (Modal User — Tabs)
 
-Section **"Akses Menu & Fitur"** di form Create/Edit User:
+Create/Edit User & Role kini **modal** (halaman `/create`, `/{id}/edit` dihapus). Form pakai **Tabs**:
 
-- **Checkbox tree** dengan struktur: **Group → Menu → Actions**
-- Per modul: 5 kolom = **Pilih Semua** + View + Create + Update + Delete (checkbox terpisah per action)
-- **Select All** per modul — centang sekali, 4 action terpilih
-- **Widget:** checkbox "Aktif" mandiri per widget (Stats Overview, Aktivitas Terakhir, Dokumen Expired, Cuti Hari Ini)
-- State: field `perm_{permission}` → `syncPermissions()` ke Spatie `model_has_permissions` (via `afterCreate`/`afterSave`)
-- Load state saat edit: `hasDirectPermission()` (permission langsung user, terpisah dari permission role)
+- **User:** Tab *Informasi* (Name|Email|Password|Role, 4 kolom sejajar) → Tab *Akses Menu & Fitur* → Tab *Dashboard & Widgets*
+- **Role:** Tab *Informasi* (Nama + Super Admin) → Tab *Detail Template*
+- `Tabs::make()->columnSpanFull()` — wajib agar isi melebar penuh (resolver modal memaksa `columns(2)`)
+
+Tree akses (via `PermissionMenu`): **Akses Global** (`view_all_data`) → Group (collapsible) → per modul `Fieldset` 5 kolom = **Pilih Semua** + View + Create + Update + Delete → widget "Aktif".
+
+- State: field `perm_{permission}` → `syncPermissions()` ke Spatie `model_has_permissions` — sekarang dieksekusi di `CreateAction::using()` / `EditAction::using()` (bukan `afterCreate`/`afterSave`)
+- Checkbox `perm_*` **dehydrated** (ikut payload `$data`); `select_all_*` tetap UI-only
+- Load state saat edit: `getDirectPermissions()` (User) / `permission_template` (Role); role Select `live()` → pre-fill dari template
 - **Admin bypass:** Admin tetap punya akses penuh implicit (Spatie gate `before`)
 
 #### 2.10.4 Resource Authorization Pattern
@@ -170,6 +173,27 @@ getEloquentQuery() → filter own data untuk non-Admin (via permission check)
 - **Motor** → tidak ada KIR (tidak perpanjang KIR) — field KIR di form tersembunyi, tidak auto-create
 - **Mobil pribadi** (tidak isi `masa_berlaku_kir`) → KIR tersembunyi
 - **Mobil isi `masa_berlaku_kir`** → KIR otomatis muncul di grid Masa Berlaku
+
+### 2.14 User & Role Management (Modal)
+- Create/Edit User & Role dilakukan lewat **modal** (bukan halaman terpisah) — `getPages()` hanya `index`
+- Form ber-**Tabs**: Informasi + Akses/Hak Akses (dan Dashboard/Widget untuk User)
+- Lebar modal `Width::Full`, tanpa tombol "Buat & buat lainnya"
+- Analog rule tetap: hanya Super Admin yang mengelola Users & Roles
+
+### 2.15 Activity Log (Aktivitas Terakhir) — Otomatis + Mudah Dibaca
+- Log **create / update / delete** otomatis di **semua menu** lewat trait `LogsActivity` (activity `ActivityLogger`)
+  - 6 task: Retur Cabang, Retur Supplier, Datang Mobil, Terima Supplier, Keluar Barang, Kiriman Mobil
+  - Non-task: Input Kirim (BranchShipment), Input SJ, Komplain PO, Pusat Dokumen, Masa Berlaku STNK/KIR, Cuti & Absensi, Master data, User, Role
+- Deskripsi memakai **label Bahasa Indonesia** (mis. "Qty Check: 10 → 15"), modul di-sync dengan **label menu**
+- Widget **Aktivitas Terakhir**: kolom **Aksi** (badge hijau Dibuat / kuning Diubah / merah Dihapus + ikon), **Menu** (badge+ikon), **Aktivitas** (wrap, rapikan data lama), ID, Referensi, User, Waktu; filter **Menu** (dinamis dari data) + **User** + **Rentang Waktu**
+
+### 2.16 Status Online User
+- Kolom **Status** di menu Users: badge **hijau "Online"** (wifi) jika user aktif dalam 10 menit terakhir, badge **abu "Offline"** (signal-slash) sebaliknya
+- Deteksi berbasis **cache** (`user-online-{id}`, 10 menit) lewat middleware `TrackLastActive` — tanpa kolom database baru
+
+### 2.17 Polish
+- Header grup tabel Masa Berlaku STNK/KIR dibersihkan dari mojibake emoji + dibuat **bold**
+- Tab & gate "Atur Saldo Cuti" di `ManageLeaves` di-protect oleh permission `update_cuti_absensi`
 
 ---
 

@@ -32,9 +32,9 @@ class KendaraanDokumensTable
             ->groups([
                 Group::make('periode')
                     ->getTitleFromRecordUsing(fn ($record) => match ($record->periode) {
-                        '1_tahun' => 'ðŸš— STNK 1 Tahun',
-                        '5_tahun' => 'ðŸš— STNK 5 Tahun (Acuan)',
-                        default => 'ðŸš KIR',
+                        '1_tahun' => 'STNK 1 Tahun',
+                        '5_tahun' => 'STNK 5 Tahun (Acuan)',
+                        default => 'KIR',
                     }),
             ])
             ->groupingSettingsInDropdownOnDesktop(false)

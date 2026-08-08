@@ -12,6 +12,7 @@ use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use App\Filament\Pages\Auth\Login as CustomLogin;
+use App\Http\Middleware\TrackLastActive;
 use Filament\Support\Enums\Width;
 use ThalysJuvenal\Aurum\AurumTheme;
 use ThalysJuvenal\Aurum\Presets\Sapphire;
@@ -195,6 +196,11 @@ class AdminPanelProvider extends PanelProvider
                         background-color: rgba(255,255,255,0.04) !important;
                     }
 
+                    /* ─── Group header tabel: tebal ─── */
+                    .fi-ta-group-header .fi-ta-group-heading {
+                        font-weight: 700 !important;
+                    }
+
                     /* ─── Header actions: hijau + kecil ─── */
                     .fi-header-actions-ctn .fi-btn {
                         background: #22c55e !important;
@@ -240,6 +246,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
+                TrackLastActive::class,
             ]);
     }
 }

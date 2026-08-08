@@ -24,6 +24,13 @@ class UsersTable
                 TextColumn::make('roles.name')
                     ->label('Role')
                     ->badge(),
+                TextColumn::make('status')
+                    ->label('Status')
+                    ->badge()
+                    ->grow(false)
+                    ->state(fn (User $record): string => $record->isOnline() ? 'Online' : 'Offline')
+                    ->color(fn (User $record): string => $record->isOnline() ? 'success' : 'gray')
+                    ->icon(fn (User $record): string => $record->isOnline() ? 'heroicon-m-wifi' : 'heroicon-m-signal-slash'),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
