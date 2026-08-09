@@ -152,8 +152,7 @@ class TaskReturCabangForm
                                         ->required(),
                                     Textarea::make('catatan_bagus')
                                         ->label('Catatan Retur Bagus')
-                                        ->rows(2)
-                                        ->columnSpanFull(),
+                                        ->rows(2),
                                 ]),
                             Fieldset::make('Retur Jelek')
                                 ->columns(2)
@@ -168,8 +167,7 @@ class TaskReturCabangForm
                                         ->required(),
                                     Textarea::make('catatan_jelek')
                                         ->label('Catatan Retur Jelek')
-                                        ->rows(2)
-                                        ->columnSpanFull(),
+                                        ->rows(2),
                                 ]),
                         ]),
                 ]),
