@@ -119,8 +119,8 @@ class KomplainPosTable
                 TextColumn::make('foto')
                     ->label('Foto')
                     ->badge()
-                    ->color('info')
-                    ->formatStateUsing(fn ($record) => count($record->foto ?? []) . ' Gambar')
+                    ->color(fn ($record): string => count($record->foto ?? []) ? 'info' : 'gray')
+                    ->getStateUsing(fn ($record) => ($count = count($record->foto ?? [])) ? $count . ' Attachments' : '-')
                     ->tooltip(fn ($record) => implode("\n", array_map(fn ($f) => basename($f), $record->foto ?? [])))
                     ->toggleable()
                     ->grow(false),
@@ -173,6 +173,7 @@ class KomplainPosTable
                     ->tooltip('Lihat Detail')
                     ->color('info')
                     ->modalHeading('Detail Komplain PO')
+                    ->modalWidth(Width::SevenExtraLarge)
                     ->modalSubmitAction(false)
                     ->modalCancelAction(fn (Action $action) => $action->label('Tutup'))
                     ->schema([
@@ -196,6 +197,7 @@ class KomplainPosTable
                                     ->label('Foto Barang')
                                     ->disk('public')
                                     ->height(200)
+                                    ->extraImgAttributes(['class' => 'w-full max-w-full min-w-0 object-contain'])
                                     ->columnSpanFull(),
                                 TextEntry::make('keterangan')->label('Keterangan')->columnSpanFull(),
                             ]),
