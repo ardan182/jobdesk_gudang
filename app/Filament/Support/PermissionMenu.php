@@ -98,6 +98,7 @@ class PermissionMenu
             ->schema([
                 Checkbox::make('perm_view_all_data')
                     ->label('Lihat Semua Data')
+                    ->helperText('Centang agar user melihat data milik semua pengguna (bukan hanya data sendiri) di modul yang bisa diakses. Hanya memperluas tampilan — tidak menambah hak tambah/ubah/hapus.')
                     ->live()
                     ->afterStateHydrated(function ($component, $record) use ($granted) {
                         if (!$record) return;

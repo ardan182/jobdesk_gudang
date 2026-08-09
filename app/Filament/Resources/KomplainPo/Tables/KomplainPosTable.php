@@ -111,7 +111,7 @@ class KomplainPosTable
                     ->toggleable()
                     ->grow(false),
                 TextColumn::make('tanggal_datang_barang')
-                    ->label('Tgl Datang')
+                    ->label('Tgl Penyelesaian')
                     ->date('d/m/Y')
                     ->sortable()
                     ->toggleable()
@@ -188,7 +188,7 @@ class KomplainPosTable
                                 TextEntry::make('qty_diterima')->label('Qty Diterima'),
                                 TextEntry::make('no_surat_jalan')->label('No Surat Jalan'),
                                 TextEntry::make('qty_disurat_jalan')->label('Qty di Surat Jalan'),
-                                TextEntry::make('tanggal_datang_barang')->label('Tgl Datang')->date('d/m/Y'),
+                                TextEntry::make('tanggal_datang_barang')->label('Tgl Penyelesaian')->date('d/m/Y'),
                                 TextEntry::make('kondisi_barang')->label('Kondisi')->badge(),
                                 TextEntry::make('penyelesaian')->label('Penyelesaian')->badge(),
                                 TextEntry::make('status')->label('Status')->badge(),
@@ -258,7 +258,7 @@ class KomplainPosTable
             'Qty Diterima' => 'qty_diterima',
             'No Surat Jalan' => 'no_surat_jalan',
             'Qty di Surat Jalan' => 'qty_disurat_jalan',
-            'Tgl Datang' => 'tanggal_datang_barang',
+            'Tgl Penyelesaian' => 'tanggal_datang_barang',
             'Kondisi' => 'kondisi_barang',
             'Penyelesaian' => 'penyelesaian',
             'Status' => 'status',

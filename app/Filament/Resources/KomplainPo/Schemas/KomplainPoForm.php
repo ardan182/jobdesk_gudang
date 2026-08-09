@@ -103,7 +103,8 @@ class KomplainPoForm
                         ->live()
                         ->disabled(fn ($get) => blank($get('tanggal_datang_barang'))),
                     DatePicker::make('tanggal_datang_barang')
-                        ->label('Tanggal Datang Barang')
+                        ->label('Tanggal Penyelesaian')
+                        ->helperText('Tanggal masalah komplain diselesaikan (kunci untuk mengubah status menjadi Selesai).')
                         ->prefixIcon('heroicon-m-calendar-days')
                         ->native(false)
                         ->displayFormat('d/m/Y')
