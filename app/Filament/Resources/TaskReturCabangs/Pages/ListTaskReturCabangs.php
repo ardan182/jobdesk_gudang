@@ -26,7 +26,7 @@ class ListTaskReturCabangs extends ListRecords
                 ->form(TaskReturCabangForm::getFormFields())
                 ->action(function (array $data) {
                     $helpers = $data['helpers'] ?? [];
-                    unset($data['helpers'], $data['kiriman_mobil_id']);
+                    unset($data['helpers']);
                     $data['id_task'] = TaskIdGenerator::generate('retur_cabang');
                     $data['user_id'] = auth()->id();
                     $record = $this->getModel()::create($data);

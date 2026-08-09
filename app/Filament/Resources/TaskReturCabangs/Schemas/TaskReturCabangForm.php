@@ -32,9 +32,14 @@ class TaskReturCabangForm
                         ->required()
                         ->live()
                         ->columnSpanFull()
-                        ->options(function () {
+                        ->options(function ($component) {
                             return TaskKirimanMobil::where('status', 'selesai')
                                 ->whereIn('retur_option', ['ada_retur'])
+                                ->whereDoesntHave('taskReturCabangs')
+                                ->when(
+                                    $component->getRecord(),
+                                    fn ($query) => $query->orWhere('id', $component->getRecord()->kiriman_mobil_id)
+                                )
                                 ->get()
                                 ->mapWithKeys(fn ($k) => [
                                     $k->id =>
@@ -49,17 +54,22 @@ class TaskReturCabangForm
                         })
                         ->afterStateHydrated(function ($component, $state, $set) {
                             $record = $component->getRecord();
-                            if ($record && $record->cabang && $record->no_plat_mobil) {
-                                $kirim = TaskKirimanMobil::where('cabang', $record->cabang)
+                            if (!$record) {
+                                return;
+                            }
+
+                            $kirim = $record->kiriman_mobil_id
+                                ? TaskKirimanMobil::find($record->kiriman_mobil_id)
+                                : TaskKirimanMobil::where('cabang', $record->cabang)
                                     ->where('no_plat_mobil', $record->no_plat_mobil)
                                     ->first();
-                                if ($kirim) {
-                                    $component->state($kirim->id);
-                                    $set('cabang', $kirim->cabang);
-                                    $set('no_plat_mobil', $kirim->no_plat_mobil);
-                                    $set('jam_tiba', $kirim->jam_tiba?->format('H:i'));
-                                    $set('nama_sopir', $kirim->nama_supir);
-                                }
+
+                            if ($kirim) {
+                                $component->state($kirim->id);
+                                $set('cabang', $kirim->cabang);
+                                $set('no_plat_mobil', $kirim->no_plat_mobil);
+                                $set('jam_tiba', $kirim->jam_tiba?->format('H:i'));
+                                $set('nama_sopir', $kirim->nama_supir ?? '');
                             }
                         })
                         ->afterStateUpdated(function ($state, $set) {
@@ -68,7 +78,7 @@ class TaskReturCabangForm
                                 $set('cabang', $kirim->cabang);
                                 $set('no_plat_mobil', $kirim->no_plat_mobil);
                                 $set('jam_tiba', $kirim->jam_tiba?->format('H:i'));
-                                $set('nama_sopir', $kirim->nama_supir);
+                                $set('nama_sopir', $kirim->nama_supir ?? '');
                             } else {
                                 $set('cabang', null);
                                 $set('no_plat_mobil', null);
@@ -138,6 +148,7 @@ class TaskReturCabangForm
                             }
                         }),
                     Grid::make(2)
+                        ->columnSpanFull()
                         ->schema([
                             Fieldset::make('Retur Bagus')
                                 ->columns(2)

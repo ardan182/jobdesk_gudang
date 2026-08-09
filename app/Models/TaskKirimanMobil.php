@@ -7,6 +7,7 @@ use App\Services\TaskIdGenerator;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class TaskKirimanMobil extends Model
 {
@@ -66,5 +67,10 @@ class TaskKirimanMobil extends Model
     public function branchShipments(): BelongsToMany
     {
         return $this->belongsToMany(BranchShipment::class, 'branch_shipment_kiriman_mobil');
+    }
+
+    public function taskReturCabangs(): HasMany
+    {
+        return $this->hasMany(TaskReturCabang::class, 'kiriman_mobil_id');
     }
 }

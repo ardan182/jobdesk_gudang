@@ -221,7 +221,7 @@ class TaskReturCabangsTable
                     ->form(TaskReturCabangForm::getFormFields())
                     ->using(function ($record, array $data) {
                         $helpers = $data['helpers'] ?? [];
-                        unset($data['helpers'], $data['kiriman_mobil_id']);
+                        unset($data['helpers']);
                         $record->update($data);
                         $record->helpers()->sync(filled($helpers) ? $helpers : []);
                     }),

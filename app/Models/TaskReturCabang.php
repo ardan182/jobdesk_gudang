@@ -14,6 +14,7 @@ class TaskReturCabang extends Model
 
     protected $fillable = [
         'id_task',
+        'kiriman_mobil_id',
         'cabang',
         'no_plat_mobil',
         'jam_tiba',
@@ -54,6 +55,11 @@ class TaskReturCabang extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function kirimanMobil(): BelongsTo
+    {
+        return $this->belongsTo(TaskKirimanMobil::class);
     }
 
     public function helpers(): BelongsToMany
