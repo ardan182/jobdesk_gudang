@@ -22,7 +22,7 @@ class ListTaskReturCabangs extends ListRecords
                 ->color('primary')
                 ->icon('heroicon-m-plus')
                 ->modalHeading('Tambah Retur Masuk dari Cabang')
-                ->modalWidth(Width::Full)
+                ->modalWidth(Width::SevenExtraLarge)
                 ->form(TaskReturCabangForm::getFormFields())
                 ->action(function (array $data) {
                     $helpers = $data['helpers'] ?? [];

@@ -217,7 +217,7 @@ class TaskReturCabangsTable
                     ->iconButton()
                     ->tooltip('Ubah Data')
                     ->color('warning')
-                    ->modalWidth(Width::Full)
+                    ->modalWidth(Width::SevenExtraLarge)
                     ->form(TaskReturCabangForm::getFormFields())
                     ->using(function ($record, array $data) {
                         $helpers = $data['helpers'] ?? [];

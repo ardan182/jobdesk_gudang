@@ -61,6 +61,7 @@ class KomplainPoForm
                         ->numeric(),
                     FileUpload::make('foto')
                         ->label('Foto Barang')
+                        ->helperText('Upload minimal 1 dan maksimal 5 foto bukti komplain (format gambar: JPG/PNG).')
                         ->multiple()
                         ->minFiles(1)
                         ->maxFiles(5)

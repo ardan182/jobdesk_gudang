@@ -9,6 +9,8 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TimePicker;
+use Filament\Schemas\Components\Fieldset;
+use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 
@@ -126,7 +128,7 @@ class TaskReturCabangForm
                         ->label('Helper')
                         ->prefixIcon('heroicon-m-users')
                         ->multiple()
-                        ->columnSpan(2)
+                        ->columnSpanFull()
                         ->options(WarehouseEmployee::pluck('nama_karyawan', 'id'))
                         ->searchable()
                         ->preload()
@@ -135,28 +137,41 @@ class TaskReturCabangForm
                                 $component->state($record->helpers->pluck('id')->toArray());
                             }
                         }),
-                    TextInput::make('jumlah_sj_bagus')
-                        ->label('Jumlah SJ Retur Bagus')
-                        ->prefixIcon('heroicon-m-document-text')
-                        ->numeric()
-                        ->required()
-                        ->visible(fn ($get) => in_array($get('jenis_retur'), ['retur_bagus', 'rb_dan_rj'])),
-                    Textarea::make('catatan_bagus')
-                        ->label('Catatan Retur Bagus')
-                        ->rows(2)
-                        ->columnSpan(2)
-                        ->visible(fn ($get) => in_array($get('jenis_retur'), ['retur_bagus', 'rb_dan_rj'])),
-                    TextInput::make('jumlah_sj_jelek')
-                        ->label('Jumlah SJ Retur Jelek')
-                        ->prefixIcon('heroicon-m-document-text')
-                        ->numeric()
-                        ->required()
-                        ->visible(fn ($get) => in_array($get('jenis_retur'), ['retur_jelek', 'rb_dan_rj'])),
-                    Textarea::make('catatan_jelek')
-                        ->label('Catatan Retur Jelek')
-                        ->rows(2)
-                        ->columnSpan(2)
-                        ->visible(fn ($get) => in_array($get('jenis_retur'), ['retur_jelek', 'rb_dan_rj'])),
+                    Grid::make(2)
+                        ->schema([
+                            Fieldset::make('Retur Bagus')
+                                ->columns(2)
+                                ->columnSpan(fn ($get) => $get('jenis_retur') === 'rb_dan_rj' ? 1 : 2)
+                                ->visible(fn ($get) => in_array($get('jenis_retur'), ['retur_bagus', 'rb_dan_rj']))
+                                ->schema([
+                                    TextInput::make('jumlah_sj_bagus')
+                                        ->label('Jumlah SJ Bagus')
+                                        ->prefixIcon('heroicon-m-document-text')
+                                        ->helperText('Jumlah surat jalan barang retur bagus.')
+                                        ->numeric()
+                                        ->required(),
+                                    Textarea::make('catatan_bagus')
+                                        ->label('Catatan Retur Bagus')
+                                        ->rows(2)
+                                        ->columnSpanFull(),
+                                ]),
+                            Fieldset::make('Retur Jelek')
+                                ->columns(2)
+                                ->columnSpan(fn ($get) => $get('jenis_retur') === 'rb_dan_rj' ? 1 : 2)
+                                ->visible(fn ($get) => in_array($get('jenis_retur'), ['retur_jelek', 'rb_dan_rj']))
+                                ->schema([
+                                    TextInput::make('jumlah_sj_jelek')
+                                        ->label('Jumlah SJ Jelek')
+                                        ->prefixIcon('heroicon-m-document-text')
+                                        ->helperText('Jumlah surat jalan barang retur jelek.')
+                                        ->numeric()
+                                        ->required(),
+                                    Textarea::make('catatan_jelek')
+                                        ->label('Catatan Retur Jelek')
+                                        ->rows(2)
+                                        ->columnSpanFull(),
+                                ]),
+                        ]),
                 ]),
             Section::make('Status')
                 ->description('Status proses dan catatan global')
