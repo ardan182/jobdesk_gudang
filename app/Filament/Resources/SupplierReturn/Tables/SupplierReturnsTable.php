@@ -80,11 +80,13 @@ class SupplierReturnsTable
                     ->label('Jenis Retur Keluar')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
+                        'potong_nota' => 'danger',
                         'servis' => 'warning',
                         'ganti_barang' => 'info',
                         default => 'gray',
                     })
                     ->formatStateUsing(fn (string $state): string => match ($state) {
+                        'potong_nota' => 'Potong Nota',
                         'servis' => 'Servis',
                         'ganti_barang' => 'Ganti Barang',
                         default => $state,
@@ -95,13 +97,11 @@ class SupplierReturnsTable
                     ->label('Jenis Retur Masuk')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
-                        'potong_nota' => 'danger',
                         'servis' => 'warning',
                         'ganti_barang' => 'info',
                         default => 'gray',
                     })
                     ->formatStateUsing(fn (string $state): string => match ($state) {
-                        'potong_nota' => 'Potong Nota',
                         'servis' => 'Servis',
                         'ganti_barang' => 'Ganti Barang',
                         default => $state,
@@ -212,7 +212,7 @@ class SupplierReturnsTable
                     ->iconButton()
                     ->tooltip('Ubah Data')
                     ->color('warning')
-                    ->modalWidth(Width::Full)
+                    ->modalWidth(Width::SevenExtraLarge)
                     ->form(SupplierReturnForm::getFormFields()),
             ])
             ->toolbarActions([

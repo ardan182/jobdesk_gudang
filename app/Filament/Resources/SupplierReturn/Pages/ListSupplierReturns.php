@@ -22,7 +22,7 @@ class ListSupplierReturns extends ListRecords
                 ->color('primary')
                 ->icon('heroicon-m-plus')
                 ->modalHeading('Tambah Retur Supplier')
-                ->modalWidth(Width::Full)
+                ->modalWidth(Width::SevenExtraLarge)
                 ->form(SupplierReturnForm::getFormFields())
                 ->action(function (array $data) {
                     $data['id_task'] = TaskIdGenerator::generate('retur_supplier');

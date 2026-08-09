@@ -3,14 +3,14 @@
 namespace App\Filament\Resources\SupplierReturn\Schemas;
 
 use App\Models\ArrivalSupplierTruck;
-use App\Models\Supplier;
-use App\Models\Expedition;
 use Carbon\Carbon;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\TimePicker;
+use Filament\Schemas\Components\Fieldset;
+use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 
@@ -20,10 +20,9 @@ class SupplierReturnForm
     {
         return [
             Section::make('Data Supplier')
-                ->description('Pilih truk datang dan jenis retur')
-                ->columns(2)
+                ->description('Pilih truk datang')
                 ->schema([
-                    Select::make('arrival_supplier_truck_id')
+                            Select::make('arrival_supplier_truck_id')
                         ->label('Pilih Mobil Datang Supplier')
                         ->prefixIcon('heroicon-m-truck')
                         ->searchable()
@@ -66,18 +65,8 @@ class SupplierReturnForm
                             $set('tanggal_datang', $truck->tanggal_datang?->format('Y-m-d'));
                             $set('jam_kedatangan', $truck->jam_datang ? Carbon::parse($truck->jam_datang)->format('H:i') : '');
                         }),
-                    Select::make('jenis_pengiriman')
-                        ->label('Jenis Pengiriman')
-                        ->prefixIcon('heroicon-m-arrows-right-left')
-                        ->options([
-                            'retur_masuk' => 'Retur Masuk',
-                            'retur_keluar' => 'Retur Keluar',
-                            'datang_dan_keluar' => 'Datang & Keluar',
-                        ])
-                        ->disabled(fn ($state, $component) => $component?->getRecord() !== null)
-                        ->required()
-                        ->live()
-                        ->columnSpanFull(),
+                    Grid::make(3)
+                        ->schema([
                     TextInput::make('nama_supplier')
                         ->label('Nama Supplier')
                         ->prefixIcon('heroicon-m-building-office')
@@ -108,11 +97,25 @@ class SupplierReturnForm
                         ->disabled()
                         ->dehydrated()
                         ->seconds(false),
+                        ]),
                 ]),
             Section::make('Detail Retur')
-                ->description('Nota, status, jenis retur, dan quantity')
-                ->columns(3)
+                ->description('Pilih jenis pengiriman untuk menampilkan blok retur yang sesuai')
+                ->columns(2)
                 ->schema([
+                    Select::make('jenis_pengiriman')
+                        ->label('Jenis Pengiriman')
+                        ->prefixIcon('heroicon-m-arrows-right-left')
+                        ->helperText('Pilih tipe pengiriman untuk menampilkan field retur yang sesuai.')
+                        ->options([
+                            'retur_masuk' => 'Retur Masuk',
+                            'retur_keluar' => 'Retur Keluar',
+                            'datang_dan_keluar' => 'Datang & Keluar',
+                        ])
+                        ->disabled(fn ($state, $component) => $component?->getRecord() !== null)
+                        ->required()
+                        ->live()
+                        ->columnSpanFull(),
                     TextInput::make('no_nota_retur')
                         ->label('No Nota Retur')
                         ->prefixIcon('heroicon-m-document-text')
@@ -126,35 +129,51 @@ class SupplierReturnForm
                         ])
                         ->default('draft')
                         ->required(),
-                    Select::make('jenis_retur_keluar')
-                        ->label('Jenis Retur Keluar')
-                        ->prefixIcon('heroicon-m-tag')
-                        ->options([
-                            'servis' => 'Servis',
-                            'ganti_barang' => 'Ganti Barang',
-                        ])
-                        ->visible(fn ($get) => in_array($get('jenis_pengiriman'), ['retur_keluar', 'datang_dan_keluar'])),
-                    TextInput::make('total_koli_keluar')
-                        ->label('Total Koli Keluar')
-                        ->prefixIcon('heroicon-m-cube')
-                        ->numeric()
-                        ->minValue(1)
-                        ->visible(fn ($get) => in_array($get('jenis_pengiriman'), ['retur_keluar', 'datang_dan_keluar'])),
-                    Select::make('jenis_retur_masuk')
-                        ->label('Jenis Retur Masuk')
-                        ->prefixIcon('heroicon-m-tag')
-                        ->options([
-                            'potong_nota' => 'Potong Nota',
-                            'servis' => 'Servis',
-                            'ganti_barang' => 'Ganti Barang',
-                        ])
-                        ->visible(fn ($get) => in_array($get('jenis_pengiriman'), ['retur_masuk', 'datang_dan_keluar'])),
-                    TextInput::make('total_kolian_masuk')
-                        ->label('Total Kolian Masuk')
-                        ->prefixIcon('heroicon-m-cube')
-                        ->numeric()
-                        ->minValue(1)
-                        ->visible(fn ($get) => in_array($get('jenis_pengiriman'), ['retur_masuk', 'datang_dan_keluar'])),
+                    Grid::make(2)
+                        ->columnSpanFull()
+                        ->schema([
+                            Fieldset::make('Retur Keluar')
+                                ->columns(2)
+                                ->columnSpan(fn ($get) => $get('jenis_pengiriman') === 'datang_dan_keluar' ? 1 : 2)
+                                ->visible(fn ($get) => in_array($get('jenis_pengiriman'), ['retur_keluar', 'datang_dan_keluar']))
+                                ->schema([
+                                    Select::make('jenis_retur_keluar')
+                                        ->label('Jenis Retur Keluar')
+                                        ->prefixIcon('heroicon-m-tag')
+                                        ->options([
+                                            'potong_nota' => 'Potong Nota',
+                                            'servis' => 'Servis',
+                                            'ganti_barang' => 'Ganti Barang',
+                                        ])
+                                        ->required(),
+                                    TextInput::make('total_koli_keluar')
+                                        ->label('Total Koli Keluar')
+                                        ->prefixIcon('heroicon-m-cube')
+                                        ->numeric()
+                                        ->minValue(1)
+                                        ->required(),
+                                ]),
+                            Fieldset::make('Retur Masuk')
+                                ->columns(2)
+                                ->columnSpan(fn ($get) => $get('jenis_pengiriman') === 'datang_dan_keluar' ? 1 : 2)
+                                ->visible(fn ($get) => in_array($get('jenis_pengiriman'), ['retur_masuk', 'datang_dan_keluar']))
+                                ->schema([
+                                    Select::make('jenis_retur_masuk')
+                                        ->label('Jenis Retur Masuk')
+                                        ->prefixIcon('heroicon-m-tag')
+                                        ->options([
+                                            'servis' => 'Servis',
+                                            'ganti_barang' => 'Ganti Barang',
+                                        ])
+                                        ->required(),
+                                    TextInput::make('total_kolian_masuk')
+                                        ->label('Total Kolian Masuk')
+                                        ->prefixIcon('heroicon-m-cube')
+                                        ->numeric()
+                                        ->minValue(1)
+                                        ->required(),
+                                ]),
+                        ]),
                     Textarea::make('keterangan')
                         ->label('Keterangan')
                         ->columnSpanFull()

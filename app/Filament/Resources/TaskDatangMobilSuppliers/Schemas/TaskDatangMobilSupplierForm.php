@@ -73,10 +73,6 @@ class TaskDatangMobilSupplierForm
                         ])
                         ->default('DATANG')
                         ->required(),
-                    TextInput::make('status')
-                        ->label('Status')
-                        ->default('PROSES')
-                        ->disabled(),
                 ]),
             Section::make('Catatan')
                 ->schema([

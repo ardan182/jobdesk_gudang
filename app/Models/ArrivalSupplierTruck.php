@@ -58,11 +58,20 @@ class ArrivalSupplierTruck extends Model
                     'id_task' => 'Data mobil tidak dapat dihapus karena sudah atau sedang diproses di menu Checker Terima Barang.',
                 ]);
             }
+
+            if (SupplierReturn::where('arrival_supplier_truck_id', $model->id)->exists()) {
+                throw ValidationException::withMessages([
+                    'id_task' => 'Data mobil tidak dapat dihapus karena sudah diproses di menu Retur In & Out Supplier.',
+                ]);
+            }
         });
     }
 
     public function syncStatus(): void
     {
+        $needTerima = in_array($this->jenis_kiriman, ['DATANG', 'DATANG & RETUR']);
+        $needRetur = in_array($this->jenis_kiriman, ['RETUR', 'DATANG & RETUR']);
+
         $hasTerima = $this->taskTerimaSuppliers()->exists();
         $hasRetur = $this->supplierReturns()->exists();
 
@@ -71,31 +80,40 @@ class ArrivalSupplierTruck extends Model
             return;
         }
 
-        $terimaSelesai = $this->taskTerimaSuppliers()
-            ->where('status', 'SELESAI')
-            ->whereNotNull('selesai_bongkar')
-            ->first();
+        $times = [];
 
-        $needRetur = in_array($this->jenis_kiriman, ['RETUR', 'DATANG & RETUR']);
-
-        if ($needRetur) {
-            $returDone = $this->supplierReturns()->whereNotNull('jam_kedatangan')->exists();
-
-            if ($terimaSelesai && $returDone) {
-                $times = [$terimaSelesai->selesai_bongkar->format('H:i')];
-                $retur = $this->supplierReturns()->whereNotNull('jam_kedatangan')->first();
-                if ($retur) $times[] = $retur->jam_kedatangan->format('H:i');
-                sort($times);
-                $this->update(['status' => 'SELESAI', 'jam_selesai' => end($times)]);
-                return;
+        $terimaDone = false;
+        if ($needTerima) {
+            $terimaSelesai = $this->taskTerimaSuppliers()
+                ->where('status', 'SELESAI')
+                ->whereNotNull('selesai_bongkar')
+                ->first();
+            $terimaDone = $terimaSelesai !== null;
+            if ($terimaSelesai) {
+                $times[] = $terimaSelesai->selesai_bongkar->format('H:i');
             }
-
-            $this->update(['status' => 'PROSES', 'jam_selesai' => null]);
-            return;
         }
 
-        if ($terimaSelesai) {
-            $this->update(['status' => 'SELESAI', 'jam_selesai' => $terimaSelesai->selesai_bongkar->format('H:i')]);
+        $returDone = false;
+        if ($needRetur) {
+            $returSelesai = $this->supplierReturns()
+                ->where('status', 'selesai')
+                ->latest('id')
+                ->first();
+            $returDone = $returSelesai !== null;
+            if ($returSelesai && $returSelesai->jam_kedatangan) {
+                $times[] = $returSelesai->jam_kedatangan->format('H:i');
+            }
+        }
+
+        $done = (! $needTerima || $terimaDone) && (! $needRetur || $returDone);
+
+        if ($done) {
+            sort($times);
+            $this->update([
+                'status' => 'SELESAI',
+                'jam_selesai' => $times ? end($times) : null,
+            ]);
             return;
         }
 

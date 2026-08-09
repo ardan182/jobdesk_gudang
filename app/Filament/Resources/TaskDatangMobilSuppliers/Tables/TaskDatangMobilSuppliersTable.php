@@ -14,6 +14,7 @@ use Filament\Schemas\Components\Grid;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Section;
 use Filament\Support\Enums\Size;
+use Filament\Support\Enums\Width;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Filters\Filter;
@@ -191,7 +192,7 @@ class TaskDatangMobilSuppliersTable
                     ->iconButton()
                     ->tooltip('Ubah Data')
                     ->modalHeading('Edit Datang Mobil Supplier')
-                    ->modalWidth('xl')
+                    ->modalWidth(Width::SevenExtraLarge)
                     ->form(TaskDatangMobilSupplierForm::getFormFields()),
             ])
             ->toolbarActions([

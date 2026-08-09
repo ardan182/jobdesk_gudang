@@ -1,6 +1,6 @@
 # PRD — Jobdesk Gudang AP
 
-**Versi:** 2.7 | **Tanggal:** 8 Agustus 2026
+**Versi:** 2.8 | **Tanggal:** 9 Agustus 2026
 
 ---
 
@@ -194,6 +194,33 @@ getEloquentQuery() → filter own data untuk non-Admin (via permission check)
 ### 2.17 Polish
 - Header grup tabel Masa Berlaku STNK/KIR dibersihkan dari mojibake emoji + dibuat **bold**
 - Tab & gate "Atur Saldo Cuti" di `ManageLeaves` di-protect oleh permission `update_cuti_absensi`
+- Komplain PO: label `Tanggal Datang Barang` → **`Tanggal Penyelesaian`** (form/grid/modal/export) + helper Foto Barang
+
+### 2.18 Retur Masuk dari Toko (TaskReturCabang)
+- Modal create/edit `Width::SevenExtraLarge` (seragam 75%)
+- Data Retur: `Jenis Retur | Tanggal Bongkar | Jam Bongkar` 1 baris; **Helper** full-width
+- Jumlah SJ + Catatan dalam Fieldset **Retur Bagus / Retur Jelek** (berdampingan saat `rb_dan_rj`; `Jumlah SJ | Catatan` sejajar)
+- Simpan **`kiriman_mobil_id`** (FK): dropdown kiriman **mengecualikan yang sudah dipakai** (`whereDoesntHave`); edit include record-nya
+- `no_plat_mobil`/`jam_tiba`/`nama_sopir` nullable + fallback `nama_supir ?? ''` (tahan kiriman tanpa sopir/plat)
+
+### 2.19 Retur In & Out Supplier (SupplierReturn)
+- Modal `Width::SevenExtraLarge`
+- Data Supplier: `Pilih Mobil | Jenis Pengiriman*` (baris 1); autofill `Supplier | Ekspedisi | Supir / Plat | Tgl | Jam` (2×3)
+- `Jenis Pengiriman*` pindah ke **Detail Retur**; baris `No Nota | Status`; FieldSet **Retur Keluar / Retur Masuk** kondisional
+- **`Potong Nota`** milik **Retur Keluar**; Retur Masuk = Servis / Ganti Barang
+- Retur create/update/delete → sinkron status truk (syncStatus)
+- Truk **SELESAI** bila semua kewajiban beres sesuai `jenis_kiriman` (DATANG→terima selesai; RETUR→retur selesai; DATANG & RETUR→**keduanya**); retur masih draft/belum → truk PROSES
+
+### 2.20 Datang Mobil Supplier — Status Otomatis
+- Field `status` dihapus dari form; baru = `MENGANTRI`
+- Modal `Width::SevenExtraLarge`
+- `syncStatus()` (retur & terima): truk SELESAI bila syarat per `jenis_kiriman` terpenuhi; `jam_selesai` dari waktu terlambat
+- Guard hapus truk untuk Terima **dan** Retur
+
+### 2.21 Input SJ dari Supplier — Lifecycle Otomatis
+- Data otomatis dari `TaskTerimaSupplier` (SELESAI); **tidak ada tombol Tambah** & delete manual (**DeleteBulk dihapus**)
+- Terima jadi draft / Terima dihapus → **SJ terkait ikut terhapus**
+- Edit SJ: `Selesai` wajib No PO (error di field, modal tetap terbuka); `tempo_hari` auto-hitung dari `tanggal_input − tanggal_datang`
 
 ---
 
@@ -279,7 +306,7 @@ Semua modul menggunakan **tampilan seragam**:
 - Contoh: Kiriman Mobil → Data Kiriman, Waktu Perjalanan (3 kolom), Kendaraan & Sopir, Status & Catatan
 - `columns(2)` sebagai default, `columns(3)` untuk grup waktu/jadwal
 - `columnSpanFull()` untuk field penting (Pilih SJ, nomor_sj, keterangan)
-- Modal width: `Width::Full` untuk form kompleks
+- Modal width: **`Width::SevenExtraLarge`** (≈75%) sebagai standar form kompleks (Retur Masuk/Suple, Retur In & Out, Datang Mobil; `Width::Full` hanya untuk kelola User/Role/Pusat Dokumen)
 - Field disabled: autofill dari relasi (disimpan ke DB via dehydrated)
 - Select: `->searchable()->preload()` untuk UX cepat
 - Helper: `->badge()->separator(', ')` dengan state return array

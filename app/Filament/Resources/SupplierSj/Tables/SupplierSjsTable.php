@@ -5,14 +5,11 @@ namespace App\Filament\Resources\SupplierSj\Tables;
 use App\Filament\Resources\SupplierSj\Schemas\SupplierSjForm;
 use App\Services\TableExportService;
 use Filament\Actions\Action;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\DatePicker;
 use Filament\Schemas\Components\Grid;
 use Filament\Infolists\Components\TextEntry;
-use Filament\Notifications\Notification;
 use Filament\Schemas\Components\Section;
 use Filament\Support\Enums\Size;
 use Filament\Support\Enums\Width;
@@ -22,6 +19,7 @@ use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Validation\ValidationException;
 
 class SupplierSjsTable
 {
@@ -208,12 +206,9 @@ class SupplierSjsTable
                     ->form(SupplierSjForm::getFormFields())
                     ->action(function ($record, array $data) {
                         if (($data['status_input'] ?? null) === 'selesai' && blank($data['nomor_po_referensi'] ?? null)) {
-                            Notification::make()
-                                ->title('Gagal menyimpan')
-                                ->body('No PO Referensi wajib diisi jika status "Selesai".')
-                                ->danger()
-                                ->send();
-                            return;
+                            throw ValidationException::withMessages([
+                                'nomor_po_referensi' => 'No PO Referensi wajib diisi jika status "Selesai".',
+                            ]);
                         }
                         if (($data['status_input'] ?? null) === 'selesai' && $record->tanggal_datang) {
                             $tanggalInput = $data['tanggal_input'] ?? $record->tanggal_input;
@@ -246,10 +241,6 @@ class SupplierSjsTable
                         self::exportColumns(),
                         'input-sj-supplier',
                     )),
-                BulkActionGroup::make([
-                    DeleteBulkAction::make()
-                        ->color('danger'),
-                ]),
             ]);
     }
 

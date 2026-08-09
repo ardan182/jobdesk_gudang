@@ -416,3 +416,39 @@ Role menjadi **dinamis** (CRUD via UI) dan berhenti mewariskan akses. **Akses = 
 
 - [x] Tab "Atur Saldo Cuti" (`ManageLeaves`) + method `adjustJatahCuti` + tombol Adjust di blade — di-gate permission `update_cuti_absensi`
 
+## Fase 31: Komplain PO — Label Penyelesaian + Helper ✅
+
+- [x] Label `Tanggal Datang Barang` → **`Tanggal Penyelesaian`** (form create/edit) + helperText kunci status Selesai
+- [x] Grid kolom, modal View, header export → `Tgl Penyelesaian`
+- [x] Helper **Foto Barang**: "Upload min 1 max 5 foto bukti komplain (JPG/PNG)"
+
+## Fase 32: Retur Masuk dari Toko — Modal 75% + Guard Kiriman ✅
+
+- [x] Modal create & edit → **`Width::SevenExtraLarge`** (seragam)
+- [x] Data Retur: `Jenis Retur | Tanggal Bongkar | Jam Bongkar` 1 baris; **Helper full-width**
+- [x] Jumlah SJ + Catatan dibungkus Fieldset **Retur Bagus/Retur Jelek** (berdampingan saat `rb_dan_rj`, `Jumlah SJ | Catatan` sejajar)
+- [x] Simpan FK **`kiriman_mobil_id`** (migration + backfill cabang+plat unik) → dropdown kiriman `whereDoesntHave('taskReturCabangs')`; edit include record
+- [x] `no_plat_mobil`/`jam_tiba`/`nama_sopir` nullable + fallback `nama_supir ?? ''` (fix error 1048); Create/Edit tidak lagi unset `kiriman_mobil_id`; hydration pakai FK (fallback cabang+plat utk lawas)
+
+## Fase 33: Retur In & Out Supplier — UX + Sync Truk ✅
+
+- [x] Modal `Width::SevenExtraLarge`
+- [x] Data Supplier: baris 1 `Pilih Mobil | Jenis Pengiriman*`; autofill `Supplier|Ekspedisi|Supir | Plat|Tgl Datang|Jam Kedatangan` (2 baris × 3 kolom)
+- [x] `Jenis Pengiriman*` pindah ke **Detail Retur** (full, live, helperText); baris `No Nota|Status`; **Fieldset "Retur Keluar"/"Retur Masuk"** (berdampingan saat `datang_dan_keluar`)
+- [x] `Potong Nota` pindah ke **Retur Keluar** (badge danger); Retur Masuk = Servis/Ganti Barang
+- [x] `SupplierReturn` create/update/delete → `truck->syncStatus()`
+
+## Fase 34: Datang Mobil — Status Otomatis + Sync 🔄
+
+- [x] Hapus field `status` form → truk baru `MENGANTRI` (otomatis)
+- [x] Modal `Width::SevenExtraLarge`
+- [x] `syncStatus()` ditulis ulang: truk SELESAI bila semua kewajiban beres per `jenis_kiriman` — `DATANG` (terima selesai), `RETUR` (retur selesai), `DATANG & RETUR` (**keduanya**); RETUR masih draft/belum → PROSES
+- [x] Guard hapus truk ditambah untuk **SupplierReturn** (mirror Terima)
+- [ ] Command `app:sync-truck-status` (healing status lama) — **pending**
+
+## Fase 35: Input SJ — Proteksi Delete + Lifecycle ✅
+
+- [x] DeleteBulk dihapus dari tabel SJ (data otomatis dari Terima)
+- [x] Terima jadi **draft** / Terima **dihapus** → SJ terkait **ikut terhapus**
+- [x] Edit SJ `Selesai` tanpa No PO → `throw ValidationException` (error di field, modal tidak tutup); No PO boleh menyusul manual
+

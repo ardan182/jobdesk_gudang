@@ -52,6 +52,14 @@ class SupplierReturn extends Model
                 $model->user_id = auth()->id();
             }
         });
+
+        $syncTruck = function ($model) {
+            $model->arrivalSupplierTruck?->syncStatus();
+        };
+
+        static::created($syncTruck);
+        static::updated($syncTruck);
+        static::deleted($syncTruck);
     }
 
     public function user(): BelongsTo

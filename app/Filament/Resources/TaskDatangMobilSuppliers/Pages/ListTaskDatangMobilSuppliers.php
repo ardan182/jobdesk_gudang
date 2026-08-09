@@ -7,6 +7,7 @@ use App\Filament\Resources\TaskDatangMobilSuppliers\TaskDatangMobilSupplierResou
 use App\Services\TaskIdGenerator;
 use Filament\Actions\Action;
 use Filament\Resources\Pages\ListRecords;
+use Filament\Support\Enums\Width;
 
 class ListTaskDatangMobilSuppliers extends ListRecords
 {
@@ -21,7 +22,7 @@ class ListTaskDatangMobilSuppliers extends ListRecords
                 ->color('primary')
                 ->icon('heroicon-m-plus')
                 ->modalHeading('Tambah Datang Mobil Supplier')
-                ->modalWidth('xl')
+                ->modalWidth(Width::SevenExtraLarge)
                 ->form(TaskDatangMobilSupplierForm::getFormFields())
                 ->action(function (array $data) {
                     $data['id_task'] = TaskIdGenerator::generate('datang_mobil_supplier');

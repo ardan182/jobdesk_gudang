@@ -70,6 +70,12 @@ class TaskTerimaSupplier extends Model
         });
 
         static::updated(function ($model) {
+            $wasSelesai = $model->getOriginal('status') === 'SELESAI';
+
+            if ($wasSelesai && $model->status !== 'SELESAI') {
+                \App\Models\SupplierSj::where('catatan', 'LIKE', '%' . $model->id_task . '%')->delete();
+            }
+
             $existingSj = \App\Models\SupplierSj::where('catatan', 'LIKE', '%' . $model->id_task . '%')->first();
             if ($existingSj && $existingSj->nomor_po_referensi !== $model->no_po_referensi) {
                 $updateData = ['nomor_po_referensi' => $model->no_po_referensi];
@@ -104,6 +110,8 @@ class TaskTerimaSupplier extends Model
         });
 
         static::deleted(function ($model) {
+            \App\Models\SupplierSj::where('catatan', 'LIKE', '%' . $model->id_task . '%')->delete();
+
             if ($model->arrival_supplier_truck_id) {
                 $truck = ArrivalSupplierTruck::find($model->arrival_supplier_truck_id);
                 $truck?->syncStatus();

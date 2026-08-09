@@ -1,6 +1,6 @@
 # Project Context: Jobdesk Gudang AP
 
-**Versi:** 2.4 | **Tanggal:** 8 Agustus 2026
+**Versi:** 2.5 | **Tanggal:** 9 Agustus 2026
 
 ---
 
@@ -600,3 +600,26 @@ Kolom: **Aksi** (badge+ikon `Dibuat`/`Diubah`/`Dihapus` warna success/warning/da
 - Header grup Masa Berlaku STNK/KIR: mojibake emoji bersih → `STNK 1 Tahun` / `STNK 5 Tahun (Acuan)` / `KIR`; group heading **bold** (`.fi-ta-group-header .fi-ta-group-heading`)
 - Gate "Atur Saldo Cuti" di `ManageLeaves` via permission `update_cuti_absensi` (visible + guard server)
 - Sidebar lebar FIXED (`--sidebar-width` 14rem) untuk semua role; collapsed state disimpan per-browser (`localStorage`)
+- Komplain PO: `Tanggal Datang Barang` → **`Tanggal Penyelesaian`** (form/grid/view/export)
+
+## 26. Modal & Form — Standar 75% + Blok Fieldset
+
+- **Standar lebar modal create/edit:** `Width::SevenExtraLarge` (≈75%) untuk Retur Masuk dari Toko, Retur In & Out Supplier, Datang Mobil Supplier. `Width::Full` hanya utk User/Role/Pusat Dokumen.
+- **Blok `Fieldset` kondisional:** ganti field tersebar `visible()` → blok Fieldset tampil sesuai pilihan `live()` (Retur Bagus/Jelek, Retur Keluar/Masuk), berdampingan (Grid 2) saat tipe campuran, satu blok penuh saat single.
+- **Grid dalam Section:** wrapper `Grid::make(...)` wajib `->columnSpanFull()` agar tidak terjepit 1 kolom.
+- Retur Supplier: **`Jenis Pengiriman*`** di awal **Detail Retur**; **`Potong Nota`** milik **Retur Keluar** (Retur Masuk = Servis/Ganti Barang).
+
+## 27. Integrasi Status Truk (Datang–Terima–Retur–SJ)
+
+- `ArrivalSupplierTruck::syncStatus()` — truk **SELESAI** bila semua kewajiban per `jenis_kiriman` beres:
+  - `DATANG` → butuh `TaskTerimaSupplier` SELESAI (+ `selesai_bongkar`)
+  - `RETUR` → butuh `SupplierReturn` status `selesai`
+  - `DATANG & RETUR` → **keduanya** wajib selesai
+  - retur masih draft/belum → truk `PROSES`; tanpa terima & retur → `MENGANTRI`
+- Trigger sync: `TaskTerimaSupplier` dan `SupplierReturn` (created/updated/deleted) → `syncStatus()`; guard hapus truk untuk keduanya
+- Field `status` di form Datang dihapus (otomatis; baru = `MENGANTRI`)
+
+## 28. Modul Retur & SJ — Hard Break
+
+- **Retur Masuk dari Toko:** `task_retur_cabangs.kiriman_mobil_id` (nullable FK, backfill unik); dropdown kiriman `whereDoesntHave` → terpakai tidak muncul; autofill nullable + fallback
+- **Input SJ:** data otomatis dari `TaskTerimaSupplier` SELESAI (tanpa tombol Tambah & tanpa DeleteBulk); Terima jadi draft/dihapus → SJ ikut hapus; Edit `Selesai` wajib No PO (`ValidationException`, modal tetap buka)
