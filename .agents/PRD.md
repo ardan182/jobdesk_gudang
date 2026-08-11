@@ -146,6 +146,7 @@ getEloquentQuery() → filter own data untuk non-Admin (via permission check)
 - **Sidebar:** collapsible, groups collapsed by default, persist via localStorage
 - **Icons:** Semua tombol Create pake `->icon('heroicon-m-plus')`
 - **Font:** Arial 14px
+- **Widget "Datang Mobil"** (dashboard): value `{total}/{status SELESAI}` → **`43/40`**, angka selesai **hijau** (`aurum-stat-value--green`); override blade stats-overview render value sebagai HTML-safe (`{!! !!}`)
 
 ### 2.12 Filter UI Standard (AboveContent)
 
@@ -160,6 +161,7 @@ getEloquentQuery() → filter own data untuk non-Admin (via permission check)
 | Datang Mobil Supplier | 5 (Supplier, Ekspedisi, Jenis Kiriman, Tgl Datang, Status) | 5 kolom |
 | Input SJ Supplier | 3 (Nama Supplier, Tgl Input, Status) | 3 kolom |
 | Retur Masuk dari Toko | 4 (Toko, Jenis Retur, Status, Tanggal) | 4 kolom |
+| Retur In & Out Supplier | 3 (Supplier, Jenis, Tanggal Buat) | 3 kolom |
 
 **Aturan:**
 - `SelectFilter` → auto-apply saat dipilih
@@ -202,6 +204,7 @@ getEloquentQuery() → filter own data untuk non-Admin (via permission check)
 - Jumlah SJ + Catatan dalam Fieldset **Retur Bagus / Retur Jelek** (berdampingan saat `rb_dan_rj`; `Jumlah SJ | Catatan` sejajar)
 - Simpan **`kiriman_mobil_id`** (FK): dropdown kiriman **mengecualikan yang sudah dipakai** (`whereDoesntHave`); edit include record-nya
 - `no_plat_mobil`/`jam_tiba`/`nama_sopir` nullable + fallback `nama_supir ?? ''` (tahan kiriman tanpa sopir/plat)
+- **`Tanggal Bongkar`**: `maxDate(now())` (picker tolak tanggal masa depan) + rule `before_or_equal:today` (create & edit)
 
 ### 2.19 Retur In & Out Supplier (SupplierReturn)
 - Modal `Width::SevenExtraLarge`
@@ -210,6 +213,7 @@ getEloquentQuery() → filter own data untuk non-Admin (via permission check)
 - **`Potong Nota`** milik **Retur Keluar**; Retur Masuk = Servis / Ganti Barang
 - Retur create/update/delete → sinkron status truk (syncStatus)
 - Truk **SELESAI** bila semua kewajiban beres sesuai `jenis_kiriman` (DATANG→terima selesai; RETUR→retur selesai; DATANG & RETUR→**keduanya**); retur masih draft/belum → truk PROSES
+- **Filter Supplier** (searchable, dari `nama_supplier` distinct) di posisi **sebelum Jenis**; `filtersFormColumns(3)` → 1 baris `Supplier | Jenis | Tanggal Buat`
 
 ### 2.20 Datang Mobil Supplier — Status Otomatis
 - Field `status` dihapus dari form; baru = `MENGANTRI`

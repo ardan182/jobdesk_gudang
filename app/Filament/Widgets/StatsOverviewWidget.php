@@ -41,7 +41,16 @@ class StatsOverviewWidget extends AurumStatsOverview
                 'ownable' => true,
                 'model' => ArrivalSupplierTruck::class,
                 'cards' => [
-                    ['label' => 'Datang Mobil', 'icon' => 'heroicon-o-truck', 'desc' => 'Total mobil supplier', 'scope' => []],
+                    [
+                        'label' => 'Datang Mobil',
+                        'icon' => 'heroicon-o-truck',
+                        'desc' => 'Total mobil / task selesai',
+                        'scope' => [],
+                        'value' => fn ($query) => $query->count()
+                            . '/<span class="aurum-stat-value--green">'
+                            . (clone $query)->where('status', 'SELESAI')->count()
+                            . '</span>',
+                    ],
                 ],
             ],
             'task_terima_suppliers' => [
@@ -127,7 +136,11 @@ class StatsOverviewWidget extends AurumStatsOverview
                     $query->where('user_id', $user->id);
                 }
 
-                $stats[] = AurumStat::make($card['label'], (string) $query->count())
+                $value = isset($card['value'])
+                    ? $card['value']($query)
+                    : (string) $query->count();
+
+                $stats[] = AurumStat::make($card['label'], $value)
                     ->icon($card['icon'])
                     ->description($card['desc']);
             }

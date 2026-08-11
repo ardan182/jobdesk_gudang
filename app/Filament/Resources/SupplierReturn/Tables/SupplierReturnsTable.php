@@ -155,6 +155,11 @@ class SupplierReturnsTable
                     ->grow(false),
             ])
             ->filters([
+                SelectFilter::make('nama_supplier')
+                    ->label('Supplier')
+                    ->options(fn () => \App\Models\SupplierReturn::distinct()->orderBy('nama_supplier')->pluck('nama_supplier', 'nama_supplier'))
+                    ->searchable()
+                    ->placeholder('Semua'),
                 SelectFilter::make('jenis_pengiriman')
                     ->label('Jenis')
                     ->options([
@@ -176,7 +181,7 @@ class SupplierReturnsTable
                         ->when($data['created_until'], fn ($q, $d) => $q->whereDate('created_at', '<=', $d))
                     ),
             ], layout: FiltersLayout::AboveContent)
-            ->filtersFormColumns(2)
+            ->filtersFormColumns(3)
             ->recordAction('view')
             ->recordActions([
                 ViewAction::make()

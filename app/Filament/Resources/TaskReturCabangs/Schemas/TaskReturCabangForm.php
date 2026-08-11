@@ -127,7 +127,9 @@ class TaskReturCabangForm
                         ->label('Tanggal Bongkar')
                         ->prefixIcon('heroicon-m-calendar')
                         ->native(false)
-                        ->required(),
+                        ->required()
+                        ->maxDate(now())
+                        ->rules(['required', 'date', 'before_or_equal:today']),
                     TimePicker::make('jam_bongkar')
                         ->label('Jam Bongkar')
                         ->prefixIcon('heroicon-m-clock')

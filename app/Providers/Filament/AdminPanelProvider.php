@@ -164,6 +164,11 @@ class AdminPanelProvider extends PanelProvider
                         box-shadow: 0 0 0 4px rgba(var(--aurum-accent-rgb), 0.25);
                     }
 
+                    /* ─── Widget stat: angka selesai hijau (Datang Mobil 43/40) ─── */
+                    .aurum-stat-value--green {
+                        color: #22c55e;
+                    }
+
                     /* ─── Sidebar: teks tidak terpotong ─── */
                     .fi-sidebar-item-label {
                         white-space: normal !important;

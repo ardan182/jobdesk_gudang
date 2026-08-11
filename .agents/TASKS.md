@@ -452,3 +452,9 @@ Role menjadi **dinamis** (CRUD via UI) dan berhenti mewariskan akses. **Akses = 
 - [x] Terima jadi **draft** / Terima **dihapus** → SJ terkait **ikut terhapus**
 - [x] Edit SJ `Selesai` tanpa No PO → `throw ValidationException` (error di field, modal tidak tutup); No PO boleh menyusul manual
 
+## Fase 36: Filter Supplier Retur + MaxDate Bongkar + Widget Datang Mobil 43/40 ✅
+
+- [x] **Retur In & Out Supplier** — tambah filter **Supplier** (dropdown searchable dari `nama_supplier` distinct) di posisi **sebelum Jenis**; `filtersFormColumns(2→3)` → 1 baris `Supplier | Jenis | Tanggal Buat`
+- [x] **Retur Masuk dari Toko** — `Tanggal Bongkar` tambah `maxDate(now())` (picker tolak tanggal masa depan) + rule server-side `before_or_equal:today` (create & edit, form sumber sama)
+- [x] **Widget "Datang Mobil"** (StatsOverviewWidget) — value format `{total}/{status SELESAI}` → **`43/40`**; angka selesai (40) di-render **hijau** via override blade `resources/views/vendor/aurum-filament-theme/widgets/stats-overview.blade.php` (`{!! !!}` utk value) + CSS `.aurum-stat-value--green { color:#22c55e }`; hormati scope own/all per user
+

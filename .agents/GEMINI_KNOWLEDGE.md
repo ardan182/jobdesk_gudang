@@ -306,7 +306,7 @@ Checker Kiriman input manual di menu Kiriman Mobil
 
 | Widget | Komponen | Isi | Akses |
 |--------|----------|-----|-------|
-| StatsOverviewWidget | `AurumStatsOverview`+`AurumStat` | Admin 9 kartu, Checker sesuai role | Semua |
+| StatsOverviewWidget | `AurumStatsOverview`+`AurumStat` | Kartu per modul yang bisa di-view user (own/all via `view_all_data`); **Datang Mobil** value `{total}/{status SELESAI}` (mis. `43/40`) dengan **angka selesai hijau** | Semua |
 | ExpiringDocumentsWidget | `AurumValueList`+`ValueListItem` | STNK/KIR ≤7 hari / EXPIRED | Admin |
 | LeavesTodayWidget | `AurumValueList`+`ValueListItem` | Cuti/Sakit/Izin hari ini + divisi | Admin |
 | RecentActivityWidget | `TableWidget` | Kolom Aksi (Dibuat/Diubah/Dihapus badge+ikon), Menu badge label menu, Aktivitas readable (prettify), ID, Referensi, User, Waktu; filter Menu dinamis + User + Rentang Waktu | Semua |
@@ -622,4 +622,11 @@ Kolom: **Aksi** (badge+ikon `Dibuat`/`Diubah`/`Dihapus` warna success/warning/da
 ## 28. Modul Retur & SJ — Hard Break
 
 - **Retur Masuk dari Toko:** `task_retur_cabangs.kiriman_mobil_id` (nullable FK, backfill unik); dropdown kiriman `whereDoesntHave` → terpakai tidak muncul; autofill nullable + fallback
+- **Tanggal Bongkar** `maxDate(now())` + rule `before_or_equal:today` (picker & server-side tolak masa depan; create & edit)
 - **Input SJ:** data otomatis dari `TaskTerimaSupplier` SELESAI (tanpa tombol Tambah & tanpa DeleteBulk); Terima jadi draft/dihapus → SJ ikut hapus; Edit `Selesai` wajib No PO (`ValidationException`, modal tetap buka)
+
+## 29. Filter Supplier Retur + Widget Datang Mobil 43/40
+
+- **Retur In & Out Supplier:** filter **Supplier** (SelectFilter searchable, opsi dari `nama_supplier` distinct) di **posisi pertama** (sebelum Jenis); `filtersFormColumns(3)` → 1 baris `Supplier | Jenis | Tanggal Buat`
+- **Widget Datang Mobil:** value `total/selesai` — `(clone $query)->where('status','SELESAI')->count()`; angka selesai dibungkus `<span class="aurum-stat-value--green">` (CSS `color:#22c55e`)
+- **Override blade** `resources/views/vendor/aurum-filament-theme/widgets/stats-overview.blade.php`: value di-render `{!! !!}` (HTML-safe, value hanya dari kode widget); deskripsi tetap escaped — pola untuk styling value per-kartu tanpa sentuh vendor
