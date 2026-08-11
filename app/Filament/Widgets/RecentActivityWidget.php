@@ -111,7 +111,7 @@ class RecentActivityWidget extends BaseWidget
                         return 'Waktu: ' . ($data['from'] ?? '…') . ' → ' . ($data['until'] ?? '…');
                     }),
             ])
-            ->paginated([10, 25, 50]);
+            ->paginated([50, 100, 200, 'all']);
     }
 
     protected function moduleColor(string $module): string

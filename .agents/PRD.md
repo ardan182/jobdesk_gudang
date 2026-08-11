@@ -147,6 +147,7 @@ getEloquentQuery() → filter own data untuk non-Admin (via permission check)
 - **Icons:** Semua tombol Create pake `->icon('heroicon-m-plus')`
 - **Font:** Arial 14px
 - **Widget "Datang Mobil"** (dashboard): value `{total}/{status SELESAI}` → **`43/40`**, angka selesai **hijau** (`aurum-stat-value--green`); override blade stats-overview render value sebagai HTML-safe (`{!! !!}`)
+- **Widget "Terima Barang"** (dashboard): mirror Datang Mobil — value `{total}/{status SELESAI}` (mis. `14/X`, termasuk draft), angka selesai **hijau**
 
 ### 2.12 Filter UI Standard (AboveContent)
 
@@ -187,7 +188,7 @@ getEloquentQuery() → filter own data untuk non-Admin (via permission check)
   - 6 task: Retur Cabang, Retur Supplier, Datang Mobil, Terima Supplier, Keluar Barang, Kiriman Mobil
   - Non-task: Input Kirim (BranchShipment), Input SJ, Komplain PO, Pusat Dokumen, Masa Berlaku STNK/KIR, Cuti & Absensi, Master data, User, Role
 - Deskripsi memakai **label Bahasa Indonesia** (mis. "Qty Check: 10 → 15"), modul di-sync dengan **label menu**
-- Widget **Aktivitas Terakhir**: kolom **Aksi** (badge hijau Dibuat / kuning Diubah / merah Dihapus + ikon), **Menu** (badge+ikon), **Aktivitas** (wrap, rapikan data lama), ID, Referensi, User, Waktu; filter **Menu** (dinamis dari data) + **User** + **Rentang Waktu**
+- Widget **Aktivitas Terakhir**: kolom **Aksi** (badge hijau Dibuat / kuning Diubah / merah Dihapus + ikon), **Menu** (badge+ikon), **Aktivitas** (wrap, rapikan data lama), ID, Referensi, User, Waktu; filter **Menu** (dinamis dari data) + **User** + **Rentang Waktu**; pagination **default 50** (opsi 50/100/200/All)
 
 ### 2.16 Status Online User
 - Kolom **Status** di menu Users: badge **hijau "Online"** (wifi) jika user aktif dalam 10 menit terakhir, badge **abu "Offline"** (signal-slash) sebaliknya
@@ -225,6 +226,11 @@ getEloquentQuery() → filter own data untuk non-Admin (via permission check)
 - Data otomatis dari `TaskTerimaSupplier` (SELESAI); **tidak ada tombol Tambah** & delete manual (**DeleteBulk dihapus**)
 - Terima jadi draft / Terima dihapus → **SJ terkait ikut terhapus**
 - Edit SJ: `Selesai` wajib No PO (error di field, modal tetap terbuka); `tempo_hari` auto-hitung dari `tanggal_input − tanggal_datang`
+
+### 2.22 Berita Acara Komplain PO (PENDING)
+- **Tujuan:** dokumen resmi cetak Komplain PO → supplier (bukti komplain barang dari PO datang)
+- **Status:** menunggu konfirmasi team gudang & admin PO
+- **Rencana:** tombol cetak per baris → PDF dompdf dari template Blade khusus (header, data, foto, tanda tangan Supplier & Petugas Gudang); No BA berbasis `id_task`; A4 portrait
 
 ---
 

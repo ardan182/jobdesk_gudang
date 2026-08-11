@@ -306,10 +306,10 @@ Checker Kiriman input manual di menu Kiriman Mobil
 
 | Widget | Komponen | Isi | Akses |
 |--------|----------|-----|-------|
-| StatsOverviewWidget | `AurumStatsOverview`+`AurumStat` | Kartu per modul yang bisa di-view user (own/all via `view_all_data`); **Datang Mobil** value `{total}/{status SELESAI}` (mis. `43/40`) dengan **angka selesai hijau** | Semua |
+| StatsOverviewWidget | `AurumStatsOverview`+`AurumStat` | Kartu per modul yang bisa di-view user (own/all via `view_all_data`); **Datang Mobil** & **Terima Barang** value `{total}/{status SELESAI}` (mis. `43/40`, `14/X`) dengan **angka selesai hijau** | Semua |
 | ExpiringDocumentsWidget | `AurumValueList`+`ValueListItem` | STNK/KIR ≤7 hari / EXPIRED | Admin |
 | LeavesTodayWidget | `AurumValueList`+`ValueListItem` | Cuti/Sakit/Izin hari ini + divisi | Admin |
-| RecentActivityWidget | `TableWidget` | Kolom Aksi (Dibuat/Diubah/Dihapus badge+ikon), Menu badge label menu, Aktivitas readable (prettify), ID, Referensi, User, Waktu; filter Menu dinamis + User + Rentang Waktu | Semua |
+| RecentActivityWidget | `TableWidget` | Kolom Aksi (Dibuat/Diubah/Dihapus badge+ikon), Menu badge label menu, Aktivitas readable (prettify), ID, Referensi, User, Waktu; filter Menu dinamis + User + Rentang Waktu; **pagination default 50 (opsi 50/100/200/All)** | Semua |
 
 **Stats grid responsif (CSS):** mobile 1 kolom → tablet 2 → desktop 5 per baris (jika ≥5 kartu).
 **Layout dashboard:** Stats (full) → [Expiring | Cuti] setengah-setengah → RecentActivity (full).

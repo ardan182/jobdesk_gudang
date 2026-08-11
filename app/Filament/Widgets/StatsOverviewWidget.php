@@ -57,7 +57,16 @@ class StatsOverviewWidget extends AurumStatsOverview
                 'ownable' => true,
                 'model' => TaskTerimaSupplier::class,
                 'cards' => [
-                    ['label' => 'Terima Barang', 'icon' => 'heroicon-o-arrow-down-tray', 'desc' => 'Total barang diterima', 'scope' => []],
+                    [
+                        'label' => 'Terima Barang',
+                        'icon' => 'heroicon-o-arrow-down-tray',
+                        'desc' => 'Total terima / task selesai',
+                        'scope' => [],
+                        'value' => fn ($query) => $query->count()
+                            . '/<span class="aurum-stat-value--green">'
+                            . (clone $query)->where('status', 'SELESAI')->count()
+                            . '</span>',
+                    ],
                 ],
             ],
             'task_keluar_barangs' => [

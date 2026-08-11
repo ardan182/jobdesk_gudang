@@ -457,4 +457,22 @@ Role menjadi **dinamis** (CRUD via UI) dan berhenti mewariskan akses. **Akses = 
 - [x] **Retur In & Out Supplier** — tambah filter **Supplier** (dropdown searchable dari `nama_supplier` distinct) di posisi **sebelum Jenis**; `filtersFormColumns(2→3)` → 1 baris `Supplier | Jenis | Tanggal Buat`
 - [x] **Retur Masuk dari Toko** — `Tanggal Bongkar` tambah `maxDate(now())` (picker tolak tanggal masa depan) + rule server-side `before_or_equal:today` (create & edit, form sumber sama)
 - [x] **Widget "Datang Mobil"** (StatsOverviewWidget) — value format `{total}/{status SELESAI}` → **`43/40`**; angka selesai (40) di-render **hijau** via override blade `resources/views/vendor/aurum-filament-theme/widgets/stats-overview.blade.php` (`{!! !!}` utk value) + CSS `.aurum-stat-value--green { color:#22c55e }`; hormati scope own/all per user
+- [x] **Widget "Terima Barang"** — mirror Datang Mobil: value `{total}/{status SELESAI}` (mis. `14/{selesai}`, termasuk draft), angka selesai **hijau** (`aurum-stat-value--green`); desc "Total terima / task selesai"
+- [x] **⚡ Aktivitas Terakhir** (RecentActivityWidget) — pagination **default 50**, opsi **50 / 100 / 200 / All** (`->paginated([50,100,200,'all'])`)
+
+## Fase 37: Berita Acara Komplain PO 🆕 (PENDING — menunggu komunikasi team gudang & admin PO)
+
+### Tujuan
+Cetak data Komplain PO menjadi dokumen resmi **Berita Acara** untuk diserahkan ke supplier sebagai bukti komplain barang dari PO datang.
+
+### Catatan
+- Diblokir sementara: perlu konfirmasi kebutuhan dengan team gudang & admin PO (isi, format, pihak penandatangan, nomor BA).
+
+### Rencana awal
+- [ ] Tombol **"Cetak Berita Acara"** per baris Komplain PO (ikon printer)
+- [ ] Template `resources/views/exports/berita-acara-komplain.blade.php` (A4 portrait): header perusahaan + judul BA + no/tanggal + pernyataan + tabel data komplain + foto bukti + blok tanda tangan Supplier & Petugas Gudang
+- [ ] Method baru `TableExportService::streamPdfRecord()` (reuse dompdf)
+- [ ] (opsional) tombol di modal Detail + cetak semua sesuai filter
+- [ ] Foto via path absolut/base64 (dompdf)
+
 
