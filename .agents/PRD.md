@@ -232,6 +232,12 @@ getEloquentQuery() → filter own data untuk non-Admin (via permission check)
 - **Status:** menunggu konfirmasi team gudang & admin PO
 - **Rencana:** tombol cetak per baris → PDF dompdf dari template Blade khusus (header, data, foto, tanda tangan Supplier & Petugas Gudang); No BA berbasis `id_task`; A4 portrait
 
+### 2.23 Period Selector Widget Stats (PENDING)
+- **Tujuan:** total lifetime widget stats (Datang Mobil/Terima Barang/dst) membesar seiring waktu — perlu konteks periode agar angka actionable
+- **Status:** menunggu komunikasi dengan bagian gudang
+- **Keputusan disepakati:** default **"Bulan Ini"**; kartu **SJ Belum Di Cek & STNK/KIR ≤30 hari tidak terpengaruh** (global); **cukup period selector** (hari_ini/7_hari/30_hari/bulan_ini/semua), tanpa tren
+- **Rencana:** `$periode` Livewire + `periodeRange()` di StatsOverviewWidget; filter `whereDate(date_field, '>=', start)` per kartu (`created_at`; `null` utk 2 kartu khusus); `<select wire:model="periode">` di override blade stats-overview → re-render tanpa reload
+
 ---
 
 ## 3. Database

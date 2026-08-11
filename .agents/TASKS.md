@@ -475,4 +475,20 @@ Cetak data Komplain PO menjadi dokumen resmi **Berita Acara** untuk diserahkan k
 - [ ] (opsional) tombol di modal Detail + cetak semua sesuai filter
 - [ ] Foto via path absolut/base64 (dompdf)
 
+## Fase 38: Period Selector Widget Stats 🆕 (PENDING — menunggu komunikasi dengan bagian gudang)
+
+### Tujuan
+Total lifetime di kartu widget (Datang Mobil/Terima Barang/dst) akan membesar (ribuan task dalam 3 tahun) — perlu konteks waktu supaya angka actionable.
+
+### Catatan
+- Diblokir sementara: perlu komunikasi dengan bagian gudang.
+- Keputusan sudah disepakati: **default "Bulan Ini"**; kartu **SJ Belum Di Cek & STNK/KIR ≤30 hari TIDAK terpengaruh** (tetap global); **cukup period selector** (tanpa tren/delta).
+
+### Rencana awal
+- [ ] `StatsOverviewWidget`: `public string $periode = 'bulan_ini'` (hari_ini | 7_hari | 30_hari | bulan_ini | semua) + `periodeRange()`
+- [ ] Config modul tambah `date_field` (`created_at` utk semua kartu yang discope; `null` utk supplier_sjs & kendaraan_dokumens)
+- [ ] Loop kartu: `whereDate(date_field, '>=', start)` + `'<=', end` bila range & date_field ada
+- [ ] Override blade `stats-overview.blade.php`: `<select wire:model="periode">` di atas grid → Livewire re-render widget tanpa reload
+
+
 
