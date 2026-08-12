@@ -221,6 +221,14 @@ class BranchShipmentsTable
                         ->color('danger')
                         ->visible(fn () => auth()->user()?->can('delete_branch_shipments') ?? false),
                 ]),
+                Action::make('info_belum_selesai')
+                    ->label(fn () => static::countBelumSelesai() . ' Belum Selesai')
+                    ->icon('heroicon-o-clock')
+                    ->color(fn () => static::countBelumSelesai() > 0 ? 'warning' : 'success')
+                    ->tooltip('Jumlah kiriman dengan status belum Selesai (draft)')
+                    ->disabled()
+                    ->outlined()
+                    ->size(Size::Small),
             ]);
     }
 
@@ -241,5 +249,16 @@ class BranchShipmentsTable
             'Dibuat' => 'user.name',
             'Keterangan' => 'keterangan',
         ];
+    }
+
+    protected static function countBelumSelesai(): int
+    {
+        $query = \App\Models\BranchShipment::query()->where('status', '!=', 'selesai');
+
+        if (! auth()->user()?->can('view_all_data')) {
+            $query->where('user_id', auth()->id());
+        }
+
+        return $query->count();
     }
 }
