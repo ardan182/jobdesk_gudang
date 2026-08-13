@@ -49,10 +49,11 @@ class TaskKirimanMobilForm
                             DatePicker::make('tanggal_kirim')
                                 ->label('Tanggal Kirim')
                                 ->prefixIcon('heroicon-m-calendar-days')
-                                ->minDate(today())
+                                ->minDate(fn ($component) => $component?->getRecord() ? null : today())
                                 ->native(false)
                                 ->displayFormat('d/m/Y')
-                                ->rules(['nullable', 'date', 'after_or_equal:today']),
+                                ->rules(['nullable', 'date'])
+                                ->disabled(fn ($component) => $component?->getRecord() !== null),
                             Select::make('branch_shipments')
                                 ->label('Pilih SJ')
                                 ->prefixIcon('heroicon-m-document-text')
@@ -60,6 +61,7 @@ class TaskKirimanMobilForm
                                 ->searchable()
                                 ->preload()
                                 ->live()
+                                ->disabled(fn ($component) => $component?->getRecord() !== null)
                                 ->options(function ($get, $record) {
                             $cabang = $get('cabang') ?? $record?->cabang;
                             if (!$cabang) return [];
@@ -178,6 +180,7 @@ class TaskKirimanMobilForm
                         ->seconds(false)
                         ->step(60)
                         ->extraAttributes(['lang' => 'id-ID'])
+                        ->required(fn ($get) => $get('status') === 'selesai')
                         ->live()
                         ->afterStateUpdated(function ($state, $set, $get) {
                             $berangkat = $get('jam_berangkat');
