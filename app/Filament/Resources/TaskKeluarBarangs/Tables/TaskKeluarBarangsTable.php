@@ -89,14 +89,6 @@ class TaskKeluarBarangsTable
                     })
                     ->toggleable()
                     ->grow(false),
-                TextColumn::make('checker_status')
-                    ->label('Checker')
-                    ->badge()
-                    ->color(fn ($record) => in_array($record->status, ['selesai', 'siap kirim']) ? 'success' : 'gray')
-                    ->formatStateUsing(fn ($record) => in_array($record->status, ['selesai', 'siap kirim']) ? 'Checked' : 'Belum di Check')
-                    ->getStateUsing(fn ($record) => $record->status)
-                    ->toggleable()
-                    ->grow(false),
                 TextColumn::make('diserahkan_kepada')
                     ->label('Diserahkan')
                     ->searchable()

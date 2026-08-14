@@ -97,6 +97,13 @@ class BranchShipmentsTable
                     })
                     ->toggleable()
                     ->grow(false),
+                TextColumn::make('checker_status')
+                    ->label('Checker')
+                    ->badge()
+                    ->color(fn ($record) => $this->getCheckerStatus($record) === 'checked' ? 'success' : 'gray')
+                    ->formatStateUsing(fn ($record) => $this->getCheckerStatus($record) === 'checked' ? 'Checked' : 'Belum di Check')
+                    ->toggleable()
+                    ->grow(false),
                 TextColumn::make('user.name')
                     ->label('Dibuat')
                     ->searchable()
@@ -260,5 +267,15 @@ class BranchShipmentsTable
         }
 
         return $query->count();
+    }
+
+    private function getCheckerStatus($record): string
+    {
+        if (!$record) return 'belum_di_check';
+        
+        $keluarBarang = $record->keluarBarangs()->first();
+        if (!$keluarBarang) return 'belum_di_check';
+        
+        return in_array($keluarBarang->status, ['selesai', 'siap kirim']) ? 'checked' : 'belum_di_check';
     }
 }
