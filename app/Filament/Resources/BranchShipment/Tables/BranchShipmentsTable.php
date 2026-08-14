@@ -102,12 +102,10 @@ class BranchShipmentsTable
                     ->label('Checker')
                     ->badge()
                     ->sortable(query: function ($query, $direction) {
-                        return $query->orderBy(
-                            \Illuminate\Database\Query\Expression::raw(
-                                "(SELECT COALESCE(tkb.status, 'belum_di_check') FROM task_keluar_barangs tkb WHERE tkb.branch_shipment_id = branch_shipments.id LIMIT 1)"
-                            ),
-                            $direction
-                        );
+                        return $query
+                            ->leftJoin('task_keluar_barangs', 'task_keluar_barangs.branch_shipment_id', '=', 'branch_shipments.id')
+                            ->orderBy('task_keluar_barangs.status', $direction)
+                            ->select('branch_shipments.*');
                     })
                     ->getStateUsing(function ($record) {
                         if (!$record) return 'belum_di_check';

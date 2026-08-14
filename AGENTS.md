@@ -140,3 +140,28 @@ Rules:
 - If graphify-out/wiki/index.md exists, use it for broad navigation instead of raw source browsing.
 - Read graphify-out/GRAPH_REPORT.md only for broad architecture review or when query/path/explain do not surface enough context.
 - After modifying code, run `graphify update .` to keep the graph current (AST-only, no API cost).
+
+## Workflow & Conventions
+
+### Git & Commits
+- **JANGAN PUSH KE GITHUB** setelah setiap perubahan. Push hanya saat user memberi instruksi `push` atau `push ke github`.
+- Commit setelah perubahan kompleks, tapi jangan push sampai ada instruksi.
+- Commit message format: `feat:` (fitur baru), `fix:` (bug fix), `refactor:` (restructure), `docs:` (dokumentasi)
+
+### Filament Tables & Columns
+- **Sortable column dengan join relationship:** gunakan `->sortable(query: function ($query, $direction) { return $query->leftJoin(...)->orderBy(...)->select('main_table.*'); })`
+- **JANGAN gunakan `Expression::raw()`** di Laravel 13 — gunakan `leftJoin()` + `orderBy()` atau `DB::raw()` jika perlu raw SQL
+- **TextColumn getStateUsing():** define logic untuk retrieve state dari relationship; `color()` dan `formatStateUsing()` pakai `$state` hasil dari `getStateUsing()`, bukan `$record`
+- **Private method di Table class:** tidak bisa diakses dari closure `fn ($record)` — gunakan logic langsung di closure atau static method
+
+### Features Implemented
+1. **Kiriman Mobil (TaskKirimanMobil)** — Menu "Kiriman Mobil"
+   - Disable `tanggal_kirim` & `branch_shipments` saat edit (read-only field)
+   - `jam_tiba` required hanya saat status = 'selesai'
+   - Sortable di semua kolom utama
+
+2. **Input Kirim Barang (BranchShipment)** — Menu "Input Kirim Barang"
+   - Kolom "Checker" (badge) menampilkan status check dari TaskKeluarBarang
+   - Status = 'selesai' or 'siap kirim' → "Checked" (green badge)
+   - Status = 'draft' or tidak ada record → "Belum di Check" (gray badge)
+   - Sortable kolom "Status" & "Checker" (via leftJoin dengan task_keluar_barangs)
