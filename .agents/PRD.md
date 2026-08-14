@@ -238,6 +238,13 @@ getEloquentQuery() → filter own data untuk non-Admin (via permission check)
 - **Keputusan disepakati:** default **"Bulan Ini"**; kartu **SJ Belum Di Cek & STNK/KIR ≤30 hari tidak terpengaruh** (global); **cukup period selector** (hari_ini/7_hari/30_hari/bulan_ini/semua), tanpa tren
 - **Rencana:** `$periode` Livewire + `periodeRange()` di StatsOverviewWidget; filter `whereDate(date_field, '>=', start)` per kartu (`created_at`; `null` utk 2 kartu khusus); `<select wire:model="periode">` di override blade stats-overview → re-render tanpa reload
 
+### 2.24 Team Chat — Plugin `qalainau/filament-team-chat` (PENDING)
+- **Tujuan:** chat antar user (DM + channel) di panel — komunikasi team gudang ↔ admin PO
+- **Kompatibilitas:** Filament v5.x / Laravel 13 / PHP ^8.3 ✓ (stack cocok)
+- **Akses (RBAC):** permission `view_team_chat` diset di Users role; middleware `EnsureTeamChatAccess` (403); hide nav via renderHook utk user tanpa izin
+- **Instalasi:** composer require → publish migration (`tc_*`) → trait `HasTeamChat` di User → `->plugin(FilamentTeamChatPlugin::make())` → ⚠️ verifikasi build Tailwind (`@source` views plugin) krn panel pakai Aurum → seed permission
+- **Risiko:** plugin Beta, health 70/100 (komunitas); Livewire polling 3–5 dtk
+
 ---
 
 ## 3. Database

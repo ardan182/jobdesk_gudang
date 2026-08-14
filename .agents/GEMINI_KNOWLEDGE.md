@@ -630,3 +630,11 @@ Kolom: **Aksi** (badge+ikon `Dibuat`/`Diubah`/`Dihapus` warna success/warning/da
 - **Retur In & Out Supplier:** filter **Supplier** (SelectFilter searchable, opsi dari `nama_supplier` distinct) di **posisi pertama** (sebelum Jenis); `filtersFormColumns(3)` → 1 baris `Supplier | Jenis | Tanggal Buat`
 - **Widget Datang Mobil:** value `total/selesai` — `(clone $query)->where('status','SELESAI')->count()`; angka selesai dibungkus `<span class="aurum-stat-value--green">` (CSS `color:#22c55e`)
 - **Override blade** `resources/views/vendor/aurum-filament-theme/widgets/stats-overview.blade.php`: value di-render `{!! !!}` (HTML-safe, value hanya dari kode widget); deskripsi tetap escaped — pola untuk styling value per-kartu tanpa sentuh vendor
+
+## 30. Plugin Team Chat (PENDING)
+
+- **Plugin:** `qalainau/filament-team-chat` — Slack-like chat di panel (channels, DM, threads, reactions, @mention, file, unread); **kompatibel** Filament v5.x / Laravel 13 / PHP ^8.3; zero dependency eksternal (Livewire polling)
+- **Cara register:** `FilamentTeamChatPlugin::make()` → page `Filament\TeamChat\Pages\TeamChat` (slug `team-chat`); `HasTeamChat` trait di `User`; tabel `tc_*`
+- **Gate akses RBAC:** permission `view_team_chat` di Users role; middleware `EnsureTeamChatAccess` (route name `.team-chat` tanpa izin → 403); hide nav via renderHook CSS (`a[href$="/team-chat"]{display:none}`) utk user tanpa izin
+- **⚠️ Tailwind:** class plugin harus ter-compile — verifikasi CSS panel mana yang diload (panel pakai Aurum plugin; tambah `@source vendor/qalainau/.../views/**/*` di theme yang benar, lalu `npm run build`)
+- **Risiko:** Beta, health 70/100 (komunitas); polling 3–5 dtk

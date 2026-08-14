@@ -490,5 +490,33 @@ Total lifetime di kartu widget (Datang Mobil/Terima Barang/dst) akan membesar (r
 - [ ] Loop kartu: `whereDate(date_field, '>=', start)` + `'<=', end` bila range & date_field ada
 - [ ] Override blade `stats-overview.blade.php`: `<select wire:model="periode">` di atas grid → Livewire re-render widget tanpa reload
 
+## Fase 39: Plugin Team Chat (qalainau/filament-team-chat) 🆕 (PENDING)
+
+### Tujuan
+Chat antar user (DM + channel) di dalam panel — komunikasi internal team gudang ↔ admin PO.
+
+### Status
+- **Kompatibilitas terverifikasi:** plugin mendukung Filament v5.x / Laravel 13 / PHP ^8.3 (stack kita cocok)
+- PENDING: kerjakan nanti setelah cari bug lain; perlu konfirmasi default role `view_team_chat` (Admin saja / semua)
+
+### Gate Akses (RBAC, akses diset di Users role)
+- [ ] Permission **`view_team_chat`** (view-only) → `PermissionSeeder` template + `PermissionMenu` (form User "Akses Menu & Fitur", opsi "Team Chat")
+- [ ] Middleware `EnsureTeamChatAccess` di `$panel->authMiddleware([...])` — route name mengandung `.team-chat` + tanpa `can('view_team_chat')` → `abort(403)`
+- [ ] Hide nav via renderHook `AdminPanelProvider`: CSS `a[href$="/team-chat"]{display:none!important}` disuntik hanya utk user tanpa izin (server-side)
+
+### Rencana instalasi
+- [ ] `composer require qalainau/filament-team-chat`
+- [ ] Publish migration `team-chat-migrations` → `php artisan migrate` (tabel `tc_*`)
+- [ ] `User` model: `use Filament\TeamChat\Concerns\HasTeamChat;`
+- [ ] `AdminPanelProvider`: `->plugin(FilamentTeamChatPlugin::make())` + middleware + renderHook
+- [ ] ⚠️ **Tailwind theme**: plugin butuh `@source '.../vendor/qalainau/filament-team-chat/resources/views/**/*'` ter-compile di CSS panel — VERIFIKASI mana CSS yang benar-benar diload panel (pakai Aurum plugin, bukan theme.css default)
+- [ ] `db:seed --class=PermissionSeeder` (setelah tambah `view_team_chat`)
+- [ ] Opsional: `php artisan make:notifications-table` utk notifikasi @mention/DM
+
+### Risiko
+- Plugin **Beta**, health 70/100 (komunitas, tanpa review keamanan resmi) — data chat di DB sendiri
+- Livewire polling 3–5 dtk (beban kecil, cocok `QUEUE_CONNECTION=sync`)
+
+
 
 
