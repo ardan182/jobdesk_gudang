@@ -85,6 +85,7 @@ class BranchShipmentsTable
                 TextColumn::make('status')
                     ->label('Status')
                     ->badge()
+                    ->sortable()
                     ->color(fn (string $state): string => match ($state) {
                         'draft' => 'warning',
                         'selesai' => 'success',
@@ -100,8 +101,22 @@ class BranchShipmentsTable
                 TextColumn::make('checker_status')
                     ->label('Checker')
                     ->badge()
-                    ->color(fn ($record) => $this->getCheckerStatus($record) === 'checked' ? 'success' : 'gray')
-                    ->formatStateUsing(fn ($record) => $this->getCheckerStatus($record) === 'checked' ? 'Checked' : 'Belum di Check')
+                    ->sortable(query: function ($query, $direction) {
+                        return $query->orderBy(
+                            \Illuminate\Database\Query\Expression::raw(
+                                "(SELECT COALESCE(tkb.status, 'belum_di_check') FROM task_keluar_barangs tkb WHERE tkb.branch_shipment_id = branch_shipments.id LIMIT 1)"
+                            ),
+                            $direction
+                        );
+                    })
+                    ->getStateUsing(function ($record) {
+                        if (!$record) return 'belum_di_check';
+                        $keluarBarang = $record->keluarBarangs()->first();
+                        if (!$keluarBarang) return 'belum_di_check';
+                        return in_array($keluarBarang->status, ['selesai', 'siap kirim']) ? 'checked' : 'belum_di_check';
+                    })
+                    ->color(fn ($state) => $state === 'checked' ? 'success' : 'gray')
+                    ->formatStateUsing(fn ($state) => $state === 'checked' ? 'Checked' : 'Belum di Check')
                     ->toggleable()
                     ->grow(false),
                 TextColumn::make('user.name')
@@ -267,15 +282,5 @@ class BranchShipmentsTable
         }
 
         return $query->count();
-    }
-
-    private function getCheckerStatus($record): string
-    {
-        if (!$record) return 'belum_di_check';
-        
-        $keluarBarang = $record->keluarBarangs()->first();
-        if (!$keluarBarang) return 'belum_di_check';
-        
-        return in_array($keluarBarang->status, ['selesai', 'siap kirim']) ? 'checked' : 'belum_di_check';
     }
 }
