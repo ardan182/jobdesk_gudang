@@ -438,13 +438,13 @@ Role menjadi **dinamis** (CRUD via UI) dan berhenti mewariskan akses. **Akses = 
 - [x] `Potong Nota` pindah ke **Retur Keluar** (badge danger); Retur Masuk = Servis/Ganti Barang
 - [x] `SupplierReturn` create/update/delete → `truck->syncStatus()`
 
-## Fase 34: Datang Mobil — Status Otomatis + Sync 🔄
+## Fase 34: Datang Mobil — Status Otomatis + Sync ✅
 
 - [x] Hapus field `status` form → truk baru `MENGANTRI` (otomatis)
 - [x] Modal `Width::SevenExtraLarge`
 - [x] `syncStatus()` ditulis ulang: truk SELESAI bila semua kewajiban beres per `jenis_kiriman` — `DATANG` (terima selesai), `RETUR` (retur selesai), `DATANG & RETUR` (**keduanya**); RETUR masih draft/belum → PROSES
 - [x] Guard hapus truk ditambah untuk **SupplierReturn** (mirror Terima)
-- [ ] Command `app:sync-truck-status` (healing status lama) — **pending**
+- [x] ~~Command `app:sync-truck-status`~~ — dibatalkan (data diinput dari nol, tidak ada status lama yang perlu di-heal)
 
 ## Fase 35: Input SJ — Proteksi Delete + Lifecycle ✅
 
@@ -516,6 +516,28 @@ Chat antar user (DM + channel) di dalam panel — komunikasi internal team gudan
 ### Risiko
 - Plugin **Beta**, health 70/100 (komunitas, tanpa review keamanan resmi) — data chat di DB sendiri
 - Livewire polling 3–5 dtk (beban kecil, cocok `QUEUE_CONNECTION=sync`)
+
+## Fase 40: Backup Database ✅
+
+### Tujuan
+Membuat fitur backup data transaksi (database) dan file upload (Pusat Dokumen + Foto Komplain) secara manual dari admin panel, aman dijalankan di server Hostinger (shared hosting) tanpa exec/mysqldump.
+
+### Tasks
+- [x] **Config Filesystem** — tambahkan disk `backups` dengan root `storage/app/backups` di `config/filesystems.php`
+- [x] **Backup Service** — buat class `app/Services/BackupService.php` dengan fitur:
+  - Dump database native PHP (PDO queries, `SHOW CREATE TABLE` + data rows formatted as SQL script)
+  - Compress SQL dump ke `.sql.gz` menggunakan `gzencode()` native
+  - Zip database + file upload `storage/app/private` + `storage/app/public` menggunakan `ZipArchive` (kecuali folder backups itu sendiri)
+  - List files di folder backups dengan metadata (Nama, Ukuran, Tanggal Dibuat)
+  - Hapus file backup
+  - Retention limit: otomatis pertahankan maksimal 10 file backup teranyar
+- [x] **Filament Page & UI** — buat `app/Filament/Pages/ManageBackups.php` + view blade:
+  - Daftarkan di grup navigasi **Pengaturan** dengan icon `heroicon-o-circle-stack`
+  - Proteksi akses hanya untuk super admin (`isSuperAdmin()`)
+  - Form action **"Buat Backup"** berupa modal dengan input Checkbox **"Sertakan file upload"**
+  - Table menggunakan `InteractsWithTable` untuk list data backup beserta row actions: **Download** (StreamedResponse) dan **Hapus**
+- [ ] **Dokumentasi & Git** — update `.gitignore` (jika backups belum masuk default local) dan catat di riwayat commit
+
 
 
 

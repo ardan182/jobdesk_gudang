@@ -1,6 +1,6 @@
 # PRD — Jobdesk Gudang AP
 
-**Versi:** 2.8 | **Tanggal:** 9 Agustus 2026
+**Versi:** 2.9 | **Tanggal:** 19 Agustus 2026
 
 ---
 
@@ -245,6 +245,16 @@ getEloquentQuery() → filter own data untuk non-Admin (via permission check)
 - **Instalasi:** composer require → publish migration (`tc_*`) → trait `HasTeamChat` di User → `->plugin(FilamentTeamChatPlugin::make())` → ⚠️ verifikasi build Tailwind (`@source` views plugin) krn panel pakai Aurum → seed permission
 - **Risiko:** plugin Beta, health 70/100 (komunitas); Livewire polling 3–5 dtk
 
+### 2.25 Backup Database
+- **Tujuan:** Membuat cadangan data transaksi (database) dan file upload (foto, dokumen) secara manual dari admin panel.
+- **Cakupan:** Pilihan checkbox:
+  1. Database saja: menghasilkan file dump `.sql` (atau dikompresi `.sql.gz`).
+  2. Database + Files: menghasilkan file `.zip` berisi dump database `.sql` beserta seluruh file upload di `storage/app/private` (Pusat Dokumen) dan `storage/app/public` (Foto Komplain).
+- **Mekanisme & Kompatibilitas Hostinger:** Murni PHP menggunakan PDO untuk database dump (menghindari ketergantungan pada binary `mysqldump` atau fungsi `exec`/`shell_exec` yang sering dinonaktifkan di shared hosting). File zipping menggunakan class PHP `ZipArchive` (native).
+- **Penyimpanan:** Disimpan secara aman di server (`storage/app/backups/`). Terdapat retensi otomatis untuk menyimpan maksimal 10 file backup terakhir (menghapus yang terlama agar menghemat disk space).
+- **Akses:** Khusus Super Admin saja (`isSuperAdmin()` bypass), tanpa penambahan permission RBAC baru.
+- **UI:** Halaman "Backup Database" di bawah grup **Pengaturan** yang menampilkan list file backup (Nama File, Ukuran, Tanggal Dibuat) dilengkapi tombol **Buat Backup** (modal + checkbox pilihan cakupan), tombol **Download** (stream download), dan tombol **Hapus**.
+
 ---
 
 ## 3. Database
@@ -281,7 +291,7 @@ Semua punya: `id_task` (indexed), `user_id` (FK).
 | Penerimaan | Input SJ Supplier, Datang Mobil Supplier, Checker Terima Barang Supplier |
 | Pengiriman | Input Kirim Barang, Checker Keluar Barang, Kiriman Mobil |
 | Administrasi (Admin) | Cuti & Absensi, **Pusat Dokumen** |
-| Pengaturan (Admin) | Users |
+| Pengaturan (Admin) | Users, **Backup Database** |
 | (toolbar) | Export XLSX/PDF (custom service) |
 
 ### 2.11 Komplain PO

@@ -30,6 +30,13 @@ return [
 
     'disks' => [
 
+        'backups' => [
+            'driver' => 'local',
+            'root' => storage_path('app/backups'),
+            'throw' => false,
+            'report' => false,
+        ],
+
         'local' => [
             'driver' => 'local',
             'root' => storage_path('app/private'),
