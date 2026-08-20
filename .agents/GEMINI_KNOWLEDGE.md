@@ -1,6 +1,6 @@
 # Project Context: Jobdesk Gudang AP
 
-**Versi:** 2.5 | **Tanggal:** 9 Agustus 2026
+**Versi:** 2.6 | **Tanggal:** 20 Agustus 2026
 
 ---
 
@@ -286,6 +286,11 @@ Checker Kiriman input manual di menu Kiriman Mobil
   - Style: `->outlined()->size(Size::Small)` + label + icon (enum `Filament\Support\Enums\Size`)
   - Pakai `getFilteredTableQuery()` → hormati filter aktif + scope role
   - **Deploy:** Datang Mobil, Terima Supplier, Input SJ, Input Kirim Barang, Checker Keluar (helper→nama), Kiriman Mobil (formatters), Cuti & Absensi (Papan Absensi matrix, border XLSX)
+  - **⚡ Pilihan Kolom (Fase 41):** Export XLSX/PDF kini buka **modal Filament Action bawaan** (bukan Livewire custom) berisi CheckboxList "Pilih Kolom yang Diexport" → export hanya kolom tercentang.
+    - Helper: `TableExportService::exportColumnCheckboxList(array $columns): CheckboxList` (label sebagai value, default semua tercentang, `->bulkToggleable()` = tombol Pilih/Batal Semua, `->columns(2)`) + `TableExportService::filterExportColumns(array $columns, array $selectedLabels): array` (filter `ARRAY_FILTER_USE_KEY`)
+    - Pola action: `->form([TableExportService::exportColumnCheckboxList(self::exportColumns())])` + `->modalHeading('Export XLSX/PDF — Pilih Kolom')` + `->modalSubmitActionLabel('Export')` + action → `TableExportService::filterExportColumns(self::exportColumns(), $data['columns'])`
+    - Kolom baru di `exportColumns()` tabel otomatis muncul di checkbox (dibuild dari `array_keys`); formatters keyed by path otomatis terfilter
+    - Status: sudah di **Datang Mobil Supplier**; 7 menu lain (Terima, Keluar, Kiriman, Retur Cabang, SJ, BranchShipment, Komplain PO) menyusul; ManageLeaves (array-based) perlu pendekatan terpisah
 
 ---
 

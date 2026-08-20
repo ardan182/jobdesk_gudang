@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Filament\Forms\Components\CheckboxList;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use OpenSpout\Common\Entity\Row;
@@ -14,6 +15,36 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class TableExportService
 {
+    /**
+     * Checkbox list untuk memilih kolom yang akan diexport (label sebagai value).
+     *
+     * @param  array<string, string>  $columns  label => attribute path
+     */
+    public static function exportColumnCheckboxList(array $columns): CheckboxList
+    {
+        return CheckboxList::make('columns')
+            ->label('Pilih Kolom yang Diexport')
+            ->options(array_combine(array_keys($columns), array_keys($columns)))
+            ->default(array_keys($columns))
+            ->bulkToggleable()
+            ->columns(2);
+    }
+
+    /**
+     * Filter array kolom (label => path) hanya label yang dipilih.
+     *
+     * @param  array<string, string>  $columns
+     * @param  array<int|string>  $selectedLabels
+     * @return array<string, string>
+     */
+    public static function filterExportColumns(array $columns, array $selectedLabels): array
+    {
+        return array_filter(
+            $columns,
+            fn (string $label): bool => in_array($label, $selectedLabels, true),
+            ARRAY_FILTER_USE_KEY,
+        );
+    }
     /**
      * @param  array<string, string>  $columns  label => attribute path (support dot-notation)
      * @param  array<string, callable>  $formatters  attribute path => callable($record): string

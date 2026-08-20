@@ -536,7 +536,37 @@ Membuat fitur backup data transaksi (database) dan file upload (Pusat Dokumen + 
   - Proteksi akses hanya untuk super admin (`isSuperAdmin()`)
   - Form action **"Buat Backup"** berupa modal dengan input Checkbox **"Sertakan file upload"**
   - Table menggunakan `InteractsWithTable` untuk list data backup beserta row actions: **Download** (StreamedResponse) dan **Hapus**
-- [ ] **Dokumentasi & Git** — update `.gitignore` (jika backups belum masuk default local) dan catat di riwayat commit
+- [x] **Dokumentasi & Git** — update `.gitignore` (jika backups belum masuk default local) dan catat di riwayat commit
+
+## Fase 41: Export Kolom Pilihan (Checkbox) 🔄
+
+### Tujuan
+Saat export XLSX/PDF, user bisa memilih kolom mana saja yang ikut diexport lewat modal checkbox — tidak selalu semua kolom dari `exportColumns()`.
+
+### Pola (seragam untuk semua menu)
+- Click Export → **modal Filament Action** (bawaan, bukan Livewire custom) berisi `CheckboxList` "Pilih Kolom yang Diexport"
+- Semua kolom tercentang default; ada tombol **Pilih Semua / Batal Semua** (`->bulkToggleable()`); layout **2 kolom**
+- Submit → export hanya kolom yang dipilih; filter query tetap dihormati (`getFilteredTableQuery()`)
+- **Penting (server):** penambahan apa pun ke `exportColumns()` di tabel otomatis muncul di checkbox (dibuild dari `array_keys`)
+
+### Tasks
+- [x] **Helper reusable** — `TableExportService::exportColumnCheckboxList(array $columns): CheckboxList` (label sebagai value, default semua, bulk toggle, columns 2) + `TableExportService::filterExportColumns(array $columns, array $selectedLabels): array` (filter `ARR::FILTER_USE_KEY`) di `app/Services/TableExportService.php`
+- [x] **Datang Mobil Supplier** — `export_xlsx` & `export_pdf` di `TaskDatangMobilSuppliersTable` diberi `->form([exportColumnCheckboxList(...)])`, `->modalHeading('Export XLSX/PDF — Pilih Kolom')`, `->modalSubmitActionLabel('Export')`, action pakai `filterExportColumns(self::exportColumns(), $data['columns'])`
+- [ ] **Sisa 7 menu** (terapkan pola sama):
+  - TaskTerimaSuppliers (Checker Terima)
+  - TaskKeluarBarangs (Checker Keluar)
+  - TaskKirimanMobils (Kiriman Mobil)
+  - TaskReturCabangs (Retur Masuk Toko)
+  - SupplierSj (Input SJ Supplier)
+  - BranchShipment (Input Kirim Barang)
+  - KomplainPo (Komplain PO)
+- [ ] **ManageLeaves (Papan Absensi)** — DICEK: kolom matriks hari (01..31) dinamis; jika perlu pilihan kolom, pakai helper array-based; jika tidak perlu, biarkan (dokumentasikan keputusan)
+- [ ] **Test** — `ExportColumnSelectionTest` (page render + mount action export tanpa error); jalankan `phpunit` + `graphify update .`
+
+### Catatan
+- Formatters otomatis ter-filter karena keyed by path — formatter untuk kolom yang tidak dipilih tidak dipanggil
+- ManageLeaves memakai jalur `streamXlsxFromRows`/`streamPdfFromRows` (array-based) — pola checkbox perlu pendekatan berbeda (pilih header index) jika diminta
+- Dependensi: `Filament\Forms\Components\CheckboxList` (sudah tersedia) — tanpa library baru
 
 
 

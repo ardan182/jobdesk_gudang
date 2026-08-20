@@ -249,6 +249,14 @@ class BranchShipmentsTable
                     ->disabled()
                     ->outlined()
                     ->size(Size::Small),
+                Action::make('info_belum_di_check')
+                    ->label(fn () => static::countBelumDiCheck() . ' Belum di Check')
+                    ->icon('heroicon-o-clock')
+                    ->color(fn () => static::countBelumDiCheck() > 0 ? 'warning' : 'success')
+                    ->tooltip('Jumlah kiriman yang belum di-check di menu Checker Keluar Barang')
+                    ->disabled()
+                    ->outlined()
+                    ->size(Size::Small),
             ]);
     }
 
@@ -274,6 +282,18 @@ class BranchShipmentsTable
     protected static function countBelumSelesai(): int
     {
         $query = \App\Models\BranchShipment::query()->where('status', '!=', 'selesai');
+
+        if (! auth()->user()?->can('view_all_data')) {
+            $query->where('user_id', auth()->id());
+        }
+
+        return $query->count();
+    }
+
+    protected static function countBelumDiCheck(): int
+    {
+        $query = \App\Models\BranchShipment::query()
+            ->whereDoesntHave('keluarBarangs', fn ($q) => $q->whereIn('status', ['selesai', 'siap kirim']));
 
         if (! auth()->user()?->can('view_all_data')) {
             $query->where('user_id', auth()->id());

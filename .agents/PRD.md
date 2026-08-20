@@ -1,6 +1,6 @@
 # PRD — Jobdesk Gudang AP
 
-**Versi:** 2.9 | **Tanggal:** 19 Agustus 2026
+**Versi:** 3.0 | **Tanggal:** 20 Agustus 2026
 
 ---
 
@@ -254,6 +254,16 @@ getEloquentQuery() → filter own data untuk non-Admin (via permission check)
 - **Penyimpanan:** Disimpan secara aman di server (`storage/app/backups/`). Terdapat retensi otomatis untuk menyimpan maksimal 10 file backup terakhir (menghapus yang terlama agar menghemat disk space).
 - **Akses:** Khusus Super Admin saja (`isSuperAdmin()` bypass), tanpa penambahan permission RBAC baru.
 - **UI:** Halaman "Backup Database" di bawah grup **Pengaturan** yang menampilkan list file backup (Nama File, Ukuran, Tanggal Dibuat) dilengkapi tombol **Buat Backup** (modal + checkbox pilihan cakupan), tombol **Download** (stream download), dan tombol **Hapus**.
+
+### 2.26 Export dengan Pilihan Kolom (Checkbox)
+- **Tujuan:** Pada menu yang punya tombol Export XLSX/PDF (custom `TableExportService`), user bisa memilih kolom mana saja yang ikut diexport.
+- **Pola UI (seragam):** Klik Export → modal Filament Action bawaan (bukan Livewire custom) berisi **CheckboxList "Pilih Kolom yang Diexport"** → pilih kolom → Export. Semua kolom tercentang default, ada tombol **Pilih Semua/Batal Semua** (`bulkToggleable`), layout 2 kolom, tombol submit berlabel "Export".
+- **Implementasi:** Dua helper di `App\Services\TableExportService`:
+  - `exportColumnCheckboxList(array $columns): CheckboxList` — build dari `array_keys` label; penambahan kolom di `exportColumns()` menu otomatis muncul di checkbox.
+  - `filterExportColumns(array $columns, array $selectedLabels): array` — filter `ARRAY_FILTER_USE_KEY`.
+  - Aksi `export_xlsx`/`export_pdf` di setiap tabel: `->form([...])` + `->modalHeading('Export XLSX/PDF — Pilih Kolom')` + `->modalSubmitActionLabel('Export')` + action memanggil `filterExportColumns(self::exportColumns(), $data['columns'])`.
+- **Formatters:** otomatis diterapkan hanya untuk kolom terpilih (keyed by path), tidak perlu filter manual.
+- **Status:** Sudah diterapkan di **Datang Mobil Supplier**; menyusul di 7 menu task lainnya (Terima, Keluar, Kiriman, Retur Cabang, SJ Supplier, BranchShipment, Komplain PO). **Papan Absensi (ManageLeaves)** memakai jalur array-based — perlu pendekatan terpisah jika dipilih.
 
 ---
 

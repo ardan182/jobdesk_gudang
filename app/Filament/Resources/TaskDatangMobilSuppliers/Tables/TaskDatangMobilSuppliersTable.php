@@ -202,9 +202,14 @@ class TaskDatangMobilSuppliersTable
                     ->color('success')
                     ->outlined()
                     ->size(Size::Small)
-                    ->action(fn (Action $action) => TableExportService::streamXlsx(
+                    ->modalHeading('Export XLSX — Pilih Kolom')
+                    ->modalSubmitActionLabel('Export')
+                    ->form([
+                        TableExportService::exportColumnCheckboxList(self::exportColumns()),
+                    ])
+                    ->action(fn (Action $action, array $data) => TableExportService::streamXlsx(
                         $action->getLivewire()->getFilteredTableQuery(),
-                        self::exportColumns(),
+                        TableExportService::filterExportColumns(self::exportColumns(), $data['columns']),
                         'datang-mobil-supplier',
                     )),
                 Action::make('export_pdf')
@@ -213,9 +218,14 @@ class TaskDatangMobilSuppliersTable
                     ->color('danger')
                     ->outlined()
                     ->size(Size::Small)
-                    ->action(fn (Action $action) => TableExportService::streamPdf(
+                    ->modalHeading('Export PDF — Pilih Kolom')
+                    ->modalSubmitActionLabel('Export')
+                    ->form([
+                        TableExportService::exportColumnCheckboxList(self::exportColumns()),
+                    ])
+                    ->action(fn (Action $action, array $data) => TableExportService::streamPdf(
                         $action->getLivewire()->getFilteredTableQuery(),
-                        self::exportColumns(),
+                        TableExportService::filterExportColumns(self::exportColumns(), $data['columns']),
                         'datang-mobil-supplier',
                     )),
                 BulkActionGroup::make([
