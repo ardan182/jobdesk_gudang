@@ -35,7 +35,7 @@ class SupplierSjsTable
                     ->label('ID Task')
                     ->searchable()
                     ->sortable()
-                    ->toggleable()
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->grow(false),
                 TextColumn::make('nama_supplier')
                     ->label('Nama Supplier')

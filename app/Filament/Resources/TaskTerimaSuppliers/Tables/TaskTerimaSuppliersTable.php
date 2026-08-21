@@ -33,7 +33,7 @@ class TaskTerimaSuppliersTable
                     ->label('ID Task')
                     ->searchable()
                     ->sortable()
-                    ->toggleable()
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->grow(false),
                 TextColumn::make('arrivalSupplierTruck.supplier.nama_supplier')
                     ->label('Supplier')

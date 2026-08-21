@@ -1,6 +1,6 @@
 # Project Context: Jobdesk Gudang AP
 
-**Versi:** 2.6 | **Tanggal:** 20 Agustus 2026
+**Versi:** 2.7 | **Tanggal:** 21 Agustus 2026
 
 ---
 
@@ -306,6 +306,7 @@ Checker Kiriman input manual di menu Kiriman Mobil
 - **Single form input** — no Repeater multi-row
 - **Light mode border:** input/modal/table 1.5px `#C8C4BC`
 - **Footer:** text center "© 2026 jobdesk MSK. All rights reserved."
+- **ID Task column default hidden:** Di 9 menu tabel (Kiriman Mobil, Komplain PO, Checker Keluar Barang, Datang Mobil Supplier, Checker Terima Barang, Input SJ Supplier, Retur Masuk dari Toko, Input Kirim Barang, Retur In & Out Supplier), kolom **ID Task** default **tersembunyi** (`isToggledHiddenByDefault: true`). User bisa centang checkbox di toggle kolom untuk menampilkannya. Implementasi: `TextColumn::make('id_task')->toggleable(isToggledHiddenByDefault: true)`.
 
 ## 11.1 Dashboard Widgets (Aurum)
 

@@ -35,7 +35,7 @@ class TaskDatangMobilSuppliersTable
                     ->label('ID Task')
                     ->searchable()
                     ->sortable()
-                    ->toggleable()
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->grow(false),
                 TextColumn::make('supplier.nama_supplier')
                     ->label('Supplier')

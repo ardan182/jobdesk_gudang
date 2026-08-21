@@ -33,7 +33,7 @@ class TaskReturCabangsTable
                     ->label('ID Task')
                     ->searchable()
                     ->sortable()
-                    ->toggleable()
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->grow(false),
                 TextColumn::make('cabang')
                     ->label('Toko')

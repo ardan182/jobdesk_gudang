@@ -568,6 +568,20 @@ Saat export XLSX/PDF, user bisa memilih kolom mana saja yang ikut diexport lewat
 - ManageLeaves memakai jalur `streamXlsxFromRows`/`streamPdfFromRows` (array-based) — pola checkbox perlu pendekatan berbeda (pilih header index) jika diminta
 - Dependensi: `Filament\Forms\Components\CheckboxList` (sudah tersedia) — tanpa library baru
 
+## Fase 42: ID Task Kolom Default Hidden ✅
+
+### Tujuan
+Kolom **ID Task** di semua menu tabel default tersembunyi, user centang checkbox di toggle kolom untuk menampilkannya.
+
+### Tasks
+- [x] **Helper reusable** — di 9 menu tabel (Kiriman Mobil, Komplain PO, Checker Keluar Barang, Datang Mobil Supplier, Checker Terima Barang, Input SJ Supplier, Retur Masuk dari Toko, Input Kirim Barang, Retur In & Out Supplier)
+- [x] **Pola implementasi:** `TextColumn::make('id_task')->toggleable(isToggledHiddenByDefault: true)`
+- [x] **Test** — `phpunit` lolos, syntax OK
+
+### Catatan
+- Perubahan minimal: hanya menambahkan parameter `isToggledHiddenByDefault: true` ke `->toggleable()`
+- User experience: kolom ID Task tidak mengganggu view default, user centang saat perlu
+
 
 
 

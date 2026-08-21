@@ -35,7 +35,7 @@ class BranchShipmentsTable
                     ->label('ID Task')
                     ->searchable()
                     ->sortable()
-                    ->toggleable()
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->grow(false),
                 TextColumn::make('pilih_kiriman')
                     ->label('Kiriman')

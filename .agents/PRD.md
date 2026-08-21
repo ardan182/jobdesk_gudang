@@ -1,6 +1,6 @@
 # PRD — Jobdesk Gudang AP
 
-**Versi:** 3.0 | **Tanggal:** 20 Agustus 2026
+**Versi:** 3.1 | **Tanggal:** 21 Agustus 2026
 
 ---
 
@@ -264,6 +264,12 @@ getEloquentQuery() → filter own data untuk non-Admin (via permission check)
   - Aksi `export_xlsx`/`export_pdf` di setiap tabel: `->form([...])` + `->modalHeading('Export XLSX/PDF — Pilih Kolom')` + `->modalSubmitActionLabel('Export')` + action memanggil `filterExportColumns(self::exportColumns(), $data['columns'])`.
 - **Formatters:** otomatis diterapkan hanya untuk kolom terpilih (keyed by path), tidak perlu filter manual.
 - **Status:** Sudah diterapkan di **Datang Mobil Supplier**; menyusul di 7 menu task lainnya (Terima, Keluar, Kiriman, Retur Cabang, SJ Supplier, BranchShipment, Komplain PO). **Papan Absensi (ManageLeaves)** memakai jalur array-based — perlu pendekatan terpisah jika dipilih.
+
+### 2.27 ID Task Kolom Default Hidden
+- **Tujuan:** Kolom **ID Task** di 9 menu tabel default tersembunyi, user centang checkbox di toggle kolom untuk menampilkannya.
+- **Menu:** Kiriman Mobil, Komplain PO, Checker Keluar Barang, Datang Mobil Supplier, Checker Terima Barang, Input SJ Supplier, Retur Masuk dari Toko, Input Kirim Barang, Retur In & Out Supplier
+- **Implementasi:** `TextColumn::make('id_task')->toggleable(isToggledHiddenByDefault: true)`
+- **User Experience:** Kolom ID Task tidak mengganggu view default, user centang saat perlu
 
 ---
 
