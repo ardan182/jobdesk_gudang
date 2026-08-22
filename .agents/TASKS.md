@@ -583,6 +583,62 @@ Kolom **ID Task** di semua menu tabel default tersembunyi, user centang checkbox
 - User experience: kolom ID Task tidak mengganggu view default, user centang saat perlu
 
 
+## Fase 44: Generate Memo Surat Jalan (Purchasing Order) 🔄
+
+### Tujuan
+Generate memo surat jalan untuk supir ambil barang ke supplier/pabrik. Form input → generate PDF 2 halaman identik → print 2 lembar kertas berbeda. **Tidak simpan ke database** (generate only).
+
+### Spesifikasi Form
+| Field | Tipe | Source / Validasi |
+|-------|------|-------------------|
+| Supplier | Select | `Supplier::pluck('nama_supplier','id')` → load alamat via AJAX |
+| Alamat Supplier | Select (conditional) | Jika supplier >1 alamat (separator `|`) → show select alamat |
+| Plat Nomor | Select | `MasterKendaraan::pluck('nomor_polisi','id')` |
+| Nama Supir | TextInput | Required |
+| Tanggal Bawa | DatePicker | Required, maxDate today |
+| Nama Purchaser | TextInput | Required |
+| Nama Kepala Gudang | TextInput | Required |
+
+**Supplier → Alamat:** Supplier.alamat bisa multi-alamat (separator `|`). Jika >1 alamat → show select alamat. Jika 1 → auto-fill & disable.
+
+### Output PDF
+- **Template:** `resources/views/exports/memo-surat-jalan.blade.php` (sesuai template user)
+- **Output:** 1 PDF = 2 halaman identik → user print 2 lembar kertas berbeda (Copies: 2, Tray 1 & Tray 2)
+- Company: PT. INDO PORCELAIN (hardcode di template)
+- Alamat supplier ambil dari `Supplier.alamat` (multi-alamat split by `|`)
+
+### Tasks
+- [ ] **Filament Page** — `app/Filament/Pages/GenerateMemoSuratJalan.php` di group **Purchasing Order**
+  - Form dengan 2 Section: Data Pengiriman + Data Surat
+  - Reactive supplier → load alamat via AJAX
+  - Action `generatePdf()` → generate PDF 2 halaman identik → stream download
+- [ ] **PDF Template** — `resources/views/exports/memo-surat-jalan.blade.php`
+  - Template sesuai contoh user (PT. INDO PORCELAIN, format surat formal)
+  - Dynamic data: plat nomor, supir, tanggal, supplier, alamat, purchaser, kepala gudang
+- [ ] **Export PDF** — Generate 2 halaman identik di 1 PDF (user print 2 lembar kertas berbeda)
+  - `dompdf` → `setPaper('A4', 'portrait')` → `getCanvas()->getCpdf()->addPage()` untuk halaman 2
+- [ ] **Permission** — `generate_memo_surat_jalan` di `PermissionSeeder` + `PermissionMenu`
+  - Group: **Purchasing Order** (icon `heroicon-o-document-text`)
+  - Akses: Admin + Purchasing
+- [ ] **PermissionSeeder** — tambah `generate_memo_surat_jalan` + `PermissionMenu` checkbox
+- [ ] **Test** — `phpunit` + manual test generate PDF + print 2 lembar
+
+### Catatan
+- **Tidak ada migration / model baru** — hanya generate PDF, tidak simpan DB
+- **Export hanya PDF** (2 halaman identik), tidak XLSX
+- **Print 2 lembar kertas berbeda** → user print PDF dengan `Copies: 2` + pilih Tray 1 & Tray 2
+- **Template** mengikuti contoh user (PT. INDO PORCELAIN, format formal Indonesian)
+- **Permission** di-seed otomatis via `PermissionSeeder` + masuk `PermissionMenu`
+- Akses: Admin + Purchasing (permission `generate_memo_surat_jalan`)
+
+### Pertanyaan Klarifikasi (Belum Disepakati)
+1. **Nomor urut memo** — running number per tanggal (MEMO-20260821-001) atau UUID?
+2. **Nomor plat** — ambil dari `MasterKendaraan` (sudah ada) atau input bebas?
+3. **Tanggal** — default hari ini, max today (tidak boleh future)?
+4. **Company name "PT.INDO PORCELAIN"** — hardcode di template atau ambil dari config/settings?
+4. **Alamat supplier** — di DB `suppliers.alamat` pakai separator `|` untuk multi alamat.
+
+
 
 
 
